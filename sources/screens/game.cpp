@@ -8,6 +8,7 @@ void screenGame()
 {
 	EntityManager *ents = engineGui()->entities();
 
+	/*
 	{
 		Entity *e = ents->create(1);
 		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
@@ -31,4 +32,5 @@ void screenGame()
 		CAGE_COMPONENT_GUI(Text, txt, e);
 		txt.value = "Game";
 	}
+	*/
 }

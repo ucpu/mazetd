@@ -17,6 +17,7 @@ enum class TileBlockingFlags : uint8
 
 struct Grid : private Immovable
 {
+	ivec2 centerOffset;
 	uint32 width = 0;
 	uint32 height = 0;
 

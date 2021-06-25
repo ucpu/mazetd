@@ -36,7 +36,6 @@ int main(int argc, const char *args[])
 			Holder<FullscreenSwitcher> fullscreen = newFullscreenSwitcher({});
 			Holder<EngineProfiling> engineProfiling = newEngineProfiling();
 			engineProfiling->profilingScope = EngineProfilingScopeEnum::None;
-			engineProfiling->screenPosition = vec2(0.5);
 
 			engineStart();
 		}
