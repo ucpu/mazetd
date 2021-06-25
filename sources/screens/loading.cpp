@@ -38,7 +38,7 @@ namespace
 		{
 			Entity *e = ents->create(1);
 			CAGE_COMPONENT_GUI(Scrollbars, sc, e);
-			sc.alignment = vec2(0.5, 0.5);
+			sc.alignment = vec2(0.5, 0.1);
 		}
 
 		{
