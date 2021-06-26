@@ -18,9 +18,9 @@ namespace
 		c.near = 1;
 		c.far = 500;
 		c.ambientColor = vec3(1);
-		c.ambientIntensity = 1;
+		c.ambientIntensity = 0.4;
 		c.ambientDirectionalColor = vec3(1);
-		c.ambientDirectionalIntensity = 0.1;
+		c.ambientDirectionalIntensity = 0.3;
 
 		fps = newFpsCamera(e);
 		fps->mouseButton = MouseButtonsFlags::Middle;
