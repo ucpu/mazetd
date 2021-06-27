@@ -12,3 +12,13 @@ struct ChunkUpload : private Noncopyable
 };
 
 extern ConcurrentQueue<ChunkUpload> chunksUploadQueue;
+
+struct Procedural : private Immovable
+{
+	virtual ~Procedural() = default;
+	virtual real elevation(const vec2 &pos) = 0;
+	virtual real sdf(const vec3 &pos) = 0;
+	virtual void material(ChunkUpload *chunk, const ivec2 &xy, const ivec3 &ids, const vec3 &weights) = 0;
+};
+
+Holder<Procedural> newProcedural();
