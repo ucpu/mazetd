@@ -42,6 +42,57 @@ namespace
 		}
 		return r;
 	}
+
+	void fillUnreachable(Grid *g)
+	{
+		std::vector<uint16> comps;
+		std::vector<uint32> stack;
+		stack.reserve(1000);
+		const uint32 total = numeric_cast<uint32>(g->tiles.size());
+		comps.resize(total, m);
+		uint32 largestId = m;
+		uint32 largestCnt = 0;
+		uint32 c = 0;
+		for (uint32 s = 0; s < total; s++)
+		{
+			if (g->tiles[s] == TileFlags::Invalid)
+				continue;
+			if (comps[s] != m)
+				continue;
+			comps[s] = c;
+			uint32 cnt = 1;
+			CAGE_ASSERT(stack.empty());
+			stack.push_back(s);
+			while (!stack.empty())
+			{
+				const uint32 i = stack.back();
+				stack.pop_back();
+				const ivec2 mp = g->position(i);
+				for (const ivec2 off : { ivec2(-1, 0), ivec2(1, 0), ivec2(0, -1), ivec2(0, 1) })
+				{
+					const uint32 j = g->index(mp + off);
+					if (j == m)
+						continue;
+					if (g->tiles[j] == TileFlags::Invalid)
+						continue;
+					if (comps[j] != m)
+						continue;
+					comps[j] = c;
+					cnt++;
+					stack.push_back(j);
+				}
+			}
+			if (cnt > largestCnt)
+			{
+				largestCnt = cnt;
+				largestId = c;
+			}
+			c++;
+		}
+		for (uint32 s = 0; s < total; s++)
+			if (comps[s] != largestId)
+				g->tiles[s] = TileFlags::Invalid;
+	}
 }
 
 uint32 Grid::index(ivec2 pos) const
@@ -107,6 +158,7 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 		}
 		g->tiles = vec;
 	}
+	fillUnreachable(+g);
 	{
 		uint32 valid = 0;
 		for (TileFlags f : g->tiles)
