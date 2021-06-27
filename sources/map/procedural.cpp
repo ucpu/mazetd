@@ -78,7 +78,6 @@ namespace
 		{
 			const vec2 pos2 = vec2(pos3[0], pos3[2]);
 			const real elev = elevation(pos2);
-			const real spikiness = abs(slope(pos2, 0.3) - slope(pos2, 1));
 			{
 				const real noise = waterNoise->evaluate(pos3) * 0.07;
 				albedo = colorHsvToRgb(vec3(0.644 + noise, 0.52, 0.75));
@@ -108,17 +107,20 @@ namespace
 				roughness = interpolate(roughness, r, factor);
 			}
 			{
-				const vec3 rock = vec3(0.3);
-				const real factor = saturate(find(spikiness, 0.2, 0.3)) * 0.3;
-				albedo = interpolate(albedo, rock, factor);
-				roughness = interpolate(roughness, 0.8, factor);
+				const ivec2 tile = ivec2((pos2 + 1000) * 21) % 21;
+				if (tile[0] == 10 || tile[1] == 10)
+				{
+					constexpr real factor = 0.3;
+					albedo = interpolate(albedo, vec3(0.5), factor);
+					roughness = interpolate(roughness, 1, factor);
+				}
 			}
 			{
-				const ivec2 tile = ivec2(20 * pos2 + 1000) % 20;
-				if (tile[0] == 0 || tile[1] == 0)
+				if (any(flags & TileFlags::Invalid))
 				{
-					albedo = interpolate(albedo, vec3(0.5), 0.3);
-					roughness = interpolate(roughness, 1, 0.3);
+					constexpr real factor = 0.2;
+					albedo = interpolate(albedo, vec3(), factor);
+					roughness = interpolate(roughness, 1, factor);
 				}
 			}
 		}

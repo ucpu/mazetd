@@ -2,26 +2,45 @@
 
 #include "generate.h"
 
+#include <initializer_list>
+
 namespace
 {
-	CAGE_FORCE_INLINE sint16 rtos16(real v)
+	CAGE_FORCE_INLINE constexpr sint16 rtos16(real v)
 	{
 		return numeric_cast<sint16>(v * 255);
 	}
 
-	CAGE_FORCE_INLINE real s16tor(sint16 v)
+	CAGE_FORCE_INLINE constexpr real s16tor(sint16 v)
 	{
 		return v / 255.f;
 	}
 
-	CAGE_FORCE_INLINE sint32 rtos32(real v)
+	CAGE_FORCE_INLINE constexpr sint32 rtos32(real v)
 	{
 		return numeric_cast<sint32>(v * 255 * 255);
 	}
 
-	CAGE_FORCE_INLINE real s32tor(sint32 v)
+	CAGE_FORCE_INLINE constexpr real s32tor(sint32 v)
 	{
 		return v / 255.f / 255.f;
+	}
+
+	sint16 maxSlope(const Grid *g, uint32 idx)
+	{
+		const sint16 me = g->elevations[idx];
+		const ivec2 mp = g->position(idx);
+		sint16 r = 0;
+		for (const ivec2 off : { ivec2(-1, 0), ivec2(1, 0), ivec2(0, -1), ivec2(0, 1) })
+		{
+			const ivec2 p = mp + off;
+			const uint32 i = g->index(p);
+			if (i == m)
+				continue;
+			const sint16 e = g->elevations[i];
+			r = max(r, cage::abs(sint16(me - e)));
+		}
+		return r;
 	}
 }
 
@@ -66,15 +85,33 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 	Holder<Grid> g = systemMemory().createHolder<Grid>();
 	g->resolution = ivec2(201);
 	g->gridOffset = ivec2(100);
+	const uint32 total = g->resolution[0] * g->resolution[1];
 	{
 		PointerRangeHolder<const sint16> vec;
-		vec.resize(g->resolution[0] * g->resolution[1]);
+		vec.resize(total);
+		for (uint32 i = 0; i < total; i++)
+			vec[i] = rtos16(clamp(procedural->elevation(vec2(g->position(i))), -100, 100));
 		g->elevations = vec;
 	}
 	{
 		PointerRangeHolder<TileFlags> vec;
-		vec.resize(g->resolution[0] * g->resolution[1]);
+		vec.resize(total);
+		constexpr sint16 waterThreshold = rtos16(-6.5);
+		constexpr sint16 slopeThreshold = rtos16(0.35);
+		for (uint32 i = 0; i < total; i++)
+		{
+			if (g->elevations[i] < waterThreshold)
+				vec[i] |= TileFlags::Water;
+			if (maxSlope(+g, i) > slopeThreshold)
+				vec[i] = TileFlags::Invalid;
+		}
 		g->tiles = vec;
+	}
+	{
+		uint32 valid = 0;
+		for (TileFlags f : g->tiles)
+			valid += none(f & TileFlags::Invalid);
+		CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "valid tiles: " + valid);
 	}
 	return g;
 }

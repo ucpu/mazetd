@@ -11,6 +11,11 @@ enum class TileFlags : uint8
 	Spawn = 1u << 7,
 };
 
+namespace cage
+{
+	GCHL_ENUM_BITS(TileFlags);
+}
+
 struct Grid : private Immovable
 {
 	ivec2 gridOffset;
