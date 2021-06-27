@@ -74,14 +74,11 @@ namespace
 			return (value - lower) / (upper - lower);
 		}
 
-		void material(ChunkUpload *chunk, const ivec2 &xy, const ivec3 &ids, const vec3 &weights) override
+		void material(const vec3 &pos3, TileFlags flags, vec3 &albedo, real &roughness) override
 		{
-			const vec3 pos3 = chunk->mesh->positionAt(ids, weights);
 			const vec2 pos2 = vec2(pos3[0], pos3[2]);
 			const real elev = elevation(pos2);
 			const real spikiness = abs(slope(pos2, 0.3) - slope(pos2, 1));
-			real roughness;
-			vec3 albedo;
 			{
 				const real noise = waterNoise->evaluate(pos3) * 0.07;
 				albedo = colorHsvToRgb(vec3(0.644 + noise, 0.52, 0.75));
@@ -124,8 +121,6 @@ namespace
 					roughness = interpolate(roughness, 1, 0.3);
 				}
 			}
-			chunk->albedo->set(xy, albedo);
-			chunk->material->set(xy, roughness);
 		}
 
 		real sdf(const vec3 &pos) override

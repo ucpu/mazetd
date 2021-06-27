@@ -2,7 +2,7 @@
 #include <cage-engine/engine.h>
 #include <cage-engine/gui.h>
 
-#include "../map.h"
+#include "../grid.h"
 
 void screenGame()
 {

@@ -1,6 +1,8 @@
 #include <cage-core/geometry.h>
 #include <cage-core/marchingCubes.h>
 #include <cage-core/threadPool.h>
+#include <cage-core/mesh.h>
+#include <cage-core/image.h>
 
 #include "generate.h"
 
@@ -10,16 +12,26 @@ namespace
 	{
 		Holder<PointerRange<Holder<Mesh>>> meshes;
 		Holder<Procedural> procedural;
+		Holder<Grid> grid;
 
 		struct ChunkMaterial : public ChunkUpload
 		{
-			Procedural *procedural = nullptr;
+			Maker *maker = nullptr;
+			
+			void makeMaterial(const ivec2 &xy, const ivec3 &ids, const vec3 &weights)
+			{
+				const vec3 pos3 = mesh->positionAt(ids, weights);
+				const uint32 index = maker->grid->index(pos3);
+				if (index == m)
+					return;
+				const TileFlags flags = maker->grid->tiles[index];
+				vec3 color;
+				real roughness;
+				maker->procedural->material(pos3, flags, color, roughness);
+				albedo->set(xy, color);
+				material->set(xy, roughness);
+			}
 		};
-
-		static void makeMaterial(ChunkMaterial *chunk, const ivec2 &xy, const ivec3 &ids, const vec3 &weights)
-		{
-			chunk->procedural->material(chunk, xy, ids, weights);
-		}
 
 		void makeChunk(uint32 meshIndex)
 		{
@@ -35,7 +47,7 @@ namespace
 				resolution = meshUnwrap(+msh, cfg);
 			}
 			ChunkMaterial chunk;
-			chunk.procedural = +procedural;
+			chunk.maker = this;
 			chunk.mesh = msh.share();
 			chunk.albedo = newImage();
 			chunk.albedo->initialize(ivec2(resolution), 3);
@@ -49,7 +61,7 @@ namespace
 			{
 				MeshGenerateTextureConfig cfg;
 				cfg.width = cfg.height = resolution;
-				cfg.generator.bind<ChunkMaterial *, &Maker::makeMaterial>(&chunk);
+				cfg.generator.bind<ChunkMaterial, &ChunkMaterial::makeMaterial>(&chunk);
 				meshGenerateTexture(+msh, cfg);
 			}
 			{
@@ -116,14 +128,14 @@ void mapGenerate()
 	CAGE_LOG(SeverityEnum::Info, "mapgen", "generating new map");
 	{
 		Holder<Procedural> procedural = newProcedural();
-
-		// todo generate grid
-
+		Holder<Grid> grid = newGrid(procedural.share());
 		{
 			Maker maker;
 			maker.procedural = procedural.share();
+			maker.grid = grid.share();
 			maker.makeMeshes();
 		}
+		globalGrid = grid.share();
 	}
 	CAGE_LOG(SeverityEnum::Info, "mapgen", "map generation done");
 }
