@@ -1,3 +1,4 @@
+#include <cage-core/concurrent.h>
 #include <cage-core/threadPool.h>
 #include <cage-core/pointerRangeHolder.h>
 
@@ -85,15 +86,43 @@ void MultiPaths::update()
 {
 	if (paths.empty())
 		return;
-	Holder<ThreadPool> threadPool = newThreadPool("paths_", paths.size());
+	static Holder<Mutex> mutex = newMutex();
+	ScopeLock lock(mutex);
+	static Holder<ThreadPool> threadPool;
+	if (!threadPool || threadPool->threadsCount() != paths.size())
+		threadPool = newThreadPool("paths_", paths.size());
 	threadPool->function.bind<MultiPaths *, &pathsThreadEntry>(this);
 	threadPool->run();
 }
 
-MultiPaths::FindResult MultiPaths::find(uint32 startingPosition, uint32 visitedWaypointsBits) const
+MultiPaths::FindResult MultiPaths::find(uint32 currentPosition, uint32 visitedWaypointsBits) const
 {
-	// todo
-	return {};
+	std::vector<uint32> indices;
+	indices.reserve(paths.size());
+	for (uint32 i = 0; i < paths.size(); i++)
+	{
+		if ((visitedWaypointsBits & (1u << i)) == 0)
+			indices.push_back(i);
+	}
+	if (indices.empty())
+		return {};
+	FindResult bestResult;
+	do
+	{
+		uint32 pos = currentPosition;
+		uint32 dist = 0;
+		for (uint32 i : indices)
+		{
+			dist += paths[i]->distances[pos];
+			pos = paths[i]->tile;
+		}
+		if (dist < bestResult.distance)
+		{
+			bestResult.distance = dist;
+			bestResult.tile = paths[indices[0]]->paths[currentPosition];
+		}
+	} while (std::next_permutation(indices.begin(), indices.end()));
+	return bestResult;
 }
 
 namespace

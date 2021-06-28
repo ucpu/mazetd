@@ -69,10 +69,10 @@ struct MultiPaths : private Immovable
 	struct FindResult
 	{
 		uint32 tile = m;
-		uint32 distance = m;
+		uint32 distance = m; // 24.8 format
 	};
 
-	FindResult find(uint32 startingPosition, uint32 visitedWaypointsBits) const;
+	FindResult find(uint32 currentPosition, uint32 visitedWaypointsBits) const;
 };
 
 extern Holder<Grid> globalGrid;
