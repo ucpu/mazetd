@@ -77,7 +77,7 @@ namespace
 		void material(const vec3 &pos3, TileFlags flags, vec3 &albedo, real &roughness) override
 		{
 			const vec2 pos2 = vec2(pos3[0], pos3[2]);
-			const real elev = elevation(pos2);
+			const real elev = pos3[1];
 			{
 				const real noise = waterNoise->evaluate(pos3) * 0.07;
 				albedo = colorHsvToRgb(vec3(0.644 + noise, 0.52, 0.75));
@@ -115,13 +115,17 @@ namespace
 					roughness = interpolate(roughness, 1, factor);
 				}
 			}
+			if (any(flags & TileFlags::Invalid))
 			{
-				if (any(flags & TileFlags::Invalid))
-				{
-					constexpr real factor = 0.2;
-					albedo = interpolate(albedo, vec3(), factor);
-					roughness = interpolate(roughness, 1, factor);
-				}
+				constexpr real factor = 0.2;
+				albedo = interpolate(albedo, vec3(), factor);
+				roughness = interpolate(roughness, 1, factor);
+			}
+			if (any(flags & TileFlags::Spawn))
+			{
+				constexpr real factor = 0.5;
+				albedo = interpolate(albedo, vec3(1, 0, 1), factor);
+				roughness = interpolate(roughness, 1, factor);
 			}
 		}
 

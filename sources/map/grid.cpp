@@ -6,26 +6,6 @@
 
 namespace
 {
-	CAGE_FORCE_INLINE constexpr sint16 rtos16(real v)
-	{
-		return numeric_cast<sint16>(v * 255);
-	}
-
-	CAGE_FORCE_INLINE constexpr real s16tor(sint16 v)
-	{
-		return v / 255.f;
-	}
-
-	CAGE_FORCE_INLINE constexpr sint32 rtos32(real v)
-	{
-		return numeric_cast<sint32>(v * 255 * 255);
-	}
-
-	CAGE_FORCE_INLINE constexpr real s32tor(sint32 v)
-	{
-		return v / 255.f / 255.f;
-	}
-
 	sint16 maxSlope(const Grid *g, uint32 idx)
 	{
 		const sint16 me = g->elevations[idx];
@@ -123,12 +103,13 @@ ivec2 Grid::position(uint32 idx) const
 vec3 Grid::center(uint32 idx) const
 {
 	const ivec2 p = position(idx);
-	return vec3(p[0], s16tor(elevations[idx]), p[1]);
+	return vec3(p[0], stor(elevations[idx]), p[1]);
 }
 
 uint32 Grid::neighborDistance(uint32 a, uint32 b) const
 {
-	return 0; // todo
+	// todo optimized integer only solution
+	return rtos32(distance(center(a), center(b)));
 }
 
 Holder<Grid> newGrid(Holder<Procedural> procedural)

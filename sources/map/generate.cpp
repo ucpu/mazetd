@@ -22,9 +22,7 @@ namespace
 			{
 				const vec3 pos3 = mesh->positionAt(ids, weights);
 				const uint32 index = maker->grid->index(pos3);
-				if (index == m)
-					return;
-				const TileFlags flags = maker->grid->tiles[index];
+				const TileFlags flags = index == m ? TileFlags::Invalid : maker->grid->tiles[index];
 				vec3 color;
 				real roughness;
 				maker->procedural->material(pos3, flags, color, roughness);
@@ -129,13 +127,15 @@ void mapGenerate()
 	{
 		Holder<Procedural> procedural = newProcedural();
 		Holder<Grid> grid = newGrid(procedural.share());
+		Holder<MultiPaths> paths = newMultiPaths(grid.share());
 		{
 			Maker maker;
 			maker.procedural = procedural.share();
 			maker.grid = grid.share();
 			maker.makeMeshes();
 		}
-		globalGrid = grid.share();
+		globalGrid = std::move(grid);
+		globalPaths = std::move(paths);
 	}
 	CAGE_LOG(SeverityEnum::Info, "mapgen", "map generation done");
 }

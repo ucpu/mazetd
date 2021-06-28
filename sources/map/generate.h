@@ -20,5 +20,5 @@ struct Procedural : private Immovable
 };
 
 Holder<Procedural> newProcedural();
-
 Holder<Grid> newGrid(Holder<Procedural> procedural);
+Holder<MultiPaths> newMultiPaths(Holder<Grid> grid);
