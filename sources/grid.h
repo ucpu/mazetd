@@ -77,3 +77,4 @@ struct MultiPaths : private Immovable
 
 extern Holder<Grid> globalGrid;
 extern Holder<MultiPaths> globalPaths;
+extern Holder<Collider> globalCollider;

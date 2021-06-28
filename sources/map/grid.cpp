@@ -149,8 +149,6 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 	return g;
 }
 
-Holder<Grid> globalGrid;
-
 #ifdef CAGE_DEBUG
 namespace
 {

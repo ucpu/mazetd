@@ -3,6 +3,7 @@
 #include <cage-core/threadPool.h>
 #include <cage-core/mesh.h>
 #include <cage-core/image.h>
+#include <cage-core/collider.h>
 
 #include "generate.h"
 
@@ -10,6 +11,7 @@ namespace
 {
 	struct Maker
 	{
+		Holder<Mesh> msh;
 		Holder<PointerRange<Holder<Mesh>>> meshes;
 		Holder<Procedural> procedural;
 		Holder<Grid> grid;
@@ -84,7 +86,6 @@ namespace
 
 		void makeMeshes()
 		{
-			Holder<Mesh> msh;
 			{
 				MarchingCubesCreateConfig cfg;
 				cfg.box = Aabb(vec3(-80, -15, -80), vec3(80, 10, 80));
@@ -106,12 +107,10 @@ namespace
 				meshSimplify(+msh, cfg);
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "mesh faces: " + msh->facesCount());
-			msh->exportObjFile({}, "mesh.obj");
 			{
 				MeshChunkingConfig cfg;
 				cfg.maxSurfaceArea = 300;
 				meshes = meshChunking(+msh, cfg);
-				msh.clear();
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "mesh chunks: " + meshes.size());
 			Holder<ThreadPool> thrs = newThreadPool();
@@ -128,14 +127,20 @@ void mapGenerate()
 		Holder<Procedural> procedural = newProcedural();
 		Holder<Grid> grid = newGrid(procedural.share());
 		Holder<MultiPaths> paths = newMultiPaths(grid.share());
-		{
-			Maker maker;
-			maker.procedural = procedural.share();
-			maker.grid = grid.share();
-			maker.makeMeshes();
-		}
-		globalGrid = std::move(grid);
+		Maker maker;
+		maker.procedural = procedural.share();
+		maker.grid = grid.share();
+		maker.makeMeshes();
+		Holder<Collider> collider = newCollider();
+		collider->importMesh(+maker.msh);
+		collider->rebuild();
+		globalCollider = std::move(collider);
 		globalPaths = std::move(paths);
+		globalGrid = std::move(grid); // this is last as it is frequently used to detect whether a map is loaded
 	}
 	CAGE_LOG(SeverityEnum::Info, "mapgen", "map generation done");
 }
+
+Holder<Grid> globalGrid;
+Holder<MultiPaths> globalPaths;
+Holder<Collider> globalCollider;

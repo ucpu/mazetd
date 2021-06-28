@@ -156,5 +156,3 @@ Holder<MultiPaths> newMultiPaths(Holder<Grid> grid)
 	mp->update();
 	return mp;
 }
-
-Holder<MultiPaths> globalPaths;

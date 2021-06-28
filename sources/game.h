@@ -34,3 +34,4 @@ EntityManager *gameEntities();
 
 uint32 gameTime();
 
+uint32 playerCursorTile();
