@@ -40,12 +40,6 @@ EntityManager *gameEntities()
 	return +man;
 }
 
-EntityGroup *gameEntitiesToDestroy()
-{
-	static EntityGroup *grp = gameEntities()->defineGroup();
-	return grp;
-}
-
 uint32 gameTime()
 {
 	return time;

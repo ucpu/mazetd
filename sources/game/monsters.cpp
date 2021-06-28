@@ -42,7 +42,8 @@ namespace
 					mo.visitedWaypointsBits |= 1u << i;
 			if (bitCount(mo.visitedWaypointsBits) == globalPaths->paths.size())
 			{
-				gameEntitiesToDestroy()->add(e);
+				// the monster has reached its final waypoint
+				e->destroy();
 				return;
 			}
 			const auto go = globalPaths->find(po.tile, mo.visitedWaypointsBits);
@@ -51,7 +52,7 @@ namespace
 			mv.tileEnd = po.tile = go.tile;
 			mv.timeStart = time;
 			mv.timeEnd = time + 10;
-		});
+		}, true);
 	}
 
 	void engineUpdate()
@@ -61,7 +62,6 @@ namespace
 		//globalPaths->update();
 		spawnMonsters();
 		moveMonsters();
-		gameEntitiesToDestroy()->destroy();
 	}
 
 	struct Callbacks

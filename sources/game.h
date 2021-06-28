@@ -31,7 +31,6 @@ struct EngineComponent
 };
 
 EntityManager *gameEntities();
-EntityGroup *gameEntitiesToDestroy();
 
 uint32 gameTime();
 
