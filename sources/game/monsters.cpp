@@ -67,7 +67,7 @@ namespace
 		r.object = monsterModels[type];
 		CAGE_COMPONENT_ENGINE(SkeletalAnimation, a, f);
 		a.name = monsterAnimations[type];
-		a.startTime = randomRange(0u, 10000000u);
+		a.offset = randomRange(0.f, 1e6f);
 	}
 
 	uint32 bitCount(uint32 v)

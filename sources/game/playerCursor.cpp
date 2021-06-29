@@ -41,7 +41,7 @@ namespace
 					{
 						cursorMarker = engineEntities()->createAnonymous();
 						CAGE_COMPONENT_ENGINE(Render, r, cursorMarker);
-						r.object = HashString("cage/model/fake.obj");
+						r.object = HashString("mazetd/misc/cursor.obj");
 					}
 					CAGE_COMPONENT_ENGINE(Transform, t, cursorMarker);
 					t.position = globalGrid->center(cursorTile);

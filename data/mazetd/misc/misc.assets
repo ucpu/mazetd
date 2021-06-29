@@ -1,0 +1,10 @@
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 1.01
+cursor.obj
+
+[]
+scheme = pack
+misc.pack

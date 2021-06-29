@@ -30,8 +30,6 @@ namespace
 			PositionComponent &p = e->value<PositionComponent>(pc);
 			t.position = globalGrid->center(p.tile);
 		}
-		CAGE_COMPONENT_ENGINE(Render, r, f);
-		r.object = HashString("cage/model/fake.obj");
 	}
 
 	void engineComponentRemoved(Entity *e)

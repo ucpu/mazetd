@@ -1,0 +1,14 @@
+[base]
+albedo = 0, 0, 1
+roughness = 0.5
+
+[mult]
+opacity = 0.3
+
+[flags]
+translucent
+noDepthWrite
+noVelocityWrite
+noShadowCast
+
+

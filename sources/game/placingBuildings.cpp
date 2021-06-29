@@ -1,3 +1,4 @@
+#include <cage-core/hashString.h>
 #include <cage-core/entitiesVisitor.h>
 #include <cage-core/pointerRangeHolder.h>
 #include <cage-engine/engine.h>
@@ -45,7 +46,9 @@ namespace
 		Entity *e = gameEntities()->createUnique();
 		e->value<PositionComponent>().tile = tile;
 		e->value<WallComponent>();
-		e->value<EngineComponent>();
+		Entity *f = e->value<EngineComponent>().entity;
+		CAGE_COMPONENT_ENGINE(Render, r, f);
+		r.object = HashString("mazetd/buildings/wall.obj");
 	}
 
 	void clearBuilding()
