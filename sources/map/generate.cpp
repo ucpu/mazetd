@@ -40,9 +40,9 @@ namespace
 			{
 				MeshUnwrapConfig cfg;
 #ifdef CAGE_DEBUG
-				cfg.texelsPerUnit = 20;
+				cfg.texelsPerUnit = 15;
 #else
-				cfg.texelsPerUnit = 40;
+				cfg.texelsPerUnit = 30;
 #endif // CAGE_DEBUG
 				resolution = meshUnwrap(+msh, cfg);
 			}
@@ -102,8 +102,12 @@ namespace
 			meshDiscardDisconnected(+msh);
 			{
 				MeshSimplifyConfig cfg;
-				cfg.minEdgeLength = 0.1;
-				cfg.maxEdgeLength = 2;
+				cfg.approximateError = 0.2;
+				cfg.minEdgeLength = 0.3;
+				cfg.maxEdgeLength = 3;
+#ifdef CAGE_DEBUG
+				cfg.iterations = 2;
+#endif // CAGE_DEBUG
 				meshSimplify(+msh, cfg);
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "mesh faces: " + msh->facesCount());

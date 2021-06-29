@@ -128,7 +128,7 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 	{
 		PointerRangeHolder<TileFlags> vec;
 		vec.resize(total);
-		constexpr sint16 waterThreshold = rtos16(-6.5);
+		constexpr sint16 waterThreshold = rtos16(-7);
 		constexpr sint16 slopeThreshold = rtos16(0.35);
 		for (uint32 i = 0; i < total; i++)
 		{

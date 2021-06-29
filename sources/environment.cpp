@@ -16,7 +16,7 @@ namespace
 		l.intensity = 1;
 		CAGE_COMPONENT_ENGINE(Shadowmap, s, e);
 		s.resolution = 2048;
-		s.worldSize = vec3(200);
+		s.worldSize = vec3(80);
 	}
 
 	struct Callbacks

@@ -107,8 +107,8 @@ namespace
 				roughness = interpolate(roughness, r, factor);
 			}
 			{
-				const ivec2 tile = ivec2((pos2 + 1000) * 21) % 21;
-				if (tile[0] == 10 || tile[1] == 10)
+				const ivec2 tile = ivec2((pos2 + 1000) * 15) % 15;
+				if (tile[0] == 7 || tile[1] == 7)
 				{
 					constexpr real factor = 0.3;
 					albedo = interpolate(albedo, vec3(0.5), factor);
