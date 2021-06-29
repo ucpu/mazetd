@@ -1,0 +1,353 @@
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.05
+axes = -x+y-z
+Apatosaurus.glb?Cylinder-0_Brown
+Apatosaurus.glb?Cylinder-1_Material
+
+[]
+scheme = skeleton
+scale = 0.05
+axes = -x+y-z
+Apatosaurus.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.15
+axes = -x+y-z
+Bat.glb?Cylinder-0_Main
+Bat.glb?Cylinder-1_Black
+Bat.glb?Cylinder-2_Belly
+Bat.glb?Cylinder-3_Nose
+Bat.glb?Cylinder.001-0_Main
+Bat.glb?Cylinder.001-1_Eyes
+
+[]
+scheme = skeleton
+scale = 0.15
+axes = -x+y-z
+Bat.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.2
+axes = -x+y-z
+Dragon.glb?Cylinder-0_Main
+Dragon.glb?Cylinder-1_Wings
+Dragon.glb?Cylinder-2_Belly
+Dragon.glb?Cylinder-3_Claws
+Dragon.glb?Cylinder.001-0_Main
+Dragon.glb?Cylinder.001-1_Eyes
+
+[]
+scheme = skeleton
+scale = 0.2
+axes = -x+y-z
+Dragon.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.2
+axes = -x+y-z
+Frog.glb?Cylinder-0_Green
+Frog.glb?Cylinder-1_Yellow
+Frog.glb?Cylinder-2_Red
+Frog.glb?Cylinder-3_Black
+
+[]
+scheme = skeleton
+scale = 0.2
+axes = -x+y-z
+Frog.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.15
+axes = -x+y-z
+Parasaurolophus.glb?Cylinder-0_Green
+Parasaurolophus.glb?Cylinder-1_LightGreen
+Parasaurolophus.glb?Cylinder-2_LightYellow
+Parasaurolophus.glb?Cylinder-3_Red
+
+[]
+scheme = skeleton
+scale = 0.15
+axes = -x+y-z
+Parasaurolophus.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.2
+axes = -x+y-z
+Rat.glb?Cylinder-0_Pink
+Rat.glb?Cylinder-1_Grey
+
+[]
+scheme = skeleton
+scale = 0.2
+axes = -x+y-z
+Rat.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.2
+axes = -x+y-z
+Skeleton.glb
+
+[]
+scheme = skeleton
+scale = 0.2
+axes = -x+y-z
+Skeleton.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.25
+axes = +z+y-x
+Slime.glb?Cube-0_Body
+Slime.glb?Cube-1_Eyes
+
+[]
+scheme = skeleton
+scale = 0.25
+axes = +z+y-x
+Slime.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.25
+axes = -x+y-z
+Snake.glb?Cylinder-0_DarkGreen
+Snake.glb?Cylinder-1_LightGreen
+Snake.glb?Cylinder-2_Yellow
+Snake.glb?Cylinder-3_DarkRed
+Snake.glb?Cylinder-4_Red
+Snake.glb?Cylinder-5_Teeth
+Snake.glb?Cylinder-6_Purple
+
+[]
+scheme = skeleton
+scale = 0.25
+axes = -x+y-z
+Snake.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.2
+axes = -x+y-z
+Spider.glb?Cube-0_Material
+Spider.glb?Cube-1_Material.001
+
+[]
+scheme = skeleton
+scale = 0.2
+axes = -x+y-z
+Spider.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.06
+axes = -x+y-z
+Stegosaurus.glb?Cylinder-0_DarkBrown
+Stegosaurus.glb?Cylinder-1_LightBrown
+Stegosaurus.glb?Cylinder-2_Brown
+
+[]
+scheme = skeleton
+scale = 0.06
+axes = -x+y-z
+Stegosaurus.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.04
+axes = -x+y-z
+Trex.glb?Cylinder-0_Green
+Trex.glb?Cylinder-1_Black
+Trex.glb?Cylinder-2_LightGreen
+Trex.glb?Cylinder-3_Red
+Trex.glb?Cylinder-4_LightYellow
+
+[]
+scheme = skeleton
+scale = 0.04
+axes = -x+y-z
+Trex.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.06
+axes = -x+y-z
+Triceratops.glb?Cylinder-0_Purple
+Triceratops.glb?Cylinder-1_LightBrown
+Triceratops.glb?Cylinder-2_Brown
+
+[]
+scheme = skeleton
+scale = 0.06
+axes = -x+y-z
+Triceratops.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.13
+axes = -x+y-z
+Velociraptor.glb?Cylinder-0_Brown
+Velociraptor.glb?Cylinder-1_Black
+Velociraptor.glb?Cylinder-2_LightBrown
+
+[]
+scheme = skeleton
+scale = 0.13
+axes = -x+y-z
+Velociraptor.glb;skeleton
+
+[]
+scheme = model
+uvs = false
+tangents = false
+bones = true
+trianglesOnly = true
+scale = 0.2
+axes = +z+y-x
+Wasp.glb?Cylinder.001-0_Yellow
+Wasp.glb?Cylinder.001-1_Black
+Wasp.glb?Cylinder.001-2_LightBlue
+Wasp.glb?Cylinder.001-3_Orange
+
+[]
+scheme = skeleton
+scale = 0.2
+axes = +z+y-x
+Wasp.glb;skeleton
+
+[]
+scheme = animation
+Apatosaurus.glb?Apatosaurus_Idle
+Apatosaurus.glb?Apatosaurus_Jump
+Apatosaurus.glb?Apatosaurus_Run
+Apatosaurus.glb?Apatosaurus_Walk
+Apatosaurus.glb?Stegosaurus_Death
+Bat.glb?Bat_Flying
+Dragon.glb?Dragon_Flying
+Dragon.glb?Dragon_Hit
+Frog.glb?Frog_Idle
+Frog.glb?Frog_Jump
+Parasaurolophus.glb?Parasaurolophus_Idle
+Parasaurolophus.glb?Parasaurolophus_Jump
+Parasaurolophus.glb?Parasaurolophus_Run
+Parasaurolophus.glb?Parasaurolophus_Walk
+Rat.glb?Rat_Death
+Rat.glb?Rat_Idle
+Rat.glb?Rat_Jump
+Rat.glb?Rat_Walk
+Skeleton.glb?Skeleton_Attack
+Skeleton.glb?Skeleton_Death
+Skeleton.glb?Skeleton_Idle
+Skeleton.glb?Skeleton_Running
+Skeleton.glb?Skeleton_Spawn
+Slime.glb?Slime_Idle
+Snake.glb?Snake_Attack
+Snake.glb?Snake_Idle
+Snake.glb?Snake_Walk
+Spider.glb?Spider_Attack
+Spider.glb?Spider_Idle
+Spider.glb?Spider_Jump
+Spider.glb?Spider_Walk
+Stegosaurus.glb?Stegosaurus_Death
+Stegosaurus.glb?Stegosaurus_Idle
+Stegosaurus.glb?Stegosaurus_Jump
+Stegosaurus.glb?Stegosaurus_Run
+Stegosaurus.glb?Stegosaurus_Walk
+Trex.glb?TRex_Idle
+Trex.glb?TRex_Jump
+Trex.glb?TRex_Run
+Trex.glb?TRex_Walk
+Triceratops.glb?Triceratops_Death
+Triceratops.glb?Triceratops_Idle
+Triceratops.glb?Triceratops_Jump
+Triceratops.glb?Triceratops_Run
+Triceratops.glb?Triceratops_Walk
+Velociraptor.glb?Velociraptor_Idle
+Velociraptor.glb?Velociraptor_Jump
+Velociraptor.glb?Velociraptor_Run
+Velociraptor.glb?Velociraptor_Walk
+Wasp.glb?Wasp_Flying
+
+[]
+scheme = object
+Apatosaurus.object
+Bat.object
+Dragon.object
+Frog.object
+Parasaurolophus.object
+Rat.object
+Skeleton.object
+Slime.object
+Snake.object
+Spider.object
+Stegosaurus.object
+Trex.object
+Triceratops.object
+Velociraptor.object
+Wasp.object
+
+[]
+scheme = pack
+monsters.pack

@@ -1,3 +1,4 @@
+#include <cage-core/hashString.h>
 #include <cage-core/entitiesVisitor.h>
 #include <cage-engine/engine.h>
 
@@ -8,6 +9,44 @@
 
 namespace
 {
+	constexpr const uint32 monsterModels[] = {
+		HashString("mazetd/monsters/Frog.object"),
+		HashString("mazetd/monsters/Rat.object"),
+		HashString("mazetd/monsters/Snake.object"),
+		HashString("mazetd/monsters/Spider.object"),
+		HashString("mazetd/monsters/Wasp.object"),
+		HashString("mazetd/monsters/Bat.object"),
+		HashString("mazetd/monsters/Dragon.object"),
+		HashString("mazetd/monsters/Skeleton.object"),
+		HashString("mazetd/monsters/Slime.object"),
+		HashString("mazetd/monsters/Apatosaurus.object"),
+		HashString("mazetd/monsters/Parasaurolophus.object"),
+		HashString("mazetd/monsters/Stegosaurus.object"),
+		HashString("mazetd/monsters/Trex.object"),
+		HashString("mazetd/monsters/Triceratops.object"),
+		HashString("mazetd/monsters/Velociraptor.object"),
+	};
+
+	constexpr const uint32 monsterAnimations[] = {
+		HashString("mazetd/monsters/Frog.glb?Frog_Jump"),
+		HashString("mazetd/monsters/Rat.glb?Rat_Walk"),
+		HashString("mazetd/monsters/Snake.glb?Snake_Walk"),
+		HashString("mazetd/monsters/Spider.glb?Spider_Walk"),
+		HashString("mazetd/monsters/Wasp.glb?Wasp_Flying"),
+		HashString("mazetd/monsters/Bat.glb?Bat_Flying"),
+		HashString("mazetd/monsters/Dragon.glb?Dragon_Flying"),
+		HashString("mazetd/monsters/Skeleton.glb?Skeleton_Running"),
+		HashString("mazetd/monsters/Slime.glb?Slime_Idle"),
+		HashString("mazetd/monsters/Apatosaurus.glb?Apatosaurus_Walk"),
+		HashString("mazetd/monsters/Parasaurolophus.glb?Parasaurolophus_Walk"),
+		HashString("mazetd/monsters/Stegosaurus.glb?Stegosaurus_Walk"),
+		HashString("mazetd/monsters/Trex.glb?TRex_Walk"),
+		HashString("mazetd/monsters/Triceratops.glb?Triceratops_Walk"),
+		HashString("mazetd/monsters/Velociraptor.glb?Velociraptor_Walk"),
+	};
+
+	static_assert(sizeof(monsterModels) == sizeof(monsterAnimations));
+
 	void spawnMonsters()
 	{
 		if (gameTime() % 30 != 0 || gameEntities()->component<MonsterComponent>()->count() >= 50)
@@ -22,7 +61,13 @@ namespace
 		MovementComponent &mv = e->value<MovementComponent>();
 		mv.tileStart = mv.tileEnd = position;
 		mv.timeStart = mv.timeEnd = gameTime();
-		e->value<EngineComponent>();
+		Entity *f = e->value<EngineComponent>().entity;
+		const uint32 type = randomRange(0u, (uint32)(sizeof(monsterModels) / sizeof(monsterModels[0])));
+		CAGE_COMPONENT_ENGINE(Render, r, f);
+		r.object = monsterModels[type];
+		CAGE_COMPONENT_ENGINE(SkeletalAnimation, a, f);
+		a.name = monsterAnimations[type];
+		a.startTime = randomRange(0u, 10000000u);
 	}
 
 	uint32 bitCount(uint32 v)
