@@ -4,14 +4,14 @@ uvs = false
 tangents = false
 bones = true
 trianglesOnly = true
-scale = 0.05
+scale = 0.07
 axes = -x+y-z
 Apatosaurus.glb?Cylinder-0_Brown
 Apatosaurus.glb?Cylinder-1_Material
 
 []
 scheme = skeleton
-scale = 0.05
+scale = 0.07
 axes = -x+y-z
 Apatosaurus.glb;skeleton
 
@@ -82,7 +82,7 @@ uvs = false
 tangents = false
 bones = true
 trianglesOnly = true
-scale = 0.15
+scale = 0.13
 axes = -x+y-z
 Parasaurolophus.glb?Cylinder-0_Green
 Parasaurolophus.glb?Cylinder-1_LightGreen
@@ -91,7 +91,7 @@ Parasaurolophus.glb?Cylinder-3_Red
 
 []
 scheme = skeleton
-scale = 0.15
+scale = 0.13
 axes = -x+y-z
 Parasaurolophus.glb;skeleton
 
@@ -173,14 +173,14 @@ uvs = false
 tangents = false
 bones = true
 trianglesOnly = true
-scale = 0.2
+scale = 0.17
 axes = -x+y-z
 Spider.glb?Cube-0_Material
 Spider.glb?Cube-1_Material.001
 
 []
 scheme = skeleton
-scale = 0.2
+scale = 0.17
 axes = -x+y-z
 Spider.glb;skeleton
 
@@ -190,7 +190,7 @@ uvs = false
 tangents = false
 bones = true
 trianglesOnly = true
-scale = 0.06
+scale = 0.07
 axes = -x+y-z
 Stegosaurus.glb?Cylinder-0_DarkBrown
 Stegosaurus.glb?Cylinder-1_LightBrown
@@ -198,7 +198,7 @@ Stegosaurus.glb?Cylinder-2_Brown
 
 []
 scheme = skeleton
-scale = 0.06
+scale = 0.07
 axes = -x+y-z
 Stegosaurus.glb;skeleton
 

@@ -107,7 +107,6 @@ namespace
 	{
 		if (!globalGrid)
 			return;
-		//globalPaths->update();
 		spawnMonsters();
 		moveMonsters();
 	}
