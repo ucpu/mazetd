@@ -78,7 +78,7 @@ namespace
 		case MouseButtonsFlags::Left:
 			placeBuilding();
 			break;
-		case MouseButtonsFlags::Right:
+		case MouseButtonsFlags::Middle:
 			clearBuilding();
 			break;
 		}

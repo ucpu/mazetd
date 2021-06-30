@@ -11,17 +11,18 @@
 namespace
 {
 	Entity *cursorMarker = nullptr;
+	vec3 cursorPosition = vec3::Nan();
 	uint32 cursorTile = m;
 
 	void engineUpdate()
 	{
-		if (globalGrid && engineWindow()->isFocused())
+		const ivec2 res = engineWindow()->resolution();
+		if (globalGrid && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
 		{
+			const ivec2 cur = engineWindow()->mousePosition();
 			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
 			CAGE_COMPONENT_ENGINE(Transform, t, c);
 			CAGE_COMPONENT_ENGINE(Camera, a, c);
-			const ivec2 res = engineWindow()->resolution();
-			const ivec2 cur = engineWindow()->mousePosition();
 			const mat4 view = mat4(inverse(t));
 			const mat4 proj = perspectiveProjection(a.camera.perspectiveFov, real(res[0]) / real(res[1]), a.near, a.far);
 			const mat4 inv = inverse(proj * view);
@@ -31,10 +32,10 @@ namespace
 			const vec3 near = vec3(pn) / pn[3];
 			const vec3 far = vec3(pf) / pf[3];
 			const Line line = makeSegment(near, far);
-			const vec3 cross = intersection(line, +globalCollider, transform());
-			if (cross.valid())
+			cursorPosition = intersection(line, +globalCollider, transform());
+			if (cursorPosition.valid())
 			{
-				cursorTile = globalGrid->index(cross);
+				cursorTile = globalGrid->index(cursorPosition);
 				if (cursorTile != m && none(globalGrid->tiles[cursorTile] & TileFlags::Invalid))
 				{
 					if (!cursorMarker)
@@ -67,6 +68,11 @@ namespace
 			engineUpdateListener.bind<&engineUpdate>();
 		}
 	} callbacksInstance;
+}
+
+vec3 playerCursorPosition()
+{
+	return cursorPosition;
 }
 
 uint32 playerCursorTile()
