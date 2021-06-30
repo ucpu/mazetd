@@ -9,13 +9,13 @@ namespace
 	{
 		Entity *e = engineEntities()->createAnonymous();
 		CAGE_COMPONENT_ENGINE(Transform, t, e);
-		t.orientation = quat(degs(-70), randomAngle(), degs());
+		t.orientation = quat(degs(-50), randomAngle(), degs());
 		CAGE_COMPONENT_ENGINE(Light, l, e);
 		l.lightType = LightTypeEnum::Directional;
 		l.color = vec3(1);
-		l.intensity = 1;
+		l.intensity = 1.5;
 		CAGE_COMPONENT_ENGINE(Shadowmap, s, e);
-		s.resolution = 2048;
+		s.resolution = 4096;
 		s.worldSize = vec3(80);
 	}
 
