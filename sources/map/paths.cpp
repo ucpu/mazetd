@@ -88,6 +88,7 @@ void MultiPaths::update()
 		return;
 	static Holder<Mutex> mutex = newMutex();
 	ScopeLock lock(mutex);
+	CAGE_LOG_DEBUG(SeverityEnum::Info, "paths", "recomputing paths");
 	static Holder<ThreadPool> threadPool;
 	if (!threadPool || threadPool->threadsCount() != paths.size())
 		threadPool = newThreadPool("paths_", paths.size());

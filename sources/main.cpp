@@ -1,5 +1,6 @@
 #include <cage-core/hashString.h>
 #include <cage-core/assetManager.h>
+#include <cage-core/logger.h>
 #include <cage-engine/engine.h>
 #include <cage-engine/window.h>
 #include <cage-engine/engineProfiling.h>
@@ -21,6 +22,10 @@ namespace
 
 int main(int argc, const char *args[])
 {
+	Holder<Logger> log = newLogger();
+	log->format.bind<logFormatConsole>();
+	log->output.bind<logOutputStdOut>();
+
 	try
 	{
 		engineInitialize(EngineCreateConfig());

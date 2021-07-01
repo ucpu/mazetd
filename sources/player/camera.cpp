@@ -38,7 +38,7 @@ namespace
 
 	bool mousePress(MouseButtonsFlags button, ModifiersFlags mods, const ivec2 &pos)
 	{
-		if (button != MouseButtonsFlags::Right || mods != ModifiersFlags::None)
+		if (button != MouseButtonsFlags::Right)
 			return false;
 		engineWindow()->mouseVisible(false);
 		lastMousePos = pos;
@@ -132,6 +132,37 @@ namespace
 
 	void engineUpdate()
 	{
+		if (engineWindow()->isFocused())
+		{
+			vec2 mv2;
+			if (engineWindow()->keyboardScanCode(17)) // w
+				mv2[1] -= 1;
+			if (engineWindow()->keyboardScanCode(31)) // s
+				mv2[1] += 1;
+			if (engineWindow()->keyboardScanCode(30)) // a
+				mv2[0] -= 1;
+			if (engineWindow()->keyboardScanCode(32)) // d
+				mv2[0] += 1;
+			if (mv2 != vec2())
+			{
+				mv2 = normalize(mv2);
+				const vec3 mv3 = quat(degs(), camYaw, degs()) * vec3(mv2[0], 0, mv2[1]);
+				const real speed = pow(camDist, 0.85) * 0.05;
+				camCenter += vec2(mv3[0], mv3[2]) * speed;
+				updateCamera();
+			}
+			real yaw;
+			if (engineWindow()->keyboardScanCode(16)) // q
+				yaw += 1;
+			if (engineWindow()->keyboardScanCode(18)) // e
+				yaw -= 1;
+			if (yaw != 0)
+			{
+				camYaw += degs(yaw) * 2;
+				updateCamera();
+			}
+		}
+
 		Entity *e = engineEntities()->get(1);
 		CAGE_COMPONENT_ENGINE(Transform, t, e);
 		t = interpolate(t, camTrans, 0.5);

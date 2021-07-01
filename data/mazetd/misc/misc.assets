@@ -6,5 +6,11 @@ scale = 1.01
 cursor.obj
 
 []
+scheme = model
+uvs = false
+tangents = false
+pathMark.obj
+
+[]
 scheme = pack
 misc.pack
