@@ -15,13 +15,13 @@ namespace
 		grid->gridOffset = globalGrid->gridOffset;
 		grid->resolution = globalGrid->resolution;
 		grid->elevations = globalGrid->elevations.share();
-		grid->tiles = PointerRangeHolder<TileFlags>(globalGrid->tiles.begin(), globalGrid->tiles.end());
-		grid->tiles[playerCursorTile()] |= TileFlags::Wall;
-		Holder<Paths> paths = systemMemory().createHolder<Paths>();
+		grid->flags = PointerRangeHolder<TileFlags>(globalGrid->flags.begin(), globalGrid->flags.end());
+		grid->flags[playerCursorTile()] |= TileFlags::Wall;
+		Holder<Directions> paths = systemMemory().createHolder<Directions>();
 		paths->grid = grid.share();
-		paths->tile = globalPaths->paths[0]->tile;
+		paths->tile = globalWaypoints->waypoints[0]->tile;
 		paths->update();
-		for (const auto &p : globalPaths->paths)
+		for (const auto &p : globalWaypoints->waypoints)
 			if (paths->distances[p->tile] == m)
 				return true; // disconnected spawner
 		bool blocked = false;
@@ -36,13 +36,13 @@ namespace
 	{
 		const uint32 tile = playerCursorTile();
 		CAGE_ASSERT(tile != m);
-		TileFlags &flags = globalGrid->tiles[tile];
-		if (any(flags & (TileFlags::Invalid | TileFlags::Spawn | TileFlags::Wall | TileFlags::Water)))
+		TileFlags &flags = globalGrid->flags[tile];
+		if (any(flags & (TileFlags::Invalid | TileFlags::Waypoint | TileFlags::Wall | TileFlags::Water)))
 			return;
 		if (placingWallBlocksMonsters())
 			return;
 		flags |= TileFlags::Wall;
-		globalPaths->update();
+		globalWaypoints->update();
 		Entity *e = gameEntities()->createUnique();
 		e->value<PositionComponent>().tile = tile;
 		e->value<WallComponent>();
@@ -55,7 +55,7 @@ namespace
 	{
 		const uint32 tile = playerCursorTile();
 		CAGE_ASSERT(tile != m);
-		TileFlags &flags = globalGrid->tiles[tile];
+		TileFlags &flags = globalGrid->flags[tile];
 		if (none(flags & TileFlags::Wall))
 			return;
 		flags &= ~TileFlags::Wall;

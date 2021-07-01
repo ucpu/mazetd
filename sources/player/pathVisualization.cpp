@@ -25,16 +25,12 @@ namespace
 	{
 		destroyMarks();
 		timeToDestroy = engineControlTime() + 5 * 1000000;
-		if (!globalGrid)
+		if (!globalWaypoints)
 			return;
-		uint32 waypointBits = 0;
-		uint32 tile = globalPaths->paths[waypointIndex % globalPaths->paths.size()]->tile;
+		const auto &wp = globalWaypoints->waypoints[waypointIndex % globalWaypoints->waypoints.size()];
 		uint32 prev = m;
-		while (tile != m)
+		for (uint32 tile : wp->fullPath)
 		{
-			for (const auto &it : enumerate(globalPaths->paths))
-				if (it.get()->tile == tile)
-					waypointBits |= 1u << it.index;
 			if (prev != m)
 			{
 				Entity *e = engineEntities()->createAnonymous();
@@ -48,7 +44,6 @@ namespace
 				r.object = HashString("mazetd/misc/pathMark.obj");
 			}
 			prev = tile;
-			tile = globalPaths->find(tile, waypointBits).tile;
 		}
 		waypointIndex++;
 	}

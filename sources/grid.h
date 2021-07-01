@@ -25,7 +25,7 @@ enum class TileFlags : uint8
 	Water = 1u << 1,
 	Wall = 1u << 5, // walls, towers and other impassable structures built by the player
 	Trap = 1u << 6, // passable structures built by the player
-	Spawn = 1u << 7, // passable tile that player may not build on
+	Waypoint = 1u << 7, // passable tile that player may not build on
 };
 
 namespace cage
@@ -39,7 +39,7 @@ struct Grid : private Immovable
 	ivec2 resolution;
 
 	Holder<PointerRange<const sint16>> elevations; // 8.8 fixed point real number format
-	Holder<PointerRange<TileFlags>> tiles;
+	Holder<PointerRange<TileFlags>> flags;
 
 	uint32 index(ivec2 pos) const;
 	uint32 index(vec2 pos) const;
@@ -49,20 +49,27 @@ struct Grid : private Immovable
 	uint32 neighborDistance(uint32 a, uint32 b) const; // 24.8 format
 };
 
-struct Paths : private Immovable
+// directions and distances to single tile from all other tiles
+struct Directions : private Immovable
 {
 	Holder<const Grid> grid;
 	uint32 tile = m;
 
-	Holder<PointerRange<uint32>> paths; // -1 = no path
+	Holder<PointerRange<uint32>> tiles; // -1 = no path
 	Holder<PointerRange<uint32>> distances; // 24.8 format
 
 	void update();
 };
 
-struct MultiPaths : private Immovable
+struct Waypoints : private Immovable
 {
-	Holder<PointerRange<Holder<Paths>>> paths;
+	struct Waypoint : public Directions
+	{
+		Holder<PointerRange<uint32>> fullPath; // optimal path through all waypoints for monsters spawned on this waypoint
+		uint32 fullDistance = m; // total distance through all waypoints for monsters spawned on this waypoint - 24.8 format
+	};
+
+	Holder<PointerRange<Holder<Waypoint>>> waypoints;
 
 	void update();
 
@@ -76,5 +83,5 @@ struct MultiPaths : private Immovable
 };
 
 extern Holder<Grid> globalGrid;
-extern Holder<MultiPaths> globalPaths;
+extern Holder<Waypoints> globalWaypoints;
 extern Holder<Collider> globalCollider;

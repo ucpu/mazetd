@@ -121,7 +121,7 @@ namespace
 				albedo = interpolate(albedo, vec3(), factor);
 				roughness = interpolate(roughness, 1, factor);
 			}
-			if (any(flags & TileFlags::Spawn))
+			if (any(flags & TileFlags::Waypoint))
 			{
 				constexpr real factor = 0.5;
 				albedo = interpolate(albedo, vec3(1, 0, 1), factor);

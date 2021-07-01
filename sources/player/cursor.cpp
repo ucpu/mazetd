@@ -36,7 +36,7 @@ namespace
 			if (cursorPosition.valid())
 			{
 				cursorTile = globalGrid->index(cursorPosition);
-				if (cursorTile != m && none(globalGrid->tiles[cursorTile] & TileFlags::Invalid))
+				if (cursorTile != m && none(globalGrid->flags[cursorTile] & TileFlags::Invalid))
 				{
 					if (!cursorMarker)
 					{

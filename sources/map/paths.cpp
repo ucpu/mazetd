@@ -1,3 +1,4 @@
+#include <cage-core/enumerate.h>
 #include <cage-core/concurrent.h>
 #include <cage-core/threadPool.h>
 #include <cage-core/pointerRangeHolder.h>
@@ -18,28 +19,28 @@ namespace
 	};
 }
 
-void Paths::update()
+void Directions::update()
 {
 	CAGE_ASSERT(grid);
-	if (!paths)
+	if (!tiles)
 	{
 		PointerRangeHolder<uint32> vec;
-		vec.resize(grid->tiles.size());
-		paths = vec;
+		vec.resize(grid->flags.size());
+		tiles = vec;
 	}
 	if (!distances)
 	{
 		PointerRangeHolder<uint32> vec;
-		vec.resize(grid->tiles.size());
+		vec.resize(grid->flags.size());
 		distances = vec;
 	}
 
-	for (uint32 &it : paths)
+	for (uint32 &it : tiles)
 		it = m;
 	for (uint32 &it : distances)
 		it = m;
 	std::vector<bool> visited;
-	visited.resize(grid->tiles.size(), false);
+	visited.resize(grid->flags.size(), false);
 	QueueStructure queue;
 	queue.under().reserve(1000);
 	queue.push({ 0, tile });
@@ -60,14 +61,14 @@ void Paths::update()
 			if (ni == m)
 				continue;
 			constexpr TileFlags Blocking = TileFlags::Invalid | TileFlags::Wall;
-			if (any(grid->tiles[ni] & Blocking))
+			if (any(grid->flags[ni] & Blocking))
 				continue;
 			const uint32 nd = md + grid->neighborDistance(id, ni);
 			if (nd < distances[ni])
 			{
 				CAGE_ASSERT(!visited[ni]);
 				distances[ni] = nd;
-				paths[ni] = id;
+				tiles[ni] = id;
 				queue.push({ nd, ni });
 			}
 		}
@@ -76,31 +77,59 @@ void Paths::update()
 
 namespace
 {
-	void pathsThreadEntry(MultiPaths *paths, uint32 thrId, uint32)
+	void directionsThreadEntry(Waypoints *waypoints, uint32 thrId, uint32)
 	{
-		paths->paths[thrId]->update();
+		waypoints->waypoints[thrId]->update();
+	}
+
+	void waypointThreadEntry(Waypoints *waypoints, uint32 thrId, uint32)
+	{
+		PointerRangeHolder<uint32> path;
+		path.reserve(1000);
+		uint32 waypointBits = 0;
+		uint32 prev = m;
+		uint32 distance = 0;
+		uint32 tile = waypoints->waypoints[thrId]->tile;
+		while (tile != m)
+		{
+			for (const auto &it : enumerate(waypoints->waypoints))
+				if (it.get()->tile == tile)
+					waypointBits |= 1u << it.index;
+			path.push_back(tile);
+			if (prev != m)
+				distance += waypoints->waypoints[thrId]->grid->neighborDistance(prev, tile);
+			prev = tile;
+			tile = waypoints->find(tile, waypointBits).tile;
+		}
+		waypoints->waypoints[thrId]->fullPath = path;
+		waypoints->waypoints[thrId]->fullDistance = distance;
 	}
 }
 
-void MultiPaths::update()
+void Waypoints::update()
 {
-	if (paths.empty())
+	if (waypoints.empty())
 		return;
-	static Holder<Mutex> mutex = newMutex();
-	ScopeLock lock(mutex);
 	CAGE_LOG_DEBUG(SeverityEnum::Info, "paths", "recomputing paths");
 	static Holder<ThreadPool> threadPool;
-	if (!threadPool || threadPool->threadsCount() != paths.size())
-		threadPool = newThreadPool("paths_", paths.size());
-	threadPool->function.bind<MultiPaths *, &pathsThreadEntry>(this);
+	if (!threadPool || threadPool->threadsCount() != waypoints.size())
+		threadPool = newThreadPool("paths_", waypoints.size());
+	threadPool->function.bind<Waypoints *, &directionsThreadEntry>(this);
 	threadPool->run();
+	threadPool->function.bind<Waypoints *, &waypointThreadEntry>(this);
+	threadPool->run();
+	uint32 sum = 0;
+	for (const auto &it : waypoints)
+		sum += it->fullDistance;
+	const uint32 avgDist = sum / waypoints.size();
+	CAGE_LOG(SeverityEnum::Info, "paths", stringizer() + "average distance for all waypoints: " + stor(avgDist));
 }
 
-MultiPaths::FindResult MultiPaths::find(uint32 currentPosition, uint32 visitedWaypointsBits) const
+Waypoints::FindResult Waypoints::find(uint32 currentPosition, uint32 visitedWaypointsBits) const
 {
 	std::vector<uint32> indices;
-	indices.reserve(paths.size());
-	for (uint32 i = 0; i < paths.size(); i++)
+	indices.reserve(waypoints.size());
+	for (uint32 i = 0; i < waypoints.size(); i++)
 	{
 		if ((visitedWaypointsBits & (1u << i)) == 0)
 			indices.push_back(i);
@@ -114,13 +143,13 @@ MultiPaths::FindResult MultiPaths::find(uint32 currentPosition, uint32 visitedWa
 		uint32 dist = 0;
 		for (uint32 i : indices)
 		{
-			dist += paths[i]->distances[pos];
-			pos = paths[i]->tile;
+			dist += waypoints[i]->distances[pos];
+			pos = waypoints[i]->tile;
 		}
 		if (dist < bestResult.distance)
 		{
 			bestResult.distance = dist;
-			bestResult.tile = paths[indices[0]]->paths[currentPosition];
+			bestResult.tile = waypoints[indices[0]]->tiles[currentPosition];
 		}
 	} while (std::next_permutation(indices.begin(), indices.end()));
 	return bestResult;
@@ -130,30 +159,30 @@ namespace
 {
 	uint32 findSpawnPoint(const Grid *grid)
 	{
-		const uint32 total = numeric_cast<uint32>(grid->tiles.size());
+		const uint32 total = numeric_cast<uint32>(grid->flags.size());
 		while (true)
 		{
 			const uint32 i = randomRange(0u, total);
-			if (none(grid->tiles[i] & (TileFlags::Invalid | TileFlags::Spawn)))
+			if (none(grid->flags[i] & (TileFlags::Invalid | TileFlags::Waypoint)))
 				return i;
 		}
 	}
 }
 
-Holder<MultiPaths> newMultiPaths(Holder<Grid> grid)
+Holder<Waypoints> newWaypoints(Holder<Grid> grid)
 {
-	Holder<MultiPaths> mp = systemMemory().createHolder<MultiPaths>();
-	PointerRangeHolder<Holder<Paths>> vec;
+	Holder<Waypoints> mp = systemMemory().createHolder<Waypoints>();
+	PointerRangeHolder<Holder<Waypoints::Waypoint>> vec;
 	vec.reserve(4);
 	for (uint32 i = 0; i < 4; i++)
 	{
-		Holder<Paths> p = systemMemory().createHolder<Paths>();
+		Holder<Waypoints::Waypoint> p = systemMemory().createHolder<Waypoints::Waypoint>();
 		p->grid = grid.share();
 		p->tile = findSpawnPoint(+grid);
-		grid->tiles[p->tile] |= TileFlags::Spawn;
+		grid->flags[p->tile] |= TileFlags::Waypoint;
 		vec.push_back(std::move(p));
 	}
-	mp->paths = vec;
+	mp->waypoints = vec;
 	mp->update();
 	return mp;
 }

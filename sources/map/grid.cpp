@@ -28,14 +28,14 @@ namespace
 		std::vector<uint16> comps;
 		std::vector<uint32> stack;
 		stack.reserve(1000);
-		const uint32 total = numeric_cast<uint32>(g->tiles.size());
+		const uint32 total = numeric_cast<uint32>(g->flags.size());
 		comps.resize(total, m);
 		uint32 largestId = m;
 		uint32 largestCnt = 0;
 		uint32 c = 0;
 		for (uint32 s = 0; s < total; s++)
 		{
-			if (g->tiles[s] == TileFlags::Invalid)
+			if (g->flags[s] == TileFlags::Invalid)
 				continue;
 			if (comps[s] != m)
 				continue;
@@ -53,7 +53,7 @@ namespace
 					const uint32 j = g->index(mp + off);
 					if (j == m)
 						continue;
-					if (g->tiles[j] == TileFlags::Invalid)
+					if (g->flags[j] == TileFlags::Invalid)
 						continue;
 					if (comps[j] != m)
 						continue;
@@ -71,7 +71,7 @@ namespace
 		}
 		for (uint32 s = 0; s < total; s++)
 			if (comps[s] != largestId)
-				g->tiles[s] = TileFlags::Invalid;
+				g->flags[s] = TileFlags::Invalid;
 	}
 }
 
@@ -137,12 +137,12 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 			if (maxSlope(+g, i) > slopeThreshold)
 				vec[i] = TileFlags::Invalid;
 		}
-		g->tiles = vec;
+		g->flags = vec;
 	}
 	fillUnreachable(+g);
 	{
 		uint32 valid = 0;
-		for (TileFlags f : g->tiles)
+		for (TileFlags f : g->flags)
 			valid += none(f & TileFlags::Invalid);
 		CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "valid tiles: " + valid);
 	}

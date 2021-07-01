@@ -24,7 +24,7 @@ namespace
 			{
 				const vec3 pos3 = mesh->positionAt(ids, weights);
 				const uint32 index = maker->grid->index(pos3);
-				const TileFlags flags = index == m ? TileFlags::Invalid : maker->grid->tiles[index];
+				const TileFlags flags = index == m ? TileFlags::Invalid : maker->grid->flags[index];
 				vec3 color;
 				real roughness;
 				maker->procedural->material(pos3, flags, color, roughness);
@@ -130,7 +130,7 @@ void mapGenerate()
 	{
 		Holder<Procedural> procedural = newProcedural();
 		Holder<Grid> grid = newGrid(procedural.share());
-		Holder<MultiPaths> paths = newMultiPaths(grid.share());
+		Holder<Waypoints> paths = newWaypoints(grid.share());
 		Maker maker;
 		maker.procedural = procedural.share();
 		maker.grid = grid.share();
@@ -139,12 +139,12 @@ void mapGenerate()
 		collider->importMesh(+maker.msh);
 		collider->rebuild();
 		globalCollider = std::move(collider);
-		globalPaths = std::move(paths);
+		globalWaypoints = std::move(paths);
 		globalGrid = std::move(grid); // this is last as it is frequently used to detect whether a map is loaded
 	}
 	CAGE_LOG(SeverityEnum::Info, "mapgen", "map generation done");
 }
 
 Holder<Grid> globalGrid;
-Holder<MultiPaths> globalPaths;
+Holder<Waypoints> globalWaypoints;
 Holder<Collider> globalCollider;
