@@ -62,10 +62,15 @@ namespace
 	void graphicsDispatch()
 	{
 		ChunkUpload up;
+		ChunkRender re;
 		if (!chunksUploadQueue.tryPop(up))
 			return;
 
-		ChunkRender re;
+		if (!up.mesh)
+		{
+			chunksRenderQueue.push(std::move(re));
+			return;
+		}
 
 		{
 			Holder<Texture> tex = newTexture();
@@ -102,11 +107,24 @@ namespace
 
 	std::vector<ChunkRender> renderingChunks;
 
+	void removeAllAssets()
+	{
+		for (auto &it : renderingChunks)
+			it.remove();
+		renderingChunks.clear();
+	}
+
 	void engineUpdate()
 	{
 		ChunkRender re;
 		if (!chunksRenderQueue.tryPop(re))
 			return;
+
+		if (re.model == 0)
+		{
+			removeAllAssets();
+			return;
+		}
 
 		Entity *e = engineEntities()->createAnonymous();
 		CAGE_COMPONENT_ENGINE(Transform, t, e);
@@ -118,9 +136,7 @@ namespace
 
 	void engineFinish()
 	{
-		for (auto &it : renderingChunks)
-			it.remove();
-		renderingChunks.clear();
+		removeAllAssets();
 	}
 
 	void engineUnloading()

@@ -6,6 +6,7 @@
 #include <cage-core/collider.h>
 #include <cage-engine/engine.h>
 
+#include "../game.h"
 #include "generate.h"
 
 namespace
@@ -87,6 +88,10 @@ namespace
 
 		void makeMeshes()
 		{
+			{ // reset rendering queues and assets
+				ChunkUpload chunk;
+				chunksUploadQueue.push(std::move(chunk));
+			}
 			{
 				MarchingCubesCreateConfig cfg;
 				cfg.box = Aabb(vec3(-80, -15, -80), vec3(80, 10, 80));
@@ -148,27 +153,30 @@ namespace
 
 	Holder<Thread> mapGenThread;
 
-	void engineInit()
-	{
-		mapGenThread = newThread(Delegate<void()>().bind<&mapGenThrEntry>(), "map gen");
-	}
-
 	void engineFinish()
 	{
 		mapGenThread.clear();
 	}
 
+	void gameReset()
+	{
+		globalGrid.clear();
+		globalWaypoints.clear();
+		globalCollider.clear();
+		mapGenThread = newThread(Delegate<void()>().bind<&mapGenThrEntry>(), "map gen");
+	}
+
 	struct Callbacks
 	{
-		EventListener<void()> engineInitListener;
 		EventListener<void()> engineFinishListener;
+		EventListener<void()> gameResetListener;
 
 		Callbacks()
 		{
-			engineInitListener.attach(controlThread().initialize);
-			engineInitListener.bind<&engineInit>();
 			engineFinishListener.attach(controlThread().finalize);
 			engineFinishListener.bind<&engineFinish>();
+			gameResetListener.attach(eventGameReset(), -80);
+			gameResetListener.bind<&gameReset>();
 		}
 	} callbacksInstance;
 }

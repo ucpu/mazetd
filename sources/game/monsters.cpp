@@ -49,18 +49,16 @@ namespace
 
 	void spawnMonsters()
 	{
-		if (gameTime() % 30 != 0 || gameEntities()->component<MonsterComponent>()->count() >= 50)
-			return;
 		Entity *e = gameEntities()->createUnique();
 		const uint32 spawnIndex = randomRange(0u, numeric_cast<uint32>(globalWaypoints->waypoints.size()));
 		const uint32 position = globalWaypoints->waypoints[spawnIndex]->tile;
 		e->value<PositionComponent>().tile = position;
 		MonsterComponent &mo = e->value<MonsterComponent>();
 		mo.visitedWaypointsBits = 1u << spawnIndex;
-		mo.timeToArrive = gameTime() +  globalWaypoints->find(position, mo.visitedWaypointsBits).distance / 10;
+		mo.timeToArrive = gameTime +  globalWaypoints->find(position, mo.visitedWaypointsBits).distance / 10;
 		MovementComponent &mv = e->value<MovementComponent>();
 		mv.tileStart = mv.tileEnd = position;
-		mv.timeStart = mv.timeEnd = gameTime();
+		mv.timeStart = mv.timeEnd = gameTime;
 		Entity *f = e->value<EngineComponent>().entity;
 		const uint32 type = randomRange(0u, (uint32)(sizeof(monsterModels) / sizeof(monsterModels[0])));
 		CAGE_COMPONENT_ENGINE(Render, r, f);
@@ -77,7 +75,7 @@ namespace
 
 	void moveMonsters()
 	{
-		const uint32 time = gameTime();
+		const uint32 time = gameTime;
 		entitiesVisitor(gameEntities(), [&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
 			CAGE_ASSERT(po.tile == mv.tileEnd);
 			if (time < mv.timeEnd)
@@ -105,9 +103,10 @@ namespace
 
 	void engineUpdate()
 	{
-		if (!globalGrid)
+		if (!gameRunning || !globalGrid)
 			return;
-		spawnMonsters();
+		if (gameTime % 30 == 0 && gameEntities()->component<MonsterComponent>()->count() < 50)
+			spawnMonsters();
 		moveMonsters();
 	}
 

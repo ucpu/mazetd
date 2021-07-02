@@ -101,6 +101,7 @@ namespace
 	class Callbacks
 	{
 		EventListener<void()> engineInitListener;
+
 	public:
 		Callbacks()
 		{

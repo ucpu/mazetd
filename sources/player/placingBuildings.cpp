@@ -9,6 +9,8 @@
 
 namespace
 {
+	WindowEventListeners listeners;
+
 	bool placingWallBlocksMonsters()
 	{
 		Holder<Grid> grid = systemMemory().createHolder<Grid>();
@@ -65,33 +67,37 @@ namespace
 		}, true);
 	}
 
-	void engineUpdate()
+	bool mouseEvent(MouseButtonsFlags buttons, ModifiersFlags mods, const ivec2 &)
 	{
-		if (playerCursorTile == m)
-			return;
-		if (!engineWindow()->isFocused())
-			return;
-		if (engineWindow()->keyboardModifiers() != ModifiersFlags::None)
-			return;
-		switch (engineWindow()->mouseButtons())
+		if (!gameRunning || playerCursorTile == m || mods != ModifiersFlags::None)
+			return false;
+		switch (buttons)
 		{
 		case MouseButtonsFlags::Left:
 			placeBuilding();
-			break;
+			return true;
 		case MouseButtonsFlags::Middle:
 			clearBuilding();
-			break;
+			return true;
 		}
+		return false;
+	}
+
+	void engineInit()
+	{
+		listeners.attachAll(engineWindow());
+		listeners.mousePress.bind<&mouseEvent>();
+		listeners.mouseMove.bind<&mouseEvent>();
 	}
 
 	struct Callbacks
 	{
-		EventListener<void()> engineUpdateListener;
+		EventListener<void()> engineInitListener;
 
 		Callbacks()
 		{
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
+			engineInitListener.attach(controlThread().initialize);
+			engineInitListener.bind<&engineInit>();
 		}
 	} callbacksInstance;
 }

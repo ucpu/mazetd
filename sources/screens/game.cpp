@@ -53,6 +53,7 @@ namespace
 	void guiClean()
 	{
 		engineUpdateListener.detach();
+		gameRunning = false;
 	}
 }
 
@@ -64,6 +65,7 @@ void setScreenGame()
 	guiCleanListener.bind<&guiClean>();
 	engineUpdateListener.attach(controlThread().update);
 	engineUpdateListener.bind<&engineUpdate>();
+	gameRunning = true;
 
 	// cursor
 

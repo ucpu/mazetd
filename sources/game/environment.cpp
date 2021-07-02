@@ -1,11 +1,10 @@
-#include <cage-core/entities.h>
 #include <cage-engine/engine.h>
 
-using namespace cage;
+#include "../game.h"
 
 namespace
 {
-	void engineInit()
+	void gameReset()
 	{
 		Entity *e = engineEntities()->createAnonymous();
 		CAGE_COMPONENT_ENGINE(Transform, t, e);
@@ -21,12 +20,12 @@ namespace
 
 	struct Callbacks
 	{
-		EventListener<void()> engineInitListener;
+		EventListener<void()> gameResetListener;
 
 		Callbacks()
 		{
-			engineInitListener.attach(controlThread().initialize);
-			engineInitListener.bind<&engineInit>();
+			gameResetListener.attach(eventGameReset());
+			gameResetListener.bind<&gameReset>();
 		}
 	} callbacksInstance;
 }

@@ -116,18 +116,6 @@ namespace
 		listeners.mouseMove.bind<&mouseMove>();
 		listeners.mouseWheel.bind<&mouseWheel>();
 		listeners.focusLose.bind<&focusLose>();
-
-		Entity *e = engineEntities()->create(1);
-		updateCamera();
-		CAGE_COMPONENT_ENGINE(Transform, t, e);
-		t = camTrans;
-		CAGE_COMPONENT_ENGINE(Camera, c, e);
-		c.near = 0.3;
-		c.far = 300;
-		c.ambientColor = vec3(1);
-		c.ambientIntensity = 0.3;
-		c.ambientDirectionalColor = vec3(1);
-		c.ambientDirectionalIntensity = 0.4;
 	}
 
 	void engineUpdate()
@@ -168,10 +156,26 @@ namespace
 		t = interpolate(t, camTrans, 0.5);
 	}
 
+	void gameReset()
+	{
+		Entity *e = engineEntities()->create(1);
+		updateCamera();
+		CAGE_COMPONENT_ENGINE(Transform, t, e);
+		t = camTrans;
+		CAGE_COMPONENT_ENGINE(Camera, c, e);
+		c.near = 0.3;
+		c.far = 300;
+		c.ambientColor = vec3(1);
+		c.ambientIntensity = 0.3;
+		c.ambientDirectionalColor = vec3(1);
+		c.ambientDirectionalIntensity = 0.4;
+	}
+
 	struct Callbacks
 	{
 		EventListener<void()> engineInitListener;
 		EventListener<void()> engineUpdateListener;
+		EventListener<void()> gameResetListener;
 
 		Callbacks()
 		{
@@ -179,6 +183,8 @@ namespace
 			engineInitListener.bind<&engineInit>();
 			engineUpdateListener.attach(controlThread().update);
 			engineUpdateListener.bind<&engineUpdate>();
+			gameResetListener.attach(eventGameReset());
+			gameResetListener.bind<&gameReset>();
 		}
 	} callbacksInstance;
 }

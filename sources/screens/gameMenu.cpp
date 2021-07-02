@@ -1,4 +1,5 @@
 #include "screens.h"
+#include "../game.h"
 
 namespace
 {
@@ -10,6 +11,7 @@ namespace
 
 	bool buttonStop(uint32)
 	{
+		eventGameReset().dispatch();
 		setScreenMainmenu();
 		return true;
 	}

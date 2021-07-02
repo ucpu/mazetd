@@ -15,21 +15,43 @@ namespace
 		return man;
 	}
 
-	uint32 time = 0;
+	void engineInit()
+	{
+		eventGameReset().dispatch();
+	}
 
 	void engineUpdate()
 	{
-		time++;
+		if (gameRunning)
+			gameTime++;
+	}
+
+	void gameReset()
+	{
+		gameTime = 0;
+		gameRunning = false;
+		gameEntities()->destroy();
+
+		playerCursorPosition = vec3::Nan();
+		playerCursorTile = m;
+		playerHealth = 100;
+		playerMoney = 100;
 	}
 
 	struct Callbacks
 	{
+		EventListener<void()> engineInitListener;
 		EventListener<void()> engineUpdateListener;
+		EventListener<void()> gameResetListener;
 
 		Callbacks()
 		{
-			engineUpdateListener.attach(controlThread().update);
+			engineInitListener.attach(controlThread().initialize, 200);
+			engineInitListener.bind<&engineInit>();
+			engineUpdateListener.attach(controlThread().update, -500);
 			engineUpdateListener.bind<&engineUpdate>();
+			gameResetListener.attach(eventGameReset(), -100);
+			gameResetListener.bind<&gameReset>();
 		}
 	} callbacksInstance;
 }
@@ -40,12 +62,16 @@ EntityManager *gameEntities()
 	return +man;
 }
 
-uint32 gameTime()
+EventDispatcher<bool()> &eventGameReset()
 {
-	return time;
+	static EventDispatcher<bool()> e;
+	return e;
 }
 
-vec3 playerCursorPosition = vec3::Nan();
-uint32 playerCursorTile = m;
-sint32 playerHealth = 100;
-uint32 playerMoney = 100;
+uint32 gameTime = 0;
+bool gameRunning = false;
+
+vec3 playerCursorPosition;
+uint32 playerCursorTile;
+sint32 playerHealth;
+uint32 playerMoney;

@@ -15,7 +15,7 @@ namespace
 	void engineUpdate()
 	{
 		const ivec2 res = engineWindow()->resolution();
-		if (globalGrid && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
+		if (gameRunning && globalGrid && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
 		{
 			const ivec2 cur = engineWindow()->mousePosition();
 			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];

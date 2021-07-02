@@ -31,10 +31,13 @@ struct EngineComponent
 };
 
 EntityManager *gameEntities();
+EventDispatcher<bool()> &eventGameReset();
 
-uint32 gameTime();
+extern uint32 gameTime;
+extern bool gameRunning;
 
 extern vec3 playerCursorPosition;
 extern uint32 playerCursorTile;
 extern sint32 playerHealth;
 extern uint32 playerMoney;
+
