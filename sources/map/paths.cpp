@@ -121,8 +121,7 @@ void Waypoints::update()
 	uint32 sum = 0;
 	for (const auto &it : waypoints)
 		sum += it->fullDistance;
-	const uint32 avgDist = sum / waypoints.size();
-	CAGE_LOG(SeverityEnum::Info, "paths", stringizer() + "average distance for all waypoints: " + stor(avgDist));
+	avgFullDistance = (stor(sum) / waypoints.size()).value;
 }
 
 Waypoints::FindResult Waypoints::find(uint32 currentPosition, uint32 visitedWaypointsBits) const

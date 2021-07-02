@@ -11,8 +11,6 @@
 namespace
 {
 	Entity *cursorMarker = nullptr;
-	vec3 cursorPosition = vec3::Nan();
-	uint32 cursorTile = m;
 
 	void engineUpdate()
 	{
@@ -32,11 +30,11 @@ namespace
 			const vec3 near = vec3(pn) / pn[3];
 			const vec3 far = vec3(pf) / pf[3];
 			const Line line = makeSegment(near, far);
-			cursorPosition = intersection(line, +globalCollider, transform());
-			if (cursorPosition.valid())
+			playerCursorPosition = intersection(line, +globalCollider, transform());
+			if (playerCursorPosition.valid())
 			{
-				cursorTile = globalGrid->index(cursorPosition);
-				if (cursorTile != m && none(globalGrid->flags[cursorTile] & TileFlags::Invalid))
+				playerCursorTile = globalGrid->index(playerCursorPosition);
+				if (playerCursorTile != m && none(globalGrid->flags[playerCursorTile] & TileFlags::Invalid))
 				{
 					if (!cursorMarker)
 					{
@@ -45,7 +43,7 @@ namespace
 						r.object = HashString("mazetd/misc/cursor.obj");
 					}
 					CAGE_COMPONENT_ENGINE(Transform, t, cursorMarker);
-					t.position = globalGrid->center(cursorTile);
+					t.position = globalGrid->center(playerCursorTile);
 					return;
 				}
 			}
@@ -55,7 +53,7 @@ namespace
 			cursorMarker->destroy();
 			cursorMarker = nullptr;
 		}
-		cursorTile = m;
+		playerCursorTile = m;
 	}
 
 	struct Callbacks
@@ -68,14 +66,4 @@ namespace
 			engineUpdateListener.bind<&engineUpdate>();
 		}
 	} callbacksInstance;
-}
-
-vec3 playerCursorPosition()
-{
-	return cursorPosition;
-}
-
-uint32 playerCursorTile()
-{
-	return cursorTile;
 }

@@ -16,7 +16,7 @@ namespace
 		grid->resolution = globalGrid->resolution;
 		grid->elevations = globalGrid->elevations.share();
 		grid->flags = PointerRangeHolder<TileFlags>(globalGrid->flags.begin(), globalGrid->flags.end());
-		grid->flags[playerCursorTile()] |= TileFlags::Wall;
+		grid->flags[playerCursorTile] |= TileFlags::Wall;
 		Holder<Directions> paths = systemMemory().createHolder<Directions>();
 		paths->grid = grid.share();
 		paths->tile = globalWaypoints->waypoints[0]->tile;
@@ -34,7 +34,7 @@ namespace
 
 	void placeBuilding()
 	{
-		const uint32 tile = playerCursorTile();
+		const uint32 tile = playerCursorTile;
 		CAGE_ASSERT(tile != m);
 		TileFlags &flags = globalGrid->flags[tile];
 		if (any(flags & (TileFlags::Invalid | TileFlags::Waypoint | TileFlags::Wall | TileFlags::Water)))
@@ -53,7 +53,7 @@ namespace
 
 	void clearBuilding()
 	{
-		const uint32 tile = playerCursorTile();
+		const uint32 tile = playerCursorTile;
 		CAGE_ASSERT(tile != m);
 		TileFlags &flags = globalGrid->flags[tile];
 		if (none(flags & TileFlags::Wall))
@@ -67,7 +67,7 @@ namespace
 
 	void engineUpdate()
 	{
-		if (playerCursorTile() == m)
+		if (playerCursorTile == m)
 			return;
 		if (!engineWindow()->isFocused())
 			return;

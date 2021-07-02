@@ -34,5 +34,7 @@ EntityManager *gameEntities();
 
 uint32 gameTime();
 
-vec3 playerCursorPosition();
-uint32 playerCursorTile();
+extern vec3 playerCursorPosition;
+extern uint32 playerCursorTile;
+extern sint32 playerHealth;
+extern uint32 playerMoney;

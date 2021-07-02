@@ -1,0 +1,14 @@
+[]
+scheme = texture
+downscale = 30
+invertRed = true
+invertGreen = true
+invertBlue = true
+dollar.png
+health.png
+menu.png
+path.png
+
+[]
+scheme = pack
+gui.pack

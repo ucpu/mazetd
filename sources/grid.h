@@ -70,6 +70,7 @@ struct Waypoints : private Immovable
 	};
 
 	Holder<PointerRange<Holder<Waypoint>>> waypoints;
+	uint32 avgFullDistance = 0; // approximate number of tiles for each monster
 
 	void update();
 

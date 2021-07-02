@@ -4,6 +4,7 @@
 #include <cage-core/mesh.h>
 #include <cage-core/image.h>
 #include <cage-core/collider.h>
+#include <cage-engine/engine.h>
 
 #include "generate.h"
 
@@ -122,27 +123,54 @@ namespace
 			thrs->run();
 		}
 	};
-}
 
-void mapGenerate()
-{
-	CAGE_LOG(SeverityEnum::Info, "mapgen", "generating new map");
+	void mapGenThrEntry()
 	{
-		Holder<Procedural> procedural = newProcedural();
-		Holder<Grid> grid = newGrid(procedural.share());
-		Holder<Waypoints> paths = newWaypoints(grid.share());
-		Maker maker;
-		maker.procedural = procedural.share();
-		maker.grid = grid.share();
-		maker.makeMeshes();
-		Holder<Collider> collider = newCollider();
-		collider->importMesh(+maker.msh);
-		collider->rebuild();
-		globalCollider = std::move(collider);
-		globalWaypoints = std::move(paths);
-		globalGrid = std::move(grid); // this is last as it is frequently used to detect whether a map is loaded
+		CAGE_LOG(SeverityEnum::Info, "mapgen", "generating new map");
+		{
+			CAGE_ASSERT(!globalGrid);
+			Holder<Procedural> procedural = newProcedural();
+			Holder<Grid> grid = newGrid(procedural.share());
+			Holder<Waypoints> paths = newWaypoints(grid.share());
+			Maker maker;
+			maker.procedural = procedural.share();
+			maker.grid = grid.share();
+			maker.makeMeshes();
+			Holder<Collider> collider = newCollider();
+			collider->importMesh(+maker.msh);
+			collider->rebuild();
+			globalCollider = std::move(collider);
+			globalWaypoints = std::move(paths);
+			globalGrid = std::move(grid); // this is last as it is frequently used to detect whether a map is loaded
+		}
+		CAGE_LOG(SeverityEnum::Info, "mapgen", "map generation done");
 	}
-	CAGE_LOG(SeverityEnum::Info, "mapgen", "map generation done");
+
+	Holder<Thread> mapGenThread;
+
+	void engineInit()
+	{
+		mapGenThread = newThread(Delegate<void()>().bind<&mapGenThrEntry>(), "map gen");
+	}
+
+	void engineFinish()
+	{
+		mapGenThread.clear();
+	}
+
+	struct Callbacks
+	{
+		EventListener<void()> engineInitListener;
+		EventListener<void()> engineFinishListener;
+
+		Callbacks()
+		{
+			engineInitListener.attach(controlThread().initialize);
+			engineInitListener.bind<&engineInit>();
+			engineFinishListener.attach(controlThread().finalize);
+			engineFinishListener.bind<&engineFinish>();
+		}
+	} callbacksInstance;
 }
 
 Holder<Grid> globalGrid;

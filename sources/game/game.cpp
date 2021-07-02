@@ -45,3 +45,7 @@ uint32 gameTime()
 	return time;
 }
 
+vec3 playerCursorPosition = vec3::Nan();
+uint32 playerCursorTile = m;
+sint32 playerHealth = 100;
+uint32 playerMoney = 100;
