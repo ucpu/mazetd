@@ -1,5 +1,6 @@
 #include <cage-core/hashString.h>
 #include <cage-core/entitiesVisitor.h>
+#include <cage-core/assetManager.h>
 #include <cage-engine/engine.h>
 
 #include "../game.h"
@@ -54,8 +55,10 @@ namespace
 		const uint32 position = globalWaypoints->waypoints[spawnIndex]->tile;
 		e->value<PositionComponent>().tile = position;
 		MonsterComponent &mo = e->value<MonsterComponent>();
+		if (randomChance() < 0.2)
+			mo.baseSpeed *= 2;
 		mo.visitedWaypointsBits = 1u << spawnIndex;
-		mo.timeToArrive = gameTime +  globalWaypoints->find(position, mo.visitedWaypointsBits).distance / 10;
+		mo.timeToArrive = gameTime + numeric_cast<uint32>(stor(globalWaypoints->find(position, mo.visitedWaypointsBits).distance) / mo.baseSpeed);
 		MovementComponent &mv = e->value<MovementComponent>();
 		mv.tileStart = mv.tileEnd = position;
 		mv.timeStart = mv.timeEnd = gameTime;
@@ -101,9 +104,40 @@ namespace
 		}, true);
 	}
 
+	void updateMonsterAnimations()
+	{
+		EntityComponent *aniComp = engineEntities()->component<SkeletalAnimationComponent>();
+		if (gameRunning)
+		{
+			entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
+				Entity *f = en.entity;
+				if (!f->has(aniComp))
+					return;
+				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
+				const uint32 moveDur = mv.timeEnd - mv.timeStart;
+				const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
+				const real moveSpeed = dist / moveDur;
+				a.speed = moveSpeed / mo.baseSpeed;
+			});
+		}
+		else
+		{
+			entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
+				Entity *f = en.entity;
+				if (!f->has(aniComp))
+					return;
+				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
+				a.speed = 0;
+			});
+		}
+	}
+
 	void engineUpdate()
 	{
-		if (!gameRunning || !globalGrid)
+		if (!globalGrid)
+			return;
+		updateMonsterAnimations();
+		if (!gameRunning)
 			return;
 		if (gameTime % 30 == 0 && gameEntities()->component<MonsterComponent>()->count() < 50)
 			spawnMonsters();

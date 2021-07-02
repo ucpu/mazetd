@@ -23,6 +23,7 @@ struct MonsterComponent
 	uint32 visitedWaypointsBits = 0;
 	uint32 timeToArrive = 0; // timestamp at which the monster should arrive to the last waypoint
 	uint32 life = 0;
+	real baseSpeed = 0.05;
 };
 
 struct EngineComponent

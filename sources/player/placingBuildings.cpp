@@ -43,8 +43,10 @@ namespace
 			return;
 		if (placingWallBlocksMonsters())
 			return;
+
 		flags |= TileFlags::Wall;
 		globalWaypoints->update();
+
 		Entity *e = gameEntities()->createUnique();
 		e->value<PositionComponent>().tile = tile;
 		e->value<WallComponent>();
@@ -60,7 +62,10 @@ namespace
 		TileFlags &flags = globalGrid->flags[tile];
 		if (none(flags & TileFlags::Wall))
 			return;
+
 		flags &= ~TileFlags::Wall;
+		globalWaypoints->update();
+
 		entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &p, const WallComponent &) {
 			if (p.tile == tile)
 				e->destroy();
