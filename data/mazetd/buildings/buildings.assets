@@ -2,8 +2,60 @@
 scheme = model
 uvs = false
 tangents = false
-scale = 0.8
+scale = 0.65
 wall.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.8
+cheap.obj?Black_Black
+cheap.obj?SmallSquareTower_Cube.041_LightRock
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.58
+fast.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.7
+heavy.obj?Black.001_Black.001
+heavy.obj?DarkRock_DarkRock
+heavy.obj?LargeSquareTowerBricks_Cube.031_LightRock.001
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.8
+sniper.obj?Black_Black
+sniper.obj?DarkRock_DarkRock
+sniper.obj?Tower_Cylinder.004_LightRock
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.7
+splash.obj?Black.001_Black.001
+splash.obj?Celing.001_Celing.001
+splash.obj?DarkRock.001_DarkRock.001
+splash.obj?PointyTower_Cylinder_LightRock.001
+
+[]
+scheme = object
+cheap.object
+fast.object
+heavy.object
+sniper.object
+splash.object
+wall.object
 
 []
 scheme = pack

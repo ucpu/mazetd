@@ -57,6 +57,20 @@ namespace
 		return playerBuildingSelection >= 1300;
 	}
 
+	uint32 structureModelName()
+	{
+		switch (playerBuildingSelection)
+		{
+		case 900: return HashString("mazetd/buildings/wall.object");
+		case 1000: return HashString("mazetd/buildings/cheap.object");
+		case 1001: return HashString("mazetd/buildings/fast.object");
+		case 1002: return HashString("mazetd/buildings/heavy.object");
+		case 1003: return HashString("mazetd/buildings/splash.object");
+		case 1004: return HashString("mazetd/buildings/sniper.object");
+		default: return HashString("cage/model/fake.obj");
+		}
+	}
+
 	void placeTile()
 	{
 		TileFlags &flags = globalGrid->flags[playerCursorTile];
@@ -74,10 +88,8 @@ namespace
 			e->value<PositionComponent>().tile = playerCursorTile;
 			e->value<TrapComponent>();
 			Entity *f = e->value<EngineComponent>().entity;
-			CAGE_COMPONENT_ENGINE(Transform, t, f);
-			t.scale = 0.3;
 			CAGE_COMPONENT_ENGINE(Render, r, f);
-			r.object = HashString("cage/model/fake.obj");
+			r.object = structureModelName();
 		}
 		else
 		{
@@ -94,7 +106,7 @@ namespace
 			e->value<BuildingComponent>();
 			Entity *f = e->value<EngineComponent>().entity;
 			CAGE_COMPONENT_ENGINE(Render, r, f);
-			r.object = HashString("mazetd/buildings/wall.obj");
+			r.object = structureModelName();
 		}
 	}
 

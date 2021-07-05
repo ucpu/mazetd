@@ -1,2 +1,7 @@
 []
-wall.obj
+cheap.object
+fast.object
+heavy.object
+sniper.object
+splash.object
+wall.object
