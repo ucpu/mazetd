@@ -23,7 +23,8 @@ enum class TileFlags : uint8
 	None = 0,
 	Invalid = 1u << 0, // tile is outside playable area
 	Water = 1u << 1,
-	Wall = 1u << 5, // walls, towers and other impassable structures built by the player
+	Snow = 1u << 2,
+	Building = 1u << 5, // walls, towers and other impassable structures built by the player
 	Trap = 1u << 6, // passable structures built by the player
 	Waypoint = 1u << 7, // passable tile that player may not build on
 };

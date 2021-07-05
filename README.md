@@ -1,4 +1,4 @@
-aMAZEing tower defense game
+aMAZEing Tower Defense game
 
 # Building
 

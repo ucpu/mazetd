@@ -55,6 +55,40 @@ namespace
 		engineUpdateListener.detach();
 		gameRunning = false;
 	}
+
+	bool buildingSelectionClick(uint32 id)
+	{
+		EntityManager *ents = engineGui()->entities();
+		if (playerBuildingSelection != 0 && ents->has(playerBuildingSelection))
+		{
+			Entity *e = ents->get(playerBuildingSelection);
+			e->remove(ents->component<GuiTextFormatComponent>());
+		}
+		playerBuildingSelection = id;
+		{
+			Entity *e = ents->get(playerBuildingSelection);
+			CAGE_COMPONENT_GUI(TextFormat, tf, e);
+			tf.color = vec3(1, 0, 0);
+		}
+		return true;
+	}
+
+	void generateBuildingButtons(uint32 parent, uint32 ids, PointerRange<const char *const> names)
+	{
+		EntityManager *ents = engineGui()->entities();
+		for (uint32 i = 0; i < names.size(); i++)
+		{
+			Entity *e = ents->create(ids + i);
+			CAGE_COMPONENT_GUI(Parent, pp, e);
+			pp.parent = parent;
+			pp.order = i;
+			CAGE_COMPONENT_GUI(Button, but, e);
+			CAGE_COMPONENT_GUI(Text, txt, e);
+			txt.value = names[i];
+			CAGE_COMPONENT_GUI(Event, evt, e);
+			evt.event.bind<&buildingSelectionClick>();
+		}
+	}
 }
 
 void setScreenGame()
@@ -217,42 +251,95 @@ void setScreenGame()
 	}
 
 	{
+		constexpr const char *names[] = {
+			"Wall",
+		};
+		generateBuildingButtons(401, 900, names);
+	}
+
+	{
 		Entity *e = ents->create(410);
 		CAGE_COMPONENT_GUI(Parent, pp, e);
 		pp.parent = 401;
-		pp.order = 0;
+		pp.order = 1;
 		CAGE_COMPONENT_GUI(Spoiler, sp, e);
+		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		ll.vertical = true;
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Damage";
+		txt.value = "Attacks";
+	}
+
+	{
+		constexpr const char *names[] = {
+			"Cheap",
+			"Fast",
+			"Heavy",
+			"Splash",
+			"Sniper",
+		};
+		generateBuildingButtons(410, 1000, names);
 	}
 
 	{
 		Entity *e = ents->create(411);
 		CAGE_COMPONENT_GUI(Parent, pp, e);
 		pp.parent = 401;
-		pp.order = 1;
+		pp.order = 2;
 		CAGE_COMPONENT_GUI(Spoiler, sp, e);
+		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		ll.vertical = true;
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Support";
+		txt.value = "Augments";
+	}
+
+	{
+		constexpr const char *names[] = {
+			"Fire",
+			"Water",
+			"Poison",
+		};
+		generateBuildingButtons(411, 1100, names);
 	}
 
 	{
 		Entity *e = ents->create(412);
 		CAGE_COMPONENT_GUI(Parent, pp, e);
 		pp.parent = 401;
-		pp.order = 2;
+		pp.order = 3;
 		CAGE_COMPONENT_GUI(Spoiler, sp, e);
+		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		ll.vertical = true;
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Traps";
+		txt.value = "Generators";
+	}
+
+	{
+		constexpr const char *names[] = {
+			"Sunbloom",
+			"Waterwheel",
+			"Snowmill",
+			"Flesheater",
+		};
+		generateBuildingButtons(412, 1200, names);
 	}
 
 	{
 		Entity *e = ents->create(413);
 		CAGE_COMPONENT_GUI(Parent, pp, e);
 		pp.parent = 401;
-		pp.order = 3;
+		pp.order = 4;
 		CAGE_COMPONENT_GUI(Spoiler, sp, e);
+		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		ll.vertical = true;
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Utility";
+		txt.value = "Traps";
+	}
+
+	{
+		constexpr const char *names[] = {
+			"Slowing",
+			"Hastening",
+		};
+		generateBuildingButtons(413, 1300, names);
 	}
 }

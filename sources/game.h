@@ -15,8 +15,25 @@ struct MovementComponent
 	uint32 timeEnd = 0;
 };
 
-struct WallComponent
+// player structure that blocks paths
+struct BuildingComponent
 {};
+
+// player structure that does NOT block path
+struct TrapComponent
+{};
+
+struct TowerBaseProperties
+{
+	uint32 damage = 1;
+	uint32 splashRadius = 0;
+	uint32 firingPeriod = 10;
+};
+
+struct TowerComponent : public TowerBaseProperties
+{
+	uint32 firingDelay = 30;
+};
 
 struct MonsterBaseProperties
 {
@@ -46,4 +63,5 @@ extern vec3 playerCursorPosition;
 extern uint32 playerCursorTile;
 extern sint32 playerHealth;
 extern uint32 playerMoney;
+extern uint32 playerBuildingSelection;
 

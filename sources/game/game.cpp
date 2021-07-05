@@ -9,7 +9,8 @@ namespace
 		Holder<EntityManager> man = newEntityManager();
 		man->defineComponent(PositionComponent());
 		man->defineComponent(MovementComponent());
-		man->defineComponent(WallComponent());
+		man->defineComponent(BuildingComponent());
+		man->defineComponent(TrapComponent());
 		man->defineComponent(MonsterComponent());
 		man->defineComponent(EngineComponent());
 		return man;
@@ -36,6 +37,7 @@ namespace
 		playerCursorTile = m;
 		playerHealth = 100;
 		playerMoney = 100;
+		playerBuildingSelection = 0;
 	}
 
 	struct Callbacks
@@ -75,3 +77,4 @@ vec3 playerCursorPosition;
 uint32 playerCursorTile;
 sint32 playerHealth;
 uint32 playerMoney;
+uint32 playerBuildingSelection;

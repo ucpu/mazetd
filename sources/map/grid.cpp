@@ -129,11 +129,14 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 		PointerRangeHolder<TileFlags> vec;
 		vec.resize(total);
 		constexpr sint16 waterThreshold = rtos16(-7);
+		constexpr sint16 snowThreshold = rtos16(6);
 		constexpr sint16 slopeThreshold = rtos16(0.35);
 		for (uint32 i = 0; i < total; i++)
 		{
 			if (g->elevations[i] < waterThreshold)
 				vec[i] |= TileFlags::Water;
+			if (g->elevations[i] > snowThreshold)
+				vec[i] |= TileFlags::Snow;
 			if (maxSlope(+g, i) > slopeThreshold)
 				vec[i] = TileFlags::Invalid;
 		}

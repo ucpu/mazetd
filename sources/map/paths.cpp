@@ -60,7 +60,7 @@ void Directions::update()
 			const uint32 ni = grid->index(mp + off);
 			if (ni == m)
 				continue;
-			constexpr TileFlags Blocking = TileFlags::Invalid | TileFlags::Wall;
+			constexpr TileFlags Blocking = TileFlags::Invalid | TileFlags::Building;
 			if (any(grid->flags[ni] & Blocking))
 				continue;
 			const uint32 nd = md + grid->neighborDistance(id, ni);

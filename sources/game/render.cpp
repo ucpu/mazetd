@@ -19,6 +19,11 @@ namespace
 		});
 	}
 
+	void gameReset()
+	{
+		engineEntities()->destroy();
+	}
+
 	void engineComponentAdded(Entity *e)
 	{
 		Entity *f = e->value<EngineComponent>().entity = engineEntities()->createAnonymous();
@@ -38,30 +43,25 @@ namespace
 			f->destroy();
 	}
 
-	void gameReset()
-	{
-		engineEntities()->destroy();
-	}
-
 	struct Callbacks
 	{
 		EventListener<void()> engineUpdateListener;
+		EventListener<void()> gameResetListener;
 		EventListener<void(Entity *)> engineComponentAddedListener;
 		EventListener<void(Entity *)> engineComponentRemovedListener;
-		EventListener<void()> gameResetListener;
 
 		Callbacks()
 		{
 			engineUpdateListener.attach(controlThread().update);
 			engineUpdateListener.bind<&engineUpdate>();
+			gameResetListener.attach(eventGameReset(), -90);
+			gameResetListener.bind<&gameReset>();
 			{
 				EntityComponent *ec = gameEntities()->component<EngineComponent>();
 				engineComponentAddedListener.attach(ec->group()->entityAdded);
 				engineComponentAddedListener.bind<&engineComponentAdded>();
 				engineComponentRemovedListener.attach(ec->group()->entityRemoved);
 				engineComponentRemovedListener.bind<&engineComponentRemoved>();
-				gameResetListener.attach(eventGameReset(), -90);
-				gameResetListener.bind<&gameReset>();
 			}
 		}
 	} callbacksInstance;
