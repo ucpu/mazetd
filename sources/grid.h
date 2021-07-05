@@ -1,29 +1,16 @@
-#include <cage-core/math.h>
+#ifndef header_grid
+#define header_grid
 
-using namespace cage;
-
-CAGE_FORCE_INLINE constexpr sint16 rtos16(real v)
-{
-	return numeric_cast<sint16>(v * 255);
-}
-
-CAGE_FORCE_INLINE constexpr sint32 rtos32(real v)
-{
-	return numeric_cast<sint32>(v * 255);
-}
-
-CAGE_FORCE_INLINE constexpr real stor(sint32 v)
-{
-	constexpr real n = 1.0 / 255;
-	return v * n;
-}
+#include "normalizedReal.h"
 
 enum class TileFlags : uint8
 {
 	None = 0,
 	Invalid = 1u << 0, // tile is outside playable area
 	Water = 1u << 1,
-	Snow = 1u << 2,
+	Sun = 1u << 2,
+	Wind = 1u << 3,
+	Snow = 1u << 4,
 	Building = 1u << 5, // walls, towers and other impassable structures built by the player
 	Trap = 1u << 6, // passable structures built by the player
 	Waypoint = 1u << 7, // passable tile that player may not build on
@@ -87,3 +74,5 @@ struct Waypoints : private Immovable
 extern Holder<Grid> globalGrid;
 extern Holder<Waypoints> globalWaypoints;
 extern Holder<Collider> globalCollider;
+
+#endif // !header_grid

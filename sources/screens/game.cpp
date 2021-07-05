@@ -255,6 +255,7 @@ void setScreenGame()
 			"Wall",
 		};
 		generateBuildingButtons(401, 900, names);
+		buildingSelectionClick(900);
 	}
 
 	{
@@ -310,15 +311,18 @@ void setScreenGame()
 		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
 		ll.vertical = true;
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Generators";
+		txt.value = "Mana";
 	}
 
 	{
 		constexpr const char *names[] = {
-			"Sunbloom",
 			"Waterwheel",
+			"Sunbloom",
+			"Windmill",
 			"Snowmill",
-			"Flesheater",
+			"Relay",
+			"Capacitor",
+			//"Flesheater",
 		};
 		generateBuildingButtons(412, 1200, names);
 	}
@@ -337,6 +341,7 @@ void setScreenGame()
 
 	{
 		constexpr const char *names[] = {
+			"Spikes",
 			"Slowing",
 			"Hastening",
 		};

@@ -7,7 +7,6 @@
 namespace
 {
 	ivec2 lastMousePos;
-	bool panning = false;
 	vec2 camCenter;
 	real camDist = 50;
 	rads camYaw = degs(45);
@@ -43,16 +42,16 @@ namespace
 		engineWindow()->mouseVisible(false);
 		lastMousePos = pos;
 		centerMouse();
-		panning = true;
+		playerPanning = true;
 		return true;
 	}
 
 	void stop()
 	{
-		if (panning && engineWindow()->isFocused())
+		if (playerPanning && engineWindow()->isFocused())
 			engineWindow()->mousePosition(lastMousePos);
 		engineWindow()->mouseVisible(true);
-		panning = false;
+		playerPanning = false;
 	}
 
 	bool mouseRelease(MouseButtonsFlags button, ModifiersFlags, const ivec2 &)
@@ -64,7 +63,7 @@ namespace
 
 	bool mouseMove(MouseButtonsFlags, ModifiersFlags, const ivec2 &)
 	{
-		if (!panning)
+		if (!playerPanning)
 			return false;
 		if (engineWindow()->isFocused())
 		{
@@ -73,9 +72,9 @@ namespace
 			const real speed = pow(camDist, 0.85) / engineWindow()->contentScaling() * 0.005;
 			camCenter += vec2(mv3[0], mv3[2]) * speed;
 			updateCamera();
+			return true;
 		}
-		else
-			stop();
+		stop();
 		return false;
 	}
 

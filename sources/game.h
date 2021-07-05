@@ -1,6 +1,26 @@
+#ifndef header_game
+#define header_game
+
 #include <cage-core/entities.h>
 
-using namespace cage;
+#include "normalizedReal.h"
+
+enum class DamageTypeEnum
+{
+	Physical,
+	Fire,
+	Water,
+	Poison,
+};
+
+enum class ManaGeneratorTypeEnum
+{
+	Water,
+	Sun,
+	Wind,
+	Snow,
+	Flesh,
+};
 
 struct PositionComponent
 {
@@ -23,16 +43,37 @@ struct BuildingComponent
 struct TrapComponent
 {};
 
-struct TowerBaseProperties
+struct ManaStorageComponent
 {
-	uint32 damage = 1;
-	uint32 splashRadius = 0;
-	uint32 firingPeriod = 10;
+	uint32 mana = 0;
+	uint32 capacity = 1000;
 };
 
-struct TowerComponent : public TowerBaseProperties
+struct ManaDistributorComponent
 {
+	uint32 transferLimit = 10;
+};
+
+struct ManaReceiverComponent
+{};
+
+struct ManaGeneratorComponent
+{
+	ManaGeneratorTypeEnum type = ManaGeneratorTypeEnum::Flesh;
+};
+
+struct AttackComponent
+{
+	uint32 damage = 1;
+	uint32 firingPeriod = 10;
 	uint32 firingDelay = 30;
+	uint32 firingRange = rtos32(5);
+	uint32 splashRadius = 0;
+};
+
+struct AugmentComponent
+{
+	DamageTypeEnum damageType = DamageTypeEnum::Physical;
 };
 
 struct MonsterBaseProperties
@@ -64,4 +105,6 @@ extern uint32 playerCursorTile;
 extern sint32 playerHealth;
 extern uint32 playerMoney;
 extern uint32 playerBuildingSelection;
+extern bool playerPanning;
 
+#endif // !header_game

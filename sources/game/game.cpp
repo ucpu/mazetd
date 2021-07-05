@@ -11,6 +11,12 @@ namespace
 		man->defineComponent(MovementComponent());
 		man->defineComponent(BuildingComponent());
 		man->defineComponent(TrapComponent());
+		man->defineComponent(ManaStorageComponent());
+		man->defineComponent(ManaDistributorComponent());
+		man->defineComponent(ManaReceiverComponent());
+		man->defineComponent(ManaGeneratorComponent());
+		man->defineComponent(AttackComponent());
+		man->defineComponent(AugmentComponent());
 		man->defineComponent(MonsterComponent());
 		man->defineComponent(EngineComponent());
 		return man;
@@ -78,3 +84,4 @@ uint32 playerCursorTile;
 sint32 playerHealth;
 uint32 playerMoney;
 uint32 playerBuildingSelection;
+bool playerPanning = false;
