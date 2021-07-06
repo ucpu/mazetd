@@ -49,6 +49,39 @@ splash.obj?DarkRock.001_DarkRock.001
 splash.obj?PointyTower_Cylinder_LightRock.001
 
 []
+scheme = model
+uvs = false
+tangents = false
+scale = 0.65
+pedestal.obj?stone
+pedestal.obj?metal
+pedestal.obj?spikes
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.65
+material = augment-fire.cpm
+augment.obj;fire
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.65
+material = augment-water.cpm
+augment.obj;water
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.65
+material = augment-poison.cpm
+augment.obj;poison
+
+[]
 scheme = object
 cheap.object
 fast.object
@@ -56,6 +89,9 @@ heavy.object
 sniper.object
 splash.object
 wall.object
+augment-fire.object
+augment-poison.object
+augment-water.object
 
 []
 scheme = pack

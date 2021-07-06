@@ -5,3 +5,6 @@ heavy.object
 sniper.object
 splash.object
 wall.object
+augment-fire.object
+augment-poison.object
+augment-water.object

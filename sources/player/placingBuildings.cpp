@@ -67,6 +67,9 @@ namespace
 		case 1002: return HashString("mazetd/buildings/heavy.object");
 		case 1003: return HashString("mazetd/buildings/splash.object");
 		case 1004: return HashString("mazetd/buildings/sniper.object");
+		case 1100: return HashString("mazetd/buildings/augment-fire.object");
+		case 1101: return HashString("mazetd/buildings/augment-water.object");
+		case 1102: return HashString("mazetd/buildings/augment-poison.object");
 		default: return HashString("cage/model/fake.obj");
 		}
 	}
