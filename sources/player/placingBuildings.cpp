@@ -7,6 +7,8 @@
 #include "../game.h"
 #include "../grid.h"
 
+void destroyShortestPathVisualizationMarks();
+
 namespace
 {
 	WindowEventListeners listeners;
@@ -111,6 +113,8 @@ namespace
 			CAGE_COMPONENT_ENGINE(Render, r, f);
 			r.object = structureModelName();
 		}
+
+		destroyShortestPathVisualizationMarks();
 	}
 
 	void clearTile()
@@ -143,6 +147,8 @@ namespace
 				}
 			}, true);
 		}
+
+		destroyShortestPathVisualizationMarks();
 	}
 
 	bool mouseEvent(MouseButtonsFlags buttons, ModifiersFlags mods, const ivec2 &)

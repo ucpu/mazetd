@@ -118,10 +118,24 @@ void Waypoints::update()
 	threadPool->run();
 	threadPool->function.bind<Waypoints *, &waypointThreadEntry>(this);
 	threadPool->run();
-	uint32 sum = 0;
-	for (const auto &it : waypoints)
-		sum += it->fullDistance;
-	avgFullDistance = (stor(sum) / waypoints.size()).value;
+
+	{ // average full path
+		uint32 sum = 0;
+		for (const auto &it : waypoints)
+			sum += it->fullDistance;
+		avgFullDistance = (stor(sum) / waypoints.size()).value;
+	}
+
+	{ // index of spawner with shortest full path
+		uint32 best = 0;
+		for (const auto &it : enumerate(waypoints))
+		{
+			if ((*it)->fullDistance < waypoints[best]->fullDistance)
+				best = it.index;
+		}
+		minFullDistance = stor(waypoints[best]->fullDistance).value;
+		minDistanceSpawner = best;
+	}
 }
 
 Waypoints::FindResult Waypoints::find(uint32 currentPosition, uint32 visitedWaypointsBits) const

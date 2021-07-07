@@ -24,6 +24,8 @@ namespace
 	void placeMarks()
 	{
 		destroyMarks();
+		if (globalWaypoints && engineControlTime() >= timeToDestroy)
+			waypointIndex = globalWaypoints->minDistanceSpawner;
 		timeToDestroy = engineControlTime() + 5 * 1000000;
 		if (!globalWaypoints)
 			return;
@@ -84,3 +86,9 @@ namespace
 		}
 	} callbacksInstance;
 }
+
+void destroyShortestPathVisualizationMarks()
+{
+	timeToDestroy = 0;
+}
+

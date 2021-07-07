@@ -54,11 +54,12 @@ namespace
 
 		uint32 spawnPointsBits = m;
 		bool pickOneSpawnPoint = false;
+		bool pickShortestSpawnPoint = false;
 
 		uint32 spawnRounds = 1;
 		uint32 spawnSimultaneously = 1;
-		uint32 spawnPeriod = 5;
-		uint32 spawnDelay = 30;
+		uint32 spawnPeriod = 30;
+		uint32 spawnDelay = 60;
 
 		double order = 0;
 		double orderAddition = 1;
@@ -73,11 +74,19 @@ namespace
 		void prepare()
 		{
 			monstersBits = bitsApplyLimit(monstersBits, numeric_cast<uint32>(monsterSpawningProperties.size()));
-			spawnPointsBits = bitsApplyLimit(spawnPointsBits, numeric_cast<uint32>(globalWaypoints->waypoints.size()));
 			if (pickOneMonsterType)
 				monstersBits = bitsLimitRandomOne(monstersBits);
-			if (pickOneSpawnPoint)
-				spawnPointsBits = bitsLimitRandomOne(spawnPointsBits);
+
+			if (pickShortestSpawnPoint)
+			{
+				spawnPointsBits = 1u << globalWaypoints->minDistanceSpawner;
+			}
+			else
+			{
+				spawnPointsBits = bitsApplyLimit(spawnPointsBits, numeric_cast<uint32>(globalWaypoints->waypoints.size()));
+				if (pickOneSpawnPoint)
+					spawnPointsBits = bitsLimitRandomOne(spawnPointsBits);
+			}
 		}
 
 		void spawnOne()
@@ -283,6 +292,7 @@ namespace
 			SpawningGroup sg;
 			sg.name = it->name;
 			sg.monstersBits = 1u << it.index;
+			sg.pickShortestSpawnPoint = true;
 			spawningGroups.push_back(sg);
 		}
 	}

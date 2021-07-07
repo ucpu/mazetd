@@ -58,7 +58,9 @@ struct Waypoints : private Immovable
 	};
 
 	Holder<PointerRange<Holder<Waypoint>>> waypoints;
-	uint32 avgFullDistance = 0; // approximate number of tiles for each monster
+	uint32 avgFullDistance = 0; // approximate number of tiles for each monster when spawning at random spawners
+	uint32 minFullDistance = 0; // approximate number of tiles for monsters spawned at the spawner with shortest path
+	uint32 minDistanceSpawner = m; // waypoint index with shortest full path
 
 	void update();
 

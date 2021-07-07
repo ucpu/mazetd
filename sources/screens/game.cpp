@@ -22,7 +22,7 @@ namespace
 		{ // path tiles
 			Entity *e = ents->get(312);
 			CAGE_COMPONENT_GUI(Text, txt, e);
-			txt.value = stringizer() + globalWaypoints->avgFullDistance;
+			txt.value = stringizer() + globalWaypoints->minFullDistance;
 		}
 
 		{ // health
