@@ -1,4 +1,5 @@
 #include <cage-core/hashString.h>
+#include <cage-core/entitiesVisitor.h>
 
 #include "screens.h"
 #include "../grid.h"
@@ -41,7 +42,57 @@ namespace
 	void updateCursor()
 	{
 		removeGuiEntitiesWithParent(201);
-		// todo
+
+		if (playerCursorTile == m)
+			return;
+
+		EntityManager *ents = engineGui()->entities();
+		sint32 index = 0;
+
+		entitiesVisitor(gameEntities(), [&](Entity *g, const PositionComponent &po, const NameComponent &nm) {
+			if (po.tile != playerCursorTile)
+				return;
+
+			Entity *e = ents->createUnique();
+			CAGE_COMPONENT_GUI(Parent, pp, e);
+			pp.parent = 201;
+			pp.order = index++;
+			CAGE_COMPONENT_GUI(Label, lab, e);
+			CAGE_COMPONENT_GUI(Text, txt, e);
+			txt.value = nm.name;
+		});
+
+		{
+			struct Pair
+			{
+				TileFlags flag = TileFlags::None;
+				StringLiteral name;
+			};
+
+			constexpr const Pair pairs[] = {
+				Pair{ TileFlags::Waypoint, "Monsters Waypoint Tile" },
+				Pair{ TileFlags::Water, "Water Tile" },
+				Pair{ TileFlags::Sun, "Sun Tile" },
+				Pair{ TileFlags::Wind, "Wind Tile" },
+				Pair{ TileFlags::Snow, "Snow Tile" },
+			};
+
+			const TileFlags flags = globalGrid->flags[playerCursorTile];
+
+			for (const auto &p : pairs)
+			{
+				if (none(flags & p.flag))
+					continue;
+
+				Entity *e = ents->createUnique();
+				CAGE_COMPONENT_GUI(Parent, pp, e);
+				pp.parent = 201;
+				pp.order = index++;
+				CAGE_COMPONENT_GUI(Label, lab, e);
+				CAGE_COMPONENT_GUI(Text, txt, e);
+				txt.value = string(p.name);
+			}
+		}
 	}
 
 	void engineUpdate()
@@ -113,7 +164,8 @@ void setScreenGame()
 		Entity *e = ents->create(201);
 		CAGE_COMPONENT_GUI(Parent, pp, e);
 		pp.parent = 200;
-		CAGE_COMPONENT_GUI(Panel, pa, e);
+		CAGE_COMPONENT_GUI(Spoiler, sp, e);
+		sp.collapsed = false;
 		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
 		ll.vertical = true;
 		CAGE_COMPONENT_GUI(Text, txt, e);

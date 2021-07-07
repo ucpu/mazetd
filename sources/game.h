@@ -35,6 +35,11 @@ struct MovementComponent
 	uint32 timeEnd = 0;
 };
 
+struct NameComponent
+{
+	string name;
+};
+
 // player structure that blocks paths
 struct BuildingComponent
 {};

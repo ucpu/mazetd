@@ -9,6 +9,7 @@ namespace
 		Holder<EntityManager> man = newEntityManager();
 		man->defineComponent(PositionComponent());
 		man->defineComponent(MovementComponent());
+		man->defineComponent(NameComponent());
 		man->defineComponent(BuildingComponent());
 		man->defineComponent(TrapComponent());
 		man->defineComponent(ManaStorageComponent());

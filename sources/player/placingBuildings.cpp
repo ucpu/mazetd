@@ -76,6 +76,32 @@ namespace
 		}
 	}
 
+	string structureDisplayName()
+	{
+		switch (playerBuildingSelection)
+		{
+		case 900: return  "Wall";
+		case 1000: return "Cheap Tower";
+		case 1001: return "Fast Tower";
+		case 1002: return "Heavy Tower";
+		case 1003: return "Splash Tower";
+		case 1004: return "Sniper Tower";
+		case 1100: return "Fire Augment";
+		case 1101: return "Water Augment";
+		case 1102: return "Poison Augment";
+		case 1200: return "Waterwheel Generator";
+		case 1201: return "Sunbloom Generator";
+		case 1202: return "Windmill Generator";
+		case 1203: return "Snowmill Generator";
+		case 1204: return "Mana Relay";
+		case 1205: return "Mana Capacitor";
+		case 1300: return "Spikes Trap";
+		case 1301: return "Slowing Trap";
+		case 1302: return "Hastening Trap";
+		default: return "<unknown building>";
+		}
+	}
+
 	void placeTile()
 	{
 		TileFlags &flags = globalGrid->flags[playerCursorTile];
@@ -88,13 +114,6 @@ namespace
 			// todo take some money
 
 			flags |= TileFlags::Trap;
-
-			Entity *e = gameEntities()->createUnique();
-			e->value<PositionComponent>().tile = playerCursorTile;
-			e->value<TrapComponent>();
-			Entity *f = e->value<EngineComponent>().entity;
-			CAGE_COMPONENT_ENGINE(Render, r, f);
-			r.object = structureModelName();
 		}
 		else
 		{
@@ -105,10 +124,23 @@ namespace
 
 			flags |= TileFlags::Building;
 			globalWaypoints->update();
+		}
 
-			Entity *e = gameEntities()->createUnique();
-			e->value<PositionComponent>().tile = playerCursorTile;
+		Entity *e = gameEntities()->createUnique();
+
+		e->value<PositionComponent>().tile = playerCursorTile;
+		e->value<NameComponent>().name = structureDisplayName();
+
+		if (selectionIsTrap())
+		{
+			e->value<TrapComponent>();
+		}
+		else
+		{
 			e->value<BuildingComponent>();
+		}
+
+		{
 			Entity *f = e->value<EngineComponent>().entity;
 			CAGE_COMPONENT_ENGINE(Render, r, f);
 			r.object = structureModelName();

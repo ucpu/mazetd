@@ -102,6 +102,8 @@ namespace
 			MonsterComponent &mo = e->value<MonsterComponent>();
 			(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)msp;
 
+			e->value<NameComponent>().name = string(name);
+
 			mo.visitedWaypointsBits = 1u << spawnPointIndex;
 			mo.timeToArrive = gameTime + numeric_cast<uint32>(stor(globalWaypoints->find(position, mo.visitedWaypointsBits).distance) / mo.speed);
 
