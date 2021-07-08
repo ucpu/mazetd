@@ -47,7 +47,7 @@ void renderEffect(const EffectConfig &config)
 	const uint64 step = controlThread().updatePeriod();
 	const real dist = distance(config.pos1, config.pos2);
 	const vec3 dir = normalize(config.pos2 - config.pos1);
-	const uint32 n = dist.value;
+	const uint32 n = max(uint32(dist.value), 1u);
 	for (uint32 i = 0; i < n; i++)
 	{
 		Entity *e = engineEntities()->createAnonymous();
@@ -56,7 +56,7 @@ void renderEffect(const EffectConfig &config)
 		re.timeToDie = engineControlTime() + dur;
 		re.move = dir * (step / (real)dur);
 		CAGE_COMPONENT_ENGINE(Transform, tr, e);
-		tr.position = config.pos1 + dir * (i + 0.5);
+		tr.position = config.pos1 + dir * (i + 0.2);
 		tr.scale = 0.05;
 		tr.orientation = randomDirectionQuat();
 		CAGE_COMPONENT_ENGINE(Render, r, e);

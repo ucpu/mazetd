@@ -125,21 +125,21 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.damage *= 6;
 			a.firingPeriod *= 2;
-			a.splashRadius += 0.3;
+			a.splashRadius += 0.5;
 		} break;
 		case 1003: // splash
 		{
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.splashRadius += 3;
+			a.splashRadius += 4;
 		} break;
 		case 1004: // sniper
 		{
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
 			a.damage *= 3;
-			a.firingPeriod *= 2;
-			a.firingRange *= 2;
+			a.firingPeriod *= 3;
+			a.firingRange *= 3;
 		} break;
 		}
 	}
