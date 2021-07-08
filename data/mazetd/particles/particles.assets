@@ -1,0 +1,54 @@
+[]
+scheme = model
+normals = false
+tangents = false
+scale = 0.15
+material = fire.cpm
+sprite.obj;fire
+
+[]
+scheme = model
+normals = false
+tangents = false
+scale = 0.15
+material = mana.cpm
+sprite.obj;mana
+
+[]
+scheme = model
+normals = false
+tangents = false
+scale = 0.15
+material = poison.cpm
+sprite.obj;poison
+
+[]
+scheme = model
+normals = false
+tangents = false
+scale = 0.15
+material = physical.cpm
+sprite.obj;physical
+
+[]
+scheme = model
+normals = false
+tangents = false
+scale = 0.15
+material = water.cpm
+sprite.obj;water
+
+[]
+scheme = texture
+target = 2dArray
+srgb = true
+downscale = 4
+fire/$$.png
+mana/$$.png
+poison/$$.png
+physical/$$.png
+water/$$.png
+
+[]
+scheme = pack
+particles.pack

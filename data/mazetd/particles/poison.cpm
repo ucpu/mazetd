@@ -1,0 +1,11 @@
+[base]
+emission = 1
+
+[textures]
+albedo = poison/$$.png
+
+[flags]
+noLighting
+noShadowCast
+noDepthWrite
+noVelocityWrite

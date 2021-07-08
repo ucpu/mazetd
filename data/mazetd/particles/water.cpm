@@ -1,0 +1,11 @@
+[base]
+emission = 10
+
+[textures]
+albedo = water/$$.png
+
+[flags]
+noLighting
+noShadowCast
+noDepthWrite
+noVelocityWrite
