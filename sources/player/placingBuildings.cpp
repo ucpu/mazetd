@@ -102,6 +102,48 @@ namespace
 		}
 	}
 
+	void structureAttack(Entity *e)
+	{
+		switch (playerBuildingSelection)
+		{
+		case 1000: // cheap
+		{
+			e->value<PivotComponent>().elevation = 1.5;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.damage /= 2;
+			a.useAugments = false;
+		} break;
+		case 1001: // fast
+		{
+			e->value<PivotComponent>().elevation = 2.5;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.firingPeriod /= 3;
+		} break;
+		case 1002: // heavy
+		{
+			e->value<PivotComponent>().elevation = 2.5;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.damage *= 6;
+			a.firingPeriod *= 2;
+			a.splashRadius += 0.3;
+		} break;
+		case 1003: // splash
+		{
+			e->value<PivotComponent>().elevation = 2.5;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.splashRadius += 3;
+		} break;
+		case 1004: // sniper
+		{
+			e->value<PivotComponent>().elevation = 2.5;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.damage *= 3;
+			a.firingPeriod *= 2;
+			a.firingRange *= 2;
+		} break;
+		}
+	}
+
 	void placeTile()
 	{
 		TileFlags &flags = globalGrid->flags[playerCursorTile];
@@ -130,15 +172,12 @@ namespace
 
 		e->value<PositionComponent>().tile = playerCursorTile;
 		e->value<NameComponent>().name = structureDisplayName();
+		structureAttack(e);
 
 		if (selectionIsTrap())
-		{
 			e->value<TrapComponent>();
-		}
 		else
-		{
 			e->value<BuildingComponent>();
-		}
 
 		{
 			Entity *f = e->value<EngineComponent>().entity;
@@ -163,7 +202,7 @@ namespace
 					// todo return some money
 					e->destroy();
 				}
-				}, true);
+			}, true);
 		}
 		
 		if (any(flags & TileFlags::Building))

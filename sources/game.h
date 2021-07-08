@@ -33,6 +33,13 @@ struct MovementComponent
 	uint32 tileEnd = m;
 	uint32 timeStart = m;
 	uint32 timeEnd = 0;
+
+	vec3 position() const;
+};
+
+struct PivotComponent
+{
+	real elevation = 0.5;
 };
 
 struct NameComponent
@@ -69,11 +76,12 @@ struct ManaGeneratorComponent
 
 struct AttackComponent
 {
-	uint32 damage = 1;
-	uint32 firingPeriod = 10;
+	uint32 damage = 10;
+	uint32 firingPeriod = 30;
 	uint32 firingDelay = 30;
-	uint32 firingRange = rtos32(5);
-	uint32 splashRadius = 0;
+	real firingRange = 5;
+	real splashRadius = 0;
+	bool useAugments = true;
 };
 
 struct AugmentComponent
@@ -84,7 +92,7 @@ struct AugmentComponent
 struct MonsterBaseProperties
 {
 	uint32 damage = 1;
-	uint32 life = 1;
+	sint32 life = 100;
 	real speed = 0.05;
 };
 
@@ -102,6 +110,9 @@ struct EngineComponent
 EntityManager *gameEntities();
 EventDispatcher<bool()> &eventGameReset();
 
+SpatialQuery *spatialMonsters();
+SpatialQuery *spatialStructures();
+
 extern uint32 gameTime;
 extern bool gameRunning;
 
@@ -111,5 +122,12 @@ extern sint32 playerHealth;
 extern uint32 playerMoney;
 extern uint32 playerBuildingSelection;
 extern bool playerPanning;
+
+struct EffectConfig
+{
+	vec3 pos1 = vec3::Nan(), pos2 = vec3::Nan();
+};
+
+void renderEffect(const EffectConfig &config);
 
 #endif // !header_game

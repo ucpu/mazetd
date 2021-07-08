@@ -1,6 +1,15 @@
 #include <cage-engine/engine.h>
 
 #include "../game.h"
+#include "../grid.h"
+
+vec3 MovementComponent::position() const
+{
+	const vec3 ca = globalGrid->center(tileStart);
+	const vec3 cb = globalGrid->center(tileEnd);
+	const real fac = saturate(real(gameTime - (sint64)timeStart) / real(timeEnd - (sint64)timeStart));
+	return interpolate(ca, cb, fac);
+}
 
 namespace
 {
@@ -9,6 +18,7 @@ namespace
 		Holder<EntityManager> man = newEntityManager();
 		man->defineComponent(PositionComponent());
 		man->defineComponent(MovementComponent());
+		man->defineComponent(PivotComponent());
 		man->defineComponent(NameComponent());
 		man->defineComponent(BuildingComponent());
 		man->defineComponent(TrapComponent());

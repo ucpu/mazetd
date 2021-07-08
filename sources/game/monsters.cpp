@@ -13,6 +13,42 @@ namespace
 		return std::bitset<32>(v).count();
 	}
 
+	void updateMonsterAnimations()
+	{
+		EntityComponent *aniComp = engineEntities()->component<SkeletalAnimationComponent>();
+		if (gameRunning)
+		{
+			entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
+				Entity *f = en.entity;
+				if (!f->has(aniComp))
+					return;
+				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
+				const uint32 moveDur = mv.timeEnd - mv.timeStart;
+				const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
+				const real moveSpeed = dist / moveDur;
+				a.speed = moveSpeed / mo.speed;
+				});
+		}
+		else
+		{
+			entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
+				Entity *f = en.entity;
+				if (!f->has(aniComp))
+					return;
+				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
+				a.speed = 0;
+				});
+		}
+	}
+
+	void killMonsters()
+	{
+		entitiesVisitor(gameEntities(), [&](Entity *e, const MonsterComponent &mo) {
+			if (mo.life <= 0)
+				e->destroy();
+		}, true);
+	}
+
 	void moveMonsters()
 	{
 		const uint32 time = gameTime;
@@ -42,34 +78,6 @@ namespace
 		}, true);
 	}
 
-	void updateMonsterAnimations()
-	{
-		EntityComponent *aniComp = engineEntities()->component<SkeletalAnimationComponent>();
-		if (gameRunning)
-		{
-			entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
-				Entity *f = en.entity;
-				if (!f->has(aniComp))
-					return;
-				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
-				const uint32 moveDur = mv.timeEnd - mv.timeStart;
-				const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
-				const real moveSpeed = dist / moveDur;
-				a.speed = moveSpeed / mo.speed;
-			});
-		}
-		else
-		{
-			entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
-				Entity *f = en.entity;
-				if (!f->has(aniComp))
-					return;
-				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
-				a.speed = 0;
-			});
-		}
-	}
-
 	void engineUpdate()
 	{
 		if (!globalGrid)
@@ -77,6 +85,7 @@ namespace
 		updateMonsterAnimations();
 		if (!gameRunning)
 			return;
+		killMonsters();
 		moveMonsters();
 	}
 
