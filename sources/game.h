@@ -11,6 +11,7 @@ enum class DamageTypeEnum
 	Fire,
 	Water,
 	Poison,
+	Mana, // not damage but used as type of effect
 };
 
 enum class ManaGeneratorTypeEnum
@@ -76,21 +77,25 @@ struct ManaGeneratorComponent
 
 struct AttackComponent
 {
-	uint32 damage = 10;
 	uint32 firingPeriod = 30;
 	uint32 firingDelay = 30;
 	real firingRange = 5;
 	real splashRadius = 0;
+	uint32 damage = 10;
+	uint32 damageDuration = 0;
+	DamageTypeEnum damageType = DamageTypeEnum::Physical;
 	bool useAugments = true;
 };
 
 struct AugmentComponent
 {
 	DamageTypeEnum damageType = DamageTypeEnum::Physical;
+	uint32 damageDuration = 10;
 };
 
 struct MonsterBaseProperties
 {
+	uint32 money = 1;
 	uint32 damage = 1;
 	sint32 life = 100;
 	real speed = 0.05;
@@ -125,7 +130,9 @@ extern bool playerPanning;
 
 struct EffectConfig
 {
-	vec3 pos1 = vec3::Nan(), pos2 = vec3::Nan();
+	vec3 pos1 = vec3::Nan();
+	vec3 pos2 = vec3::Nan();
+	DamageTypeEnum type = DamageTypeEnum::Mana;
 };
 
 void renderEffect(const EffectConfig &config);

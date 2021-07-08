@@ -102,8 +102,39 @@ namespace
 		}
 	}
 
-	void structureAttack(Entity *e)
+	void placeTile()
 	{
+		TileFlags &flags = globalGrid->flags[playerCursorTile];
+
+		if (selectionIsTrap())
+		{
+			if (!canPlaceTrap())
+				return;
+
+			// todo take some money
+
+			flags |= TileFlags::Trap;
+		}
+		else
+		{
+			if (!canPlaceBuilding())
+				return;
+
+			// todo take some money
+
+			flags |= TileFlags::Building;
+			globalWaypoints->update();
+		}
+
+		Entity *e = gameEntities()->createUnique();
+		e->value<PositionComponent>().tile = playerCursorTile;
+		e->value<NameComponent>().name = structureDisplayName();
+
+		if (selectionIsTrap())
+			e->value<TrapComponent>();
+		else
+			e->value<BuildingComponent>();
+
 		switch (playerBuildingSelection)
 		{
 		case 1000: // cheap
@@ -141,43 +172,28 @@ namespace
 			a.firingPeriod *= 3;
 			a.firingRange *= 3;
 		} break;
-		}
-	}
-
-	void placeTile()
-	{
-		TileFlags &flags = globalGrid->flags[playerCursorTile];
-
-		if (selectionIsTrap())
+		case 1100: // fire
 		{
-			if (!canPlaceTrap())
-				return;
-
-			// todo take some money
-
-			flags |= TileFlags::Trap;
-		}
-		else
+			e->value<PivotComponent>().elevation = 1.5;
+			e->value<AugmentComponent>().damageType = DamageTypeEnum::Fire;
+			e->value<ManaStorageComponent>().capacity = 100;
+			e->value<ManaReceiverComponent>();
+		} break;
+		case 1101: // water
 		{
-			if (!canPlaceBuilding())
-				return;
-
-			// todo take some money
-
-			flags |= TileFlags::Building;
-			globalWaypoints->update();
+			e->value<PivotComponent>().elevation = 1.5;
+			e->value<AugmentComponent>().damageType = DamageTypeEnum::Water;
+			e->value<ManaStorageComponent>().capacity = 100;
+			e->value<ManaReceiverComponent>();
+		} break;
+		case 1102: // poison
+		{
+			e->value<PivotComponent>().elevation = 1.5;
+			e->value<AugmentComponent>().damageType = DamageTypeEnum::Poison;
+			e->value<ManaStorageComponent>().capacity = 100;
+			e->value<ManaReceiverComponent>();
+		} break;
 		}
-
-		Entity *e = gameEntities()->createUnique();
-
-		e->value<PositionComponent>().tile = playerCursorTile;
-		e->value<NameComponent>().name = structureDisplayName();
-		structureAttack(e);
-
-		if (selectionIsTrap())
-			e->value<TrapComponent>();
-		else
-			e->value<BuildingComponent>();
 
 		{
 			Entity *f = e->value<EngineComponent>().entity;

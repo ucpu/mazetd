@@ -27,7 +27,7 @@ namespace
 				const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
 				const real moveSpeed = dist / moveDur;
 				a.speed = moveSpeed / mo.speed;
-				});
+			});
 		}
 		else
 		{
@@ -37,7 +37,7 @@ namespace
 					return;
 				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
 				a.speed = 0;
-				});
+			});
 		}
 	}
 
@@ -45,7 +45,10 @@ namespace
 	{
 		entitiesVisitor(gameEntities(), [&](Entity *e, const MonsterComponent &mo) {
 			if (mo.life <= 0)
+			{
+				playerMoney += mo.money;
 				e->destroy();
+			}
 		}, true);
 	}
 
