@@ -65,7 +65,6 @@ struct ManaStorageComponent
 
 struct ManaDistributorComponent
 {
-	uint32 period = 5;
 	uint32 transferLimit = 10;
 	real range = 5;
 };
