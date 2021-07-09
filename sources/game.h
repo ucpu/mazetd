@@ -60,12 +60,12 @@ struct TrapComponent
 struct ManaStorageComponent
 {
 	uint32 mana = 0;
-	uint32 capacity = 10;
+	uint32 capacity = 20;
 };
 
 struct ManaDistributorComponent
 {
-	uint32 period = 10;
+	uint32 period = 5;
 	uint32 transferLimit = 10;
 	real range = 5;
 };

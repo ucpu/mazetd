@@ -77,10 +77,10 @@ namespace
 					});
 
 					const Sorting &aug = augs[0];
-					//ManaStorageComponent &mn = aug.e->value<ManaStorageComponent>();
-					//if (mn.mana >= att.damage)
+					ManaStorageComponent &mn = aug.e->value<ManaStorageComponent>();
+					if (mn.mana >= att.damage)
 					{
-						//mn.mana -= att.damage;
+						mn.mana -= att.damage;
 
 						{
 							const AugmentComponent &a = aug.e->value<AugmentComponent>();
