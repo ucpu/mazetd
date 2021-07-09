@@ -25,7 +25,7 @@ namespace
 		man->defineComponent(ManaStorageComponent());
 		man->defineComponent(ManaDistributorComponent());
 		man->defineComponent(ManaReceiverComponent());
-		man->defineComponent(ManaGeneratorComponent());
+		man->defineComponent(ManaCollectorComponent());
 		man->defineComponent(AttackComponent());
 		man->defineComponent(AugmentComponent());
 		man->defineComponent(MonsterComponent());

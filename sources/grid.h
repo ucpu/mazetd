@@ -1,19 +1,20 @@
 #ifndef header_grid
 #define header_grid
 
-#include "normalizedReal.h"
+#include "common.h"
 
-enum class TileFlags : uint8
+enum class TileFlags : uint16
 {
 	None = 0,
 	Invalid = 1u << 0, // tile is outside playable area
-	Water = 1u << 1,
-	Sun = 1u << 2,
-	Wind = 1u << 3,
-	Snow = 1u << 4,
-	Building = 1u << 5, // walls, towers and other impassable structures built by the player
-	Trap = 1u << 6, // passable structures built by the player
-	Waypoint = 1u << 7, // passable tile that player may not build on
+	Waypoint = 1u << 1, // passable tile that player may not build on
+	Water = 1u << 2,
+	Sun = 1u << 3,
+	Wind = 1u << 4,
+	Snow = 1u << 5,
+	Mana = 1u << 13, // mana ready for player to harvest
+	Building = 1u << 14, // walls, towers and other impassable structures built by the player
+	Trap = 1u << 15, // passable structures built by the player
 };
 
 namespace cage

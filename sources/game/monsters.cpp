@@ -6,13 +6,13 @@
 
 #include <bitset>
 
+uint32 bitCount(uint32 v)
+{
+	return std::bitset<32>(v).count();
+}
+
 namespace
 {
-	uint32 bitCount(uint32 v)
-	{
-		return std::bitset<32>(v).count();
-	}
-
 	void updateMonsterAnimations()
 	{
 		EntityComponent *aniComp = engineEntities()->component<SkeletalAnimationComponent>();

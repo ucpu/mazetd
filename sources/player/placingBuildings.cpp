@@ -89,10 +89,10 @@ namespace
 		case 1100: return "Fire Augment";
 		case 1101: return "Water Augment";
 		case 1102: return "Poison Augment";
-		case 1200: return "Waterwheel Generator";
-		case 1201: return "Sunbloom Generator";
-		case 1202: return "Windmill Generator";
-		case 1203: return "Snowmill Generator";
+		case 1200: return "Waterwheel Collector";
+		case 1201: return "Sunbloom Collector";
+		case 1202: return "Windmill Collector";
+		case 1203: return "Snowmill Collector";
 		case 1204: return "Mana Relay";
 		case 1205: return "Mana Capacitor";
 		case 1300: return "Spikes Trap";
@@ -176,21 +176,63 @@ namespace
 		{
 			e->value<PivotComponent>().elevation = 1.5;
 			e->value<AugmentComponent>().damageType = DamageTypeEnum::Fire;
-			e->value<ManaStorageComponent>().capacity = 100;
+			e->value<ManaStorageComponent>().capacity = 30;
 			e->value<ManaReceiverComponent>();
 		} break;
 		case 1101: // water
 		{
 			e->value<PivotComponent>().elevation = 1.5;
 			e->value<AugmentComponent>().damageType = DamageTypeEnum::Water;
-			e->value<ManaStorageComponent>().capacity = 100;
+			e->value<ManaStorageComponent>().capacity = 30;
 			e->value<ManaReceiverComponent>();
 		} break;
 		case 1102: // poison
 		{
 			e->value<PivotComponent>().elevation = 1.5;
 			e->value<AugmentComponent>().damageType = DamageTypeEnum::Poison;
+			e->value<ManaStorageComponent>().capacity = 30;
+			e->value<ManaReceiverComponent>();
+		} break;
+		case 1200: // water collector
+		{
+			e->value<PivotComponent>().elevation = 1.5;
+			e->value<ManaStorageComponent>().capacity = 10;
+			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Water;
+			e->value<ManaDistributorComponent>();
+		} break;
+		case 1201: // sun collector
+		{
+			e->value<PivotComponent>().elevation = 1.5;
+			e->value<ManaStorageComponent>().capacity = 10;
+			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Sun;
+			e->value<ManaDistributorComponent>();
+		} break;
+		case 1202: // wind collector
+		{
+			e->value<PivotComponent>().elevation = 1.5;
+			e->value<ManaStorageComponent>().capacity = 10;
+			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Wind;
+			e->value<ManaDistributorComponent>();
+		} break;
+		case 1203: // snow collector
+		{
+			e->value<PivotComponent>().elevation = 1.5;
+			e->value<ManaStorageComponent>().capacity = 10;
+			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Snow;
+			e->value<ManaDistributorComponent>();
+		} break;
+		case 1204: // mana relay
+		{
+			e->value<PivotComponent>().elevation = 1.5;
+			e->value<ManaStorageComponent>().capacity = 10;
+			e->value<ManaDistributorComponent>();
+			e->value<ManaReceiverComponent>();
+		} break;
+		case 1205: // mana capacitor
+		{
+			e->value<PivotComponent>().elevation = 1.5;
 			e->value<ManaStorageComponent>().capacity = 100;
+			e->value<ManaDistributorComponent>();
 			e->value<ManaReceiverComponent>();
 		} break;
 		}

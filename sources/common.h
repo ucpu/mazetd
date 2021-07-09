@@ -21,4 +21,6 @@ CAGE_FORCE_INLINE constexpr real stor(sint32 v)
 	return v * n;
 }
 
+uint32 bitCount(uint32 v);
+
 #endif // !header_normalizedReal

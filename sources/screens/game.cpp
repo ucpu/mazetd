@@ -53,13 +53,48 @@ namespace
 			if (po.tile != playerCursorTile)
 				return;
 
-			Entity *e = ents->createUnique();
-			CAGE_COMPONENT_GUI(Parent, pp, e);
-			pp.parent = 201;
-			pp.order = index++;
-			CAGE_COMPONENT_GUI(Label, lab, e);
-			CAGE_COMPONENT_GUI(Text, txt, e);
-			txt.value = nm.name;
+			{ // name
+				Entity *e = ents->createUnique();
+				CAGE_COMPONENT_GUI(Parent, pp, e);
+				pp.parent = 201;
+				pp.order = index++;
+				CAGE_COMPONENT_GUI(Label, lab, e);
+				CAGE_COMPONENT_GUI(Text, txt, e);
+				txt.value = nm.name;
+			}
+
+			if (g->has<ManaStorageComponent>())
+			{ // mana
+				Entity *e = ents->createUnique();
+				CAGE_COMPONENT_GUI(Parent, pp, e);
+				pp.parent = 201;
+				pp.order = index++;
+				CAGE_COMPONENT_GUI(Label, lab, e);
+				CAGE_COMPONENT_GUI(Text, txt, e);
+				txt.value = stringizer() + "Mana: " + g->value<ManaStorageComponent>().mana + " / " + g->value<ManaStorageComponent>().capacity;
+			}
+
+			if (g->has<MonsterComponent>())
+			{ // monster
+				{ // life
+					Entity *e = ents->createUnique();
+					CAGE_COMPONENT_GUI(Parent, pp, e);
+					pp.parent = 201;
+					pp.order = index++;
+					CAGE_COMPONENT_GUI(Label, lab, e);
+					CAGE_COMPONENT_GUI(Text, txt, e);
+					txt.value = stringizer() + "Life: " + g->value<MonsterComponent>().life;
+				}
+				{ // waypoints
+					Entity *e = ents->createUnique();
+					CAGE_COMPONENT_GUI(Parent, pp, e);
+					pp.parent = 201;
+					pp.order = index++;
+					CAGE_COMPONENT_GUI(Label, lab, e);
+					CAGE_COMPONENT_GUI(Text, txt, e);
+					txt.value = stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
+				}
+			}
 		});
 
 		{
@@ -70,7 +105,8 @@ namespace
 			};
 
 			constexpr const Pair pairs[] = {
-				Pair{ TileFlags::Waypoint, "Monsters Waypoint Tile" },
+				Pair{ TileFlags::Mana, "Harvestable Mana" },
+				Pair{ TileFlags::Waypoint, "Monsters Waypoint" },
 				Pair{ TileFlags::Water, "Water Tile" },
 				Pair{ TileFlags::Sun, "Sun Tile" },
 				Pair{ TileFlags::Wind, "Wind Tile" },

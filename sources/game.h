@@ -3,10 +3,11 @@
 
 #include <cage-core/entities.h>
 
-#include "normalizedReal.h"
+#include "common.h"
 
 enum class DamageTypeEnum
 {
+	Invalid = 0,
 	Physical,
 	Fire,
 	Water,
@@ -14,13 +15,13 @@ enum class DamageTypeEnum
 	Mana, // not damage but used as type of effect
 };
 
-enum class ManaGeneratorTypeEnum
+enum class ManaCollectorTypeEnum
 {
+	Invalid = 0,
 	Water,
 	Sun,
 	Wind,
 	Snow,
-	Flesh,
 };
 
 struct PositionComponent
@@ -59,20 +60,23 @@ struct TrapComponent
 struct ManaStorageComponent
 {
 	uint32 mana = 0;
-	uint32 capacity = 1000;
+	uint32 capacity = 10;
 };
 
 struct ManaDistributorComponent
 {
+	uint32 period = 10;
 	uint32 transferLimit = 10;
+	real range = 5;
 };
 
 struct ManaReceiverComponent
 {};
 
-struct ManaGeneratorComponent
+struct ManaCollectorComponent
 {
-	ManaGeneratorTypeEnum type = ManaGeneratorTypeEnum::Flesh;
+	ManaCollectorTypeEnum type = ManaCollectorTypeEnum::Invalid;
+	real range = 5;
 };
 
 struct AttackComponent
