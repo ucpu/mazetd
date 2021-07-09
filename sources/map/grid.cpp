@@ -144,6 +144,8 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 				vec[i] |= TileFlags::Snow;
 			if (maxSlope(+g, i) > slopeThreshold)
 				vec[i] = TileFlags::Invalid;
+			if (lengthSquared(vec2(g->position(i))) > sqr(55))
+				vec[i] = TileFlags::Invalid;
 		}
 		g->flags = vec;
 	}

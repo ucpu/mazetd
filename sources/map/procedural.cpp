@@ -59,7 +59,7 @@ namespace
 		{
 			const real base = -sqr(max(length(pos) - 50, 0) * 0.2);
 			const real noise = elevationNoise->evaluate(pos + elevationOffset) * 10;
-			return base + noise;
+			return max(base + noise, -8);
 		}
 
 		real slope(const vec2 &pos, real off)
