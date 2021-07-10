@@ -1,0 +1,4 @@
+[base]
+albedo = 0.9, 0.8, 0.3
+roughness = 0.6
+

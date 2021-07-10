@@ -99,6 +99,30 @@ scheme = texture
 mana-relay_normal.png
 
 []
+scheme = model
+uvs = false
+tangents = false
+material = trap-haste.cpm
+scale = 0.6
+trap.obj;haste
+
+[]
+scheme = model
+uvs = false
+tangents = false
+material = trap-slow.cpm
+scale = 0.6
+trap.obj;slow
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.8
+trap-spikes.obj?metal
+trap-spikes.obj?wood
+
+[]
 scheme = object
 cheap.object
 fast.object
@@ -111,6 +135,9 @@ augment-poison.object
 augment-water.object
 mana-capacitor.object
 mana-relay.object
+trap-haste.object
+trap-slow.object
+trap-spikes.object
 
 []
 scheme = pack

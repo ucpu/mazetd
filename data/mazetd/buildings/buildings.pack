@@ -10,3 +10,6 @@ augment-poison.object
 augment-water.object
 mana-capacitor.object
 mana-relay.object
+trap-haste.object
+trap-slow.object
+trap-spikes.object
