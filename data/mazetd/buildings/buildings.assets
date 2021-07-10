@@ -79,6 +79,15 @@ material = augment-poison.cpm
 augment.obj;poison
 
 []
+scheme = model
+uvs = false
+tangents = false
+scale = 0.85
+mana-capacitor.obj?metal_metal
+mana-capacitor.obj?stone_stone
+mana-capacitor.obj?water_water
+
+[]
 scheme = object
 cheap.object
 fast.object
@@ -89,6 +98,7 @@ wall.object
 augment-fire.object
 augment-poison.object
 augment-water.object
+mana-capacitor.object
 
 []
 scheme = pack
