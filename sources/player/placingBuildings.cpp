@@ -241,6 +241,8 @@ namespace
 			Entity *f = e->value<EngineComponent>().entity;
 			CAGE_COMPONENT_ENGINE(Render, r, f);
 			r.object = structureModelName();
+			CAGE_COMPONENT_ENGINE(TextureAnimation, ta, f);
+			ta.startTime = randomRange(0u, 1000000000u);
 		}
 
 		destroyShortestPathVisualizationMarks();

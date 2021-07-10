@@ -1,5 +1,9 @@
 [base]
-albedo = 0.9, 0.65, 0.3
-roughness = 0.9
-emission = 0.5
+emission = 1
 
+[textures]
+albedo = ../particles/fire/$$.png
+
+[flags]
+noLighting
+noShadowCast

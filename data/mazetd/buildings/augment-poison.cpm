@@ -1,5 +1,9 @@
 [base]
-albedo = 0.3, 0.75, 0.2
-roughness = 0.9
-emission = 0.5
+emission = 1
 
+[textures]
+albedo = ../particles/poison/$$.png
+
+[flags]
+noLighting
+noShadowCast

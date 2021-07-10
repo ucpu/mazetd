@@ -1,5 +1,5 @@
 [base]
-emission = 10
+emission = 1
 
 [textures]
 albedo = water/$$.png
