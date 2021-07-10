@@ -13,3 +13,7 @@ mana-relay.object
 trap-haste.object
 trap-slow.object
 trap-spikes.object
+collector-water.object
+collector-sun.object
+collector-wind.object
+collector-snow.object

@@ -72,6 +72,10 @@ namespace
 		case 1100: return HashString("mazetd/buildings/augment-fire.object");
 		case 1101: return HashString("mazetd/buildings/augment-water.object");
 		case 1102: return HashString("mazetd/buildings/augment-poison.object");
+		case 1200: return HashString("mazetd/buildings/collector-water.object");
+		case 1201: return HashString("mazetd/buildings/collector-sun.object");
+		case 1202: return HashString("mazetd/buildings/collector-wind.object");
+		case 1203: return HashString("mazetd/buildings/collector-snow.object");
 		case 1204: return HashString("mazetd/buildings/mana-relay.object");
 		case 1205: return HashString("mazetd/buildings/mana-capacitor.object");
 		case 1300: return HashString("mazetd/buildings/trap-spikes.object");
@@ -200,28 +204,28 @@ namespace
 		} break;
 		case 1200: // water collector
 		{
-			e->value<PivotComponent>().elevation = 1.5;
+			e->value<PivotComponent>().elevation = 1;
 			e->value<ManaStorageComponent>();
 			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Water;
 			e->value<ManaDistributorComponent>();
 		} break;
 		case 1201: // sun collector
 		{
-			e->value<PivotComponent>().elevation = 1.5;
+			e->value<PivotComponent>().elevation = 1;
 			e->value<ManaStorageComponent>();
 			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Sun;
 			e->value<ManaDistributorComponent>();
 		} break;
 		case 1202: // wind collector
 		{
-			e->value<PivotComponent>().elevation = 1.5;
+			e->value<PivotComponent>().elevation = 1;
 			e->value<ManaStorageComponent>();
 			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Wind;
 			e->value<ManaDistributorComponent>();
 		} break;
 		case 1203: // snow collector
 		{
-			e->value<PivotComponent>().elevation = 1.5;
+			e->value<PivotComponent>().elevation = 1;
 			e->value<ManaStorageComponent>();
 			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Snow;
 			e->value<ManaDistributorComponent>();

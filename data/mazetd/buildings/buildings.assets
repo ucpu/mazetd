@@ -123,6 +123,41 @@ trap-spikes.obj?metal
 trap-spikes.obj?wood
 
 []
+scheme = model
+uvs = false
+tangents = false
+berry-tree.obj?stem
+berry-tree.obj?crown
+
+[]
+scheme = model
+uvs = false
+tangents = false
+material = berry-water.cpm
+berry-tree.obj?berries;water
+
+[]
+scheme = model
+uvs = false
+tangents = false
+material = berry-sun.cpm
+berry-tree.obj?berries;sun
+
+[]
+scheme = model
+uvs = false
+tangents = false
+material = berry-wind.cpm
+berry-tree.obj?berries;wind
+
+[]
+scheme = model
+uvs = false
+tangents = false
+material = berry-snow.cpm
+berry-tree.obj?berries;snow
+
+[]
 scheme = object
 cheap.object
 fast.object
@@ -138,6 +173,10 @@ mana-relay.object
 trap-haste.object
 trap-slow.object
 trap-spikes.object
+collector-water.object
+collector-sun.object
+collector-wind.object
+collector-snow.object
 
 []
 scheme = pack
