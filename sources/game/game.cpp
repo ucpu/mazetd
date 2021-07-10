@@ -29,6 +29,7 @@ namespace
 		man->defineComponent(AttackComponent());
 		man->defineComponent(AugmentComponent());
 		man->defineComponent(MonsterComponent());
+		man->defineComponent(MonsterDebuffComponent());
 		man->defineComponent(EngineComponent());
 		return man;
 	}

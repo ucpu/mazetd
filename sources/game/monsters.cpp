@@ -57,10 +57,10 @@ namespace
 
 	void moveMonsters()
 	{
-		const uint32 time = gameTime;
+		EntityComponent *debComp = gameEntities()->component<MonsterDebuffComponent>();
 		entitiesVisitor(gameEntities(), [&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
 			CAGE_ASSERT(po.tile == mv.tileEnd);
-			if (time < mv.timeEnd)
+			if (gameTime < mv.timeEnd)
 				return;
 			for (uint32 i = 0; i < globalWaypoints->waypoints.size(); i++)
 				if (globalWaypoints->waypoints[i]->tile == po.tile)
@@ -72,15 +72,39 @@ namespace
 				e->destroy();
 				return;
 			}
+
 			const auto go = globalWaypoints->find(po.tile, mo.visitedWaypointsBits);
 			CAGE_ASSERT(go.tile != m);
 			CAGE_ASSERT(go.distance > 0);
 			mv.tileStart = po.tile;
 			mv.tileEnd = po.tile = go.tile;
-			mv.timeStart = time;
+			mv.timeStart = gameTime;
 			const uint32 distNext = globalGrid->neighborDistance(mv.tileStart, mv.tileEnd);
-			const uint32 timeAvail = mo.timeToArrive >= time ? mo.timeToArrive - time : 0;
-			mv.timeEnd = time + timeAvail * distNext / go.distance;
+			const uint32 timeAvail = mo.timeToArrive >= gameTime ? mo.timeToArrive - gameTime : 0;
+			mv.timeEnd = gameTime + timeAvail * distNext / go.distance;
+
+			if (e->has(debComp))
+			{
+				const MonsterDebuffComponent &deb = e->value<MonsterDebuffComponent>(debComp);
+				switch (deb.type)
+				{
+				case DebuffTypeEnum::Slow:
+					mv.timeEnd += (mv.timeEnd - mv.timeStart) * 2;
+					break;
+				case DebuffTypeEnum::Haste:
+					mv.timeEnd -= (mv.timeEnd - mv.timeStart) / 2;
+					break;
+				}
+			}
+		}, true);
+	}
+
+	void updateDebuffs()
+	{
+		EntityComponent *debComp = gameEntities()->component<MonsterDebuffComponent>();
+		entitiesVisitor(gameEntities(), [&](Entity *e, const MonsterDebuffComponent &deb) {
+			if (gameTime >= deb.endTime)
+				e->remove(debComp);
 		}, true);
 	}
 
@@ -93,6 +117,7 @@ namespace
 			return;
 		killMonsters();
 		moveMonsters();
+		updateDebuffs();
 	}
 
 	struct Callbacks

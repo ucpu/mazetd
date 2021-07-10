@@ -150,41 +150,63 @@ namespace
 		{
 			e->value<PivotComponent>().elevation = 1.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.damage /= 2;
-			a.useAugments = false;
+			a.firingPeriod = 30;
+			a.firingRange = 5;
+			a.damage = 5;
+			a.damageType = DamageTypeEnum::Physical;
+			a.effectType = EffectTypeEnum::Physical;
 		} break;
 		case 1001: // fast
 		{
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod /= 3;
+			a.firingPeriod = 10;
+			a.firingRange = 5;
+			a.damage = 10;
+			a.damageType = DamageTypeEnum::Physical;
+			a.effectType = EffectTypeEnum::Physical;
+			a.useAugments = true;
 		} break;
 		case 1002: // heavy
 		{
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.damage *= 6;
-			a.firingPeriod *= 2;
-			a.splashRadius += 0.5;
+			a.firingPeriod = 60;
+			a.firingRange = 5;
+			a.splashRadius = 0.5;
+			a.damage = 60;
+			a.damageType = DamageTypeEnum::Physical;
+			a.effectType = EffectTypeEnum::Physical;
+			a.useAugments = true;
 		} break;
 		case 1003: // splash
 		{
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.splashRadius += 4;
+			a.firingPeriod = 30;
+			a.firingRange = 5;
+			a.splashRadius = 4;
+			a.damage = 10;
+			a.damageType = DamageTypeEnum::Physical;
+			a.effectType = EffectTypeEnum::Physical;
+			a.useAugments = true;
 		} break;
 		case 1004: // sniper
 		{
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.damage *= 3;
-			a.firingPeriod *= 3;
-			a.firingRange *= 3;
+			a.firingPeriod = 90;
+			a.firingRange = 15;
+			a.damage = 30;
+			a.damageType = DamageTypeEnum::Physical;
+			a.effectType = EffectTypeEnum::Physical;
+			a.useAugments = true;
 		} break;
 		case 1100: // fire augment
 		{
 			e->value<PivotComponent>().elevation = 1.5;
 			e->value<AugmentComponent>().damageType = DamageTypeEnum::Fire;
+			e->value<AugmentComponent>().effectType = EffectTypeEnum::Fire;
 			e->value<ManaStorageComponent>().capacity = 100;
 			e->value<ManaReceiverComponent>();
 		} break;
@@ -192,6 +214,7 @@ namespace
 		{
 			e->value<PivotComponent>().elevation = 1.5;
 			e->value<AugmentComponent>().damageType = DamageTypeEnum::Water;
+			e->value<AugmentComponent>().effectType = EffectTypeEnum::Water;
 			e->value<ManaStorageComponent>().capacity = 100;
 			e->value<ManaReceiverComponent>();
 		} break;
@@ -199,6 +222,7 @@ namespace
 		{
 			e->value<PivotComponent>().elevation = 1.5;
 			e->value<AugmentComponent>().damageType = DamageTypeEnum::Poison;
+			e->value<AugmentComponent>().effectType = EffectTypeEnum::Poison;
 			e->value<ManaStorageComponent>().capacity = 100;
 			e->value<ManaReceiverComponent>();
 		} break;
@@ -251,7 +275,24 @@ namespace
 			a.firingPeriod = 5;
 			a.firingRange = 0.5;
 			a.damage = 2;
-			a.useAugments = false;
+			a.damageType = DamageTypeEnum::Physical;
+			a.effectType = EffectTypeEnum::Physical;
+		} break;
+		case 1301: // slow trap
+		{
+			e->value<PivotComponent>().elevation = 0.2;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.firingPeriod = 5;
+			a.firingRange = 0.5;
+			a.debuffType = DebuffTypeEnum::Slow;
+		} break;
+		case 1302: // haste trap
+		{
+			e->value<PivotComponent>().elevation = 0.2;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.firingPeriod = 5;
+			a.firingRange = 0.5;
+			a.debuffType = DebuffTypeEnum::Haste;
 		} break;
 		}
 

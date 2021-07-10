@@ -7,21 +7,37 @@
 
 enum class DamageTypeEnum
 {
-	Invalid = 0,
+	None = 0,
 	Physical,
 	Fire,
 	Water,
 	Poison,
-	Mana, // not damage but used as type of effect
+};
+
+enum class EffectTypeEnum
+{
+	None = 0,
+	Physical,
+	Fire,
+	Water,
+	Poison,
+	Mana,
 };
 
 enum class ManaCollectorTypeEnum
 {
-	Invalid = 0,
+	None = 0,
 	Water,
 	Sun,
 	Wind,
 	Snow,
+};
+
+enum class DebuffTypeEnum
+{
+	None = 0,
+	Slow,
+	Haste,
 };
 
 struct PositionComponent
@@ -74,26 +90,27 @@ struct ManaReceiverComponent
 
 struct ManaCollectorComponent
 {
-	ManaCollectorTypeEnum type = ManaCollectorTypeEnum::Invalid;
+	ManaCollectorTypeEnum type = ManaCollectorTypeEnum::None;
 	real range = 7;
 };
 
 struct AttackComponent
 {
-	uint32 firingPeriod = 30;
+	uint32 firingPeriod = 0;
 	uint32 firingDelay = 30;
-	real firingRange = 5;
+	real firingRange = 0;
 	real splashRadius = 0;
-	uint32 damage = 10;
-	uint32 damageDuration = 0;
-	DamageTypeEnum damageType = DamageTypeEnum::Physical;
-	bool useAugments = true;
+	uint32 damage = 0;
+	DamageTypeEnum damageType = DamageTypeEnum::None;
+	DebuffTypeEnum debuffType = DebuffTypeEnum::None;
+	EffectTypeEnum effectType = EffectTypeEnum::None;
+	bool useAugments = false;
 };
 
 struct AugmentComponent
 {
-	DamageTypeEnum damageType = DamageTypeEnum::Physical;
-	uint32 damageDuration = 10;
+	DamageTypeEnum damageType = DamageTypeEnum::None;
+	EffectTypeEnum effectType = EffectTypeEnum::None;
 };
 
 struct MonsterBaseProperties
@@ -108,6 +125,12 @@ struct MonsterComponent : public MonsterBaseProperties
 {
 	uint32 visitedWaypointsBits = 0;
 	uint32 timeToArrive = 0; // timestamp at which the monster should arrive to the last waypoint
+};
+
+struct MonsterDebuffComponent
+{
+	uint32 endTime = 0;
+	DebuffTypeEnum type = DebuffTypeEnum::None;
 };
 
 struct EngineComponent
@@ -135,7 +158,7 @@ struct EffectConfig
 {
 	vec3 pos1 = vec3::Nan();
 	vec3 pos2 = vec3::Nan();
-	DamageTypeEnum type = DamageTypeEnum::Mana;
+	EffectTypeEnum type = EffectTypeEnum::None;
 };
 
 void renderEffect(const EffectConfig &config);
