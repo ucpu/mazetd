@@ -75,7 +75,7 @@ struct ManaReceiverComponent
 struct ManaCollectorComponent
 {
 	ManaCollectorTypeEnum type = ManaCollectorTypeEnum::Invalid;
-	real range = 5;
+	real range = 7;
 };
 
 struct AttackComponent

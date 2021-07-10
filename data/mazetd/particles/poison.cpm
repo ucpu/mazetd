@@ -7,5 +7,3 @@ albedo = poison/$$.png
 [flags]
 noLighting
 noShadowCast
-noDepthWrite
-noVelocityWrite

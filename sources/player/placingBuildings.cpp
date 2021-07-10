@@ -228,17 +228,26 @@ namespace
 		} break;
 		case 1204: // mana relay
 		{
-			e->value<PivotComponent>().elevation = 1.5;
+			e->value<PivotComponent>().elevation = 2.5;
 			e->value<ManaStorageComponent>().capacity = 10;
 			e->value<ManaDistributorComponent>().range = 10;
 			e->value<ManaReceiverComponent>();
 		} break;
 		case 1205: // mana capacitor
 		{
-			e->value<PivotComponent>().elevation = 1.5;
+			e->value<PivotComponent>().elevation = 1.3;
 			e->value<ManaStorageComponent>().capacity = 1000;
 			e->value<ManaDistributorComponent>().transferLimit = 50;
 			e->value<ManaReceiverComponent>();
+		} break;
+		case 1300: // spikes trap
+		{
+			e->value<PivotComponent>().elevation = 0.2;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.firingPeriod = 5;
+			a.firingRange = 0.5;
+			a.damage = 2;
+			a.useAugments = false;
 		} break;
 		}
 
