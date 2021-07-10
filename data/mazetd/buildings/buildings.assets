@@ -88,6 +88,17 @@ mana-capacitor.obj?stone_stone
 mana-capacitor.obj?water_water
 
 []
+scheme = model
+tangents = true
+material = mana-relay.cpm
+scale = 0.7
+mana-relay.obj
+
+[]
+scheme = texture
+mana-relay_normal.png
+
+[]
 scheme = object
 cheap.object
 fast.object
@@ -99,6 +110,7 @@ augment-fire.object
 augment-poison.object
 augment-water.object
 mana-capacitor.object
+mana-relay.object
 
 []
 scheme = pack
