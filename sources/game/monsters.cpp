@@ -11,6 +11,8 @@ uint32 bitCount(uint32 v)
 	return std::bitset<32>(v).count();
 }
 
+void createMonsterGhost(Entity *e);
+
 namespace
 {
 	void updateMonsterAnimations()
@@ -47,6 +49,7 @@ namespace
 			if (mo.life <= 0)
 			{
 				playerMoney += mo.money;
+				createMonsterGhost(e);
 				e->destroy();
 			}
 		}, true);
