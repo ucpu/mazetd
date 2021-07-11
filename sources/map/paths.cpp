@@ -1,6 +1,5 @@
+#include <cage-core/tasks.h>
 #include <cage-core/enumerate.h>
-#include <cage-core/concurrent.h>
-#include <cage-core/threadPool.h>
 #include <cage-core/pointerRangeHolder.h>
 
 #include "generate.h"
@@ -77,12 +76,12 @@ void Directions::update()
 
 namespace
 {
-	void directionsThreadEntry(Waypoints *waypoints, uint32 thrId, uint32)
+	void directionsThreadEntry(Waypoints *waypoints, uint32 thrId)
 	{
 		waypoints->waypoints[thrId]->update();
 	}
 
-	void waypointThreadEntry(Waypoints *waypoints, uint32 thrId, uint32)
+	void waypointThreadEntry(Waypoints *waypoints, uint32 thrId)
 	{
 		PointerRangeHolder<uint32> path;
 		path.reserve(1000);
@@ -110,14 +109,10 @@ void Waypoints::update()
 {
 	if (waypoints.empty())
 		return;
+
 	CAGE_LOG_DEBUG(SeverityEnum::Info, "paths", "recomputing paths");
-	static Holder<ThreadPool> threadPool;
-	if (!threadPool || threadPool->threadsCount() != waypoints.size())
-		threadPool = newThreadPool("paths_", waypoints.size());
-	threadPool->function.bind<Waypoints *, &directionsThreadEntry>(this);
-	threadPool->run();
-	threadPool->function.bind<Waypoints *, &waypointThreadEntry>(this);
-	threadPool->run();
+	tasksRun(Delegate<void(uint32)>().bind<Waypoints *, &directionsThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
+	tasksRun(Delegate<void(uint32)>().bind<Waypoints *, &waypointThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
 
 	{ // average full path
 		uint32 sum = 0;

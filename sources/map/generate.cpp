@@ -1,6 +1,6 @@
+#include <cage-core/tasks.h>
 #include <cage-core/geometry.h>
 #include <cage-core/marchingCubes.h>
-#include <cage-core/threadPool.h>
 #include <cage-core/mesh.h>
 #include <cage-core/image.h>
 #include <cage-core/collider.h>
@@ -35,9 +35,8 @@ namespace
 			}
 		};
 
-		void makeChunk(uint32 meshIndex)
+		void makeChunk(const Holder<Mesh> &msh)
 		{
-			const Holder<Mesh> &msh = meshes[meshIndex];
 			uint32 resolution = 0;
 			{
 				MeshUnwrapConfig cfg;
@@ -78,14 +77,6 @@ namespace
 			chunksUploadQueue.push(std::move(chunk));
 		}
 
-		void chunksThreadEntry(uint32 idx, uint32 cnt)
-		{
-			uint32 b = 0, e = 0;
-			threadPoolTasksSplit(idx, cnt, meshes.size(), b, e);
-			for (uint32 i = b; i < e; i++)
-				makeChunk(i);
-		}
-
 		void makeMeshes()
 		{
 			{ // reset rendering queues and assets
@@ -123,9 +114,7 @@ namespace
 				meshes = meshChunking(+msh, cfg);
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "mesh chunks: " + meshes.size());
-			Holder<ThreadPool> thrs = newThreadPool();
-			thrs->function.bind<Maker, &Maker::chunksThreadEntry>(this);
-			thrs->run();
+			tasksRun<const Holder<Mesh>>(Delegate<void(const Holder<Mesh> &)>().bind<Maker, &Maker::makeChunk>(this), *meshes, -10);
 		}
 	};
 

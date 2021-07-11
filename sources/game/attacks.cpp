@@ -138,6 +138,8 @@ namespace
 
 	void engineUpdate()
 	{
+		if (!gameRunning)
+			return;
 		SpatialQuery *monstersQuery = spatialMonsters();
 		SpatialQuery *buildingsQuery = spatialStructures();
 		std::vector<Monster> monsters;
