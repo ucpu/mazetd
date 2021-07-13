@@ -128,7 +128,8 @@ struct AugmentComponent
 
 struct MonsterBaseProperties
 {
-	uint32 money = 1;
+	StringLiteral name;
+	uint32 money = 10;
 	uint32 damage = 1;
 	sint32 life = 100;
 	real speed = 0.05;

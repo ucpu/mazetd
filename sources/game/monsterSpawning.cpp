@@ -7,12 +7,14 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
+
+void updateSpawningMonsterPropertiesScreen(const MonsterBaseProperties &monster);
 
 namespace
 {
 	struct MonsterSpawningProperties : public MonsterBaseProperties
 	{
-		StringLiteral name;
 		uint32 modelName = 0;
 		uint32 animationName = 0;
 	};
@@ -45,49 +47,21 @@ namespace
 		return 1u << bitsPickOneIndex(bits);
 	}
 
-	struct SpawningGroup
+	struct SpawningGroup : public MonsterSpawningProperties
 	{
-		StringLiteral name;
-		
-		uint32 monstersBits = 0;
-		bool pickOneMonsterType = false;
-
 		uint32 spawnPointsBits = m;
 		bool pickOneSpawnPoint = false;
-		bool pickShortestSpawnPoint = false;
+		bool pickShortestSpawnPoint = true;
 
-		uint32 spawnRounds = 1;
+		uint32 spawnRounds = 10;
 		uint32 spawnSimultaneously = 1;
-		uint32 spawnPeriod = 30;
-		uint32 spawnDelay = 60;
+		uint32 spawnPeriod = 15;
+		uint32 spawnDelay = 90;
 
 		double order = 0;
-		double orderAddition = 1;
-		double orderFactor = 1;
+		uint32 updateIndex = 0;
 
-		void updateOrder()
-		{
-			order += orderAddition;
-			orderAddition *= orderFactor;
-		}
-
-		void prepare()
-		{
-			monstersBits = bitsApplyLimit(monstersBits, numeric_cast<uint32>(monsterSpawningProperties.size()));
-			if (pickOneMonsterType)
-				monstersBits = bitsLimitRandomOne(monstersBits);
-
-			if (pickShortestSpawnPoint)
-			{
-				spawnPointsBits = 1u << globalWaypoints->minDistanceSpawner;
-			}
-			else
-			{
-				spawnPointsBits = bitsApplyLimit(spawnPointsBits, numeric_cast<uint32>(globalWaypoints->waypoints.size()));
-				if (pickOneSpawnPoint)
-					spawnPointsBits = bitsLimitRandomOne(spawnPointsBits);
-			}
-		}
+		std::function<void(SpawningGroup &)> updateFnc;
 
 		void spawnOne()
 		{
@@ -96,14 +70,10 @@ namespace
 			const uint32 spawnPointIndex = bitsPickOneIndex(spawnPointsBits);
 			const uint32 position = globalWaypoints->waypoints[spawnPointIndex]->tile;
 			e->value<PositionComponent>().tile = position;
-
-			const uint32 monsterSpawningPropsIndex = bitsPickOneIndex(monstersBits);
-			const MonsterSpawningProperties &msp = monsterSpawningProperties[monsterSpawningPropsIndex];
-			MonsterComponent &mo = e->value<MonsterComponent>();
-			(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)msp;
-
 			e->value<NameComponent>().name = string(name);
 
+			MonsterComponent &mo = e->value<MonsterComponent>();
+			(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)*this;
 			mo.visitedWaypointsBits = 1u << spawnPointIndex;
 			mo.timeToArrive = gameTime + numeric_cast<uint32>(stor(globalWaypoints->find(position, mo.visitedWaypointsBits).distance) / mo.speed);
 
@@ -113,9 +83,9 @@ namespace
 
 			Entity *f = e->value<EngineComponent>().entity;
 			CAGE_COMPONENT_ENGINE(Render, r, f);
-			r.object = msp.modelName;
+			r.object = modelName;
 			CAGE_COMPONENT_ENGINE(SkeletalAnimation, a, f);
-			a.name = msp.animationName;
+			a.name = animationName;
 			a.offset = randomRange(0.f, 1e6f);
 		}
 
@@ -134,6 +104,26 @@ namespace
 			for (uint32 simultaneously = 0; simultaneously < spawnSimultaneously; simultaneously++)
 				spawnOne();
 		}
+
+		void prepare()
+		{
+			if (pickShortestSpawnPoint)
+				spawnPointsBits = 1u << globalWaypoints->minDistanceSpawner;
+			else
+			{
+				spawnPointsBits = bitsApplyLimit(spawnPointsBits, numeric_cast<uint32>(globalWaypoints->waypoints.size()));
+				if (pickOneSpawnPoint)
+					spawnPointsBits = bitsLimitRandomOne(spawnPointsBits);
+			}
+
+			updateSpawningMonsterPropertiesScreen(*this);
+		}
+
+		void update()
+		{
+			updateFnc(*this);
+			updateIndex++;
+		}
 	};
 
 	std::vector<SpawningGroup> spawningGroups;
@@ -149,16 +139,17 @@ namespace
 			return;
 
 #ifdef CAGE_DEBUG
-		constexpr const uint32 monsterLimit = 50;
+		constexpr const uint32 totalMonsterLimit = 30;
 #else
-		constexpr const uint32 monsterLimit = 100;
+		constexpr const uint32 totalMonsterLimit = 200;
 #endif // CAGE_DEBUG
+		const uint32 monsterLimit = min(gameTime / 30 / 2, totalMonsterLimit);
 		if (gameEntities()->component<MonsterComponent>()->count() >= monsterLimit)
 			return;
 
 		spawning = spawningGroups.front();
 		spawning.prepare();
-		spawningGroups.front().updateOrder();
+		spawningGroups.front().update();
 		std::sort(spawningGroups.begin(), spawningGroups.end(), [](const SpawningGroup &a, const SpawningGroup &b) {
 			return a.order < b.order;
 		});
@@ -172,15 +163,8 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Frog.object");
 			msp.animationName = HashString("mazetd/monsters/Frog.glb?Frog_Jump");
 			msp.immunities = DamageTypeFlags::Water;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Rat";
-			msp.modelName = HashString("mazetd/monsters/Rat.object");
-			msp.animationName = HashString("mazetd/monsters/Rat.glb?Rat_Walk");
-			msp.immunities = DamageTypeFlags::Water;
+			msp.life *= 0.5;
+			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -190,6 +174,8 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Snake.object");
 			msp.animationName = HashString("mazetd/monsters/Snake.glb?Snake_Walk");
 			msp.immunities = DamageTypeFlags::Poison;
+			msp.life *= 0.7;
+			msp.speed *= 0.8;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -198,6 +184,8 @@ namespace
 			msp.name = "Spider";
 			msp.modelName = HashString("mazetd/monsters/Spider.object");
 			msp.animationName = HashString("mazetd/monsters/Spider.glb?Spider_Walk");
+			msp.life *= 0.7;
+			msp.speed *= 0.8;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -208,6 +196,62 @@ namespace
 			msp.animationName = HashString("mazetd/monsters/Wasp.glb?Wasp_Flying");
 			msp.immunities = DamageTypeFlags::Poison;
 			msp.monsterClass = MonsterClassFlags::Flyer;
+			msp.life *= 0.5;
+			msp.speed *= 1.1;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Stegosaurus";
+			msp.modelName = HashString("mazetd/monsters/Stegosaurus.object");
+			msp.animationName = HashString("mazetd/monsters/Stegosaurus.glb?Stegosaurus_Walk");
+			msp.immunities = DamageTypeFlags::Fire;
+			msp.life *= 3;
+			msp.speed *= 0.9;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Rat";
+			msp.modelName = HashString("mazetd/monsters/Rat.object");
+			msp.animationName = HashString("mazetd/monsters/Rat.glb?Rat_Walk");
+			msp.immunities = DamageTypeFlags::Water;
+			msp.life *= 0.7;
+			msp.speed *= 1.2;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Velociraptor";
+			msp.modelName = HashString("mazetd/monsters/Velociraptor.object");
+			msp.animationName = HashString("mazetd/monsters/Velociraptor.glb?Velociraptor_Walk");
+			msp.life *= 3;
+			msp.speed *= 1.5;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Slime";
+			msp.modelName = HashString("mazetd/monsters/Slime.object");
+			msp.animationName = HashString("mazetd/monsters/Slime.glb?Slime_Idle");
+			msp.immunities = DamageTypeFlags::Fire | DamageTypeFlags::Magic;
+			msp.life *= 1;
+			msp.speed *= 0.6;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Triceratops";
+			msp.modelName = HashString("mazetd/monsters/Triceratops.object");
+			msp.animationName = HashString("mazetd/monsters/Triceratops.glb?Triceratops_Walk");
+			msp.immunities = DamageTypeFlags::Poison;
+			msp.life *= 3;
+			msp.speed *= 1;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -217,6 +261,52 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Bat.object");
 			msp.animationName = HashString("mazetd/monsters/Bat.glb?Bat_Flying");
 			msp.monsterClass = MonsterClassFlags::Flyer;
+			msp.life *= 1;
+			msp.speed *= 0.9;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Apatosaurus";
+			msp.modelName = HashString("mazetd/monsters/Apatosaurus.object");
+			msp.animationName = HashString("mazetd/monsters/Apatosaurus.glb?Apatosaurus_Walk");
+			msp.immunities = DamageTypeFlags::Physical;
+			msp.life *= 5;
+			msp.speed *= 0.6;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Skeleton";
+			msp.modelName = HashString("mazetd/monsters/Skeleton.object");
+			msp.animationName = HashString("mazetd/monsters/Skeleton.glb?Skeleton_Running");
+			msp.immunities = DamageTypeFlags::Physical | DamageTypeFlags::Magic;
+			msp.life *= 2;
+			msp.speed *= 0.9;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Parasaurolophus";
+			msp.modelName = HashString("mazetd/monsters/Parasaurolophus.object");
+			msp.animationName = HashString("mazetd/monsters/Parasaurolophus.glb?Parasaurolophus_Walk");
+			msp.immunities = DamageTypeFlags::Water;
+			msp.life *= 3;
+			msp.speed *= 1.2;
+			monsterSpawningProperties.push_back(msp);
+		}
+
+		{
+			MonsterSpawningProperties msp;
+			msp.name = "Trex";
+			msp.modelName = HashString("mazetd/monsters/Trex.object");
+			msp.animationName = HashString("mazetd/monsters/Trex.glb?TRex_Walk");
+			msp.immunities = DamageTypeFlags::Physical;
+			msp.life *= 3;
+			msp.speed *= 1.1;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -227,77 +317,8 @@ namespace
 			msp.animationName = HashString("mazetd/monsters/Dragon.glb?Dragon_Flying");
 			msp.immunities = DamageTypeFlags::Fire | DamageTypeFlags::Magic;
 			msp.monsterClass = MonsterClassFlags::Flyer;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Skeleton";
-			msp.modelName = HashString("mazetd/monsters/Skeleton.object");
-			msp.animationName = HashString("mazetd/monsters/Skeleton.glb?Skeleton_Running");
-			msp.immunities = DamageTypeFlags::Physical | DamageTypeFlags::Magic;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Slime";
-			msp.modelName = HashString("mazetd/monsters/Slime.object");
-			msp.animationName = HashString("mazetd/monsters/Slime.glb?Slime_Idle");
-			msp.immunities = DamageTypeFlags::Fire | DamageTypeFlags::Magic;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Apatosaurus";
-			msp.modelName = HashString("mazetd/monsters/Apatosaurus.object");
-			msp.animationName = HashString("mazetd/monsters/Apatosaurus.glb?Apatosaurus_Walk");
-			msp.immunities = DamageTypeFlags::Physical;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Parasaurolophus";
-			msp.modelName = HashString("mazetd/monsters/Parasaurolophus.object");
-			msp.animationName = HashString("mazetd/monsters/Parasaurolophus.glb?Parasaurolophus_Walk");
-			msp.immunities = DamageTypeFlags::Water;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Stegosaurus";
-			msp.modelName = HashString("mazetd/monsters/Stegosaurus.object");
-			msp.animationName = HashString("mazetd/monsters/Stegosaurus.glb?Stegosaurus_Walk");
-			msp.immunities = DamageTypeFlags::Fire;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Trex";
-			msp.modelName = HashString("mazetd/monsters/Trex.object");
-			msp.animationName = HashString("mazetd/monsters/Trex.glb?TRex_Walk");
-			msp.immunities = DamageTypeFlags::Physical;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Triceratops";
-			msp.modelName = HashString("mazetd/monsters/Triceratops.object");
-			msp.animationName = HashString("mazetd/monsters/Triceratops.glb?Triceratops_Walk");
-			msp.immunities = DamageTypeFlags::Poison;
-			monsterSpawningProperties.push_back(msp);
-		}
-
-		{
-			MonsterSpawningProperties msp;
-			msp.name = "Velociraptor";
-			msp.modelName = HashString("mazetd/monsters/Velociraptor.object");
-			msp.animationName = HashString("mazetd/monsters/Velociraptor.glb?Velociraptor_Walk");
+			msp.life *= 3;
+			msp.speed *= 1.3;
 			monsterSpawningProperties.push_back(msp);
 		}
 	}
@@ -307,9 +328,16 @@ namespace
 		for (const auto &it : enumerate(monsterSpawningProperties))
 		{
 			SpawningGroup sg;
-			sg.name = it->name;
-			sg.monstersBits = 1u << it.index;
-			sg.pickShortestSpawnPoint = true;
+			(MonsterSpawningProperties &)sg = *it;
+			sg.spawnPeriod = numeric_cast<uint32>(sg.spawnPeriod / (sg.speed * 20));
+			sg.updateFnc = [](SpawningGroup &sg) {
+				sg.money += 1;
+				sg.life += 100 + sg.life * 0.05;
+				sg.speed += 0.0005;
+				sg.order += (randomChance() * 0.01 + sg.updateIndex + 1).value;
+			};
+			for (uint32 i = 0; i < it.index / 4; i++)
+				sg.updateFnc(sg);
 			spawningGroups.push_back(sg);
 		}
 	}

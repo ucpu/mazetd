@@ -49,6 +49,39 @@ namespace
 		EntityManager *ents = engineGui()->entities();
 		sint32 index = 0;
 
+		{
+			struct Pair
+			{
+				TileFlags flag = TileFlags::None;
+				StringLiteral name;
+			};
+
+			constexpr const Pair pairs[] = {
+				Pair{ TileFlags::Water, "Water Tile" },
+				Pair{ TileFlags::Sun, "Sun Tile" },
+				Pair{ TileFlags::Wind, "Wind Tile" },
+				Pair{ TileFlags::Snow, "Snow Tile" },
+				Pair{ TileFlags::Waypoint, "Monsters Waypoint" },
+				Pair{ TileFlags::Mana, "Harvestable Mana" },
+			};
+
+			const TileFlags flags = globalGrid->flags[playerCursorTile];
+
+			for (const auto &p : pairs)
+			{
+				if (none(flags & p.flag))
+					continue;
+
+				Entity *e = ents->createUnique();
+				CAGE_COMPONENT_GUI(Parent, pp, e);
+				pp.parent = 201;
+				pp.order = index++;
+				CAGE_COMPONENT_GUI(Label, lab, e);
+				CAGE_COMPONENT_GUI(Text, txt, e);
+				txt.value = string(p.name);
+			}
+		}
+
 		entitiesVisitor(gameEntities(), [&](Entity *g, const PositionComponent &po, const NameComponent &nm) {
 			if (po.tile != playerCursorTile)
 				return;
@@ -96,39 +129,6 @@ namespace
 				}
 			}
 		});
-
-		{
-			struct Pair
-			{
-				TileFlags flag = TileFlags::None;
-				StringLiteral name;
-			};
-
-			constexpr const Pair pairs[] = {
-				Pair{ TileFlags::Mana, "Harvestable Mana" },
-				Pair{ TileFlags::Waypoint, "Monsters Waypoint" },
-				Pair{ TileFlags::Water, "Water Tile" },
-				Pair{ TileFlags::Sun, "Sun Tile" },
-				Pair{ TileFlags::Wind, "Wind Tile" },
-				Pair{ TileFlags::Snow, "Snow Tile" },
-			};
-
-			const TileFlags flags = globalGrid->flags[playerCursorTile];
-
-			for (const auto &p : pairs)
-			{
-				if (none(flags & p.flag))
-					continue;
-
-				Entity *e = ents->createUnique();
-				CAGE_COMPONENT_GUI(Parent, pp, e);
-				pp.parent = 201;
-				pp.order = index++;
-				CAGE_COMPONENT_GUI(Label, lab, e);
-				CAGE_COMPONENT_GUI(Text, txt, e);
-				txt.value = string(p.name);
-			}
-		}
 	}
 
 	void engineUpdate()
@@ -178,6 +178,96 @@ namespace
 	}
 }
 
+void updateSpawningMonsterPropertiesScreen(const MonsterBaseProperties &mo)
+{
+	removeGuiEntitiesWithParent(501);
+
+	EntityManager *ents = engineGui()->entities();
+	sint32 index = 0;
+
+	{ // name
+		Entity *e = ents->createUnique();
+		CAGE_COMPONENT_GUI(Parent, pp, e);
+		pp.parent = 501;
+		pp.order = index++;
+		CAGE_COMPONENT_GUI(Label, lab, e);
+		CAGE_COMPONENT_GUI(Text, txt, e);
+		txt.value = string(mo.name);
+	}
+
+	if (mo.monsterClass != MonsterClassFlags::Regular)
+	{ // monster class
+		Entity *e = ents->createUnique();
+		CAGE_COMPONENT_GUI(Parent, pp, e);
+		pp.parent = 501;
+		pp.order = index++;
+		CAGE_COMPONENT_GUI(Label, lab, e);
+		CAGE_COMPONENT_GUI(Text, txt, e);
+		txt.value = "Class:";
+		struct Pair
+		{
+			MonsterClassFlags flag = MonsterClassFlags::None;
+			StringLiteral name;
+		};
+		constexpr const Pair pairs[] = {
+			Pair{ MonsterClassFlags::Regular, "Regular" },
+			Pair{ MonsterClassFlags::Flyer, "Flyer" },
+			Pair{ MonsterClassFlags::Boss, "Boss" },
+		};
+		for (const auto &it : pairs)
+			if (any(mo.monsterClass & it.flag))
+				txt.value += stringizer() + " " + string(it.name);
+	}
+
+	if (mo.immunities != DamageTypeFlags::None)
+	{ // immunities
+		Entity *e = ents->createUnique();
+		CAGE_COMPONENT_GUI(Parent, pp, e);
+		pp.parent = 501;
+		pp.order = index++;
+		CAGE_COMPONENT_GUI(Label, lab, e);
+		CAGE_COMPONENT_GUI(Text, txt, e);
+		txt.value = "Immunities:";
+		struct Pair
+		{
+			DamageTypeFlags flag = DamageTypeFlags::None;
+			StringLiteral name;
+		};
+		constexpr const Pair pairs[] = {
+			Pair{ DamageTypeFlags::Physical, "Physical" },
+			Pair{ DamageTypeFlags::Fire, "Fire" },
+			Pair{ DamageTypeFlags::Water, "Water" },
+			Pair{ DamageTypeFlags::Poison, "Poison" },
+			Pair{ DamageTypeFlags::Magic, "Magic" },
+			Pair{ DamageTypeFlags::Slow, "Slow" },
+			Pair{ DamageTypeFlags::Haste, "Haste" },
+		};
+		for (const auto &it : pairs)
+			if (any(mo.immunities & it.flag))
+				txt.value += stringizer() + " " + string(it.name);
+	}
+
+	{ // life
+		Entity *e = ents->createUnique();
+		CAGE_COMPONENT_GUI(Parent, pp, e);
+		pp.parent = 501;
+		pp.order = index++;
+		CAGE_COMPONENT_GUI(Label, lab, e);
+		CAGE_COMPONENT_GUI(Text, txt, e);
+		txt.value = stringizer() + "Life: " + mo.life;
+	}
+
+	{ // speed
+		Entity *e = ents->createUnique();
+		CAGE_COMPONENT_GUI(Parent, pp, e);
+		pp.parent = 501;
+		pp.order = index++;
+		CAGE_COMPONENT_GUI(Label, lab, e);
+		CAGE_COMPONENT_GUI(Text, txt, e);
+		txt.value = stringizer() + "Speed: " + (mo.speed * 20);
+	}
+}
+
 void setScreenGame()
 {
 	cleanGui();
@@ -193,7 +283,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(200);
 		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
-		sc.alignment = vec2(0, 1);
+		sc.alignment = vec2(0, 0);
 	}
 
 	{
@@ -433,5 +523,25 @@ void setScreenGame()
 			"Hastening",
 		};
 		generateBuildingButtons(413, 1300, names);
+	}
+
+	// monster properties
+
+	{
+		Entity *e = ents->create(500);
+		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		sc.alignment = vec2(0, 1);
+	}
+
+	{
+		Entity *e = ents->create(501);
+		CAGE_COMPONENT_GUI(Parent, pp, e);
+		pp.parent = 500;
+		CAGE_COMPONENT_GUI(Spoiler, sp, e);
+		sp.collapsed = false;
+		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		ll.vertical = true;
+		CAGE_COMPONENT_GUI(Text, txt, e);
+		txt.value = "Spawning";
 	}
 }

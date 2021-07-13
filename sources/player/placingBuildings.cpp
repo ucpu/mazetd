@@ -153,7 +153,7 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.firingPeriod = 30;
 			a.firingRange = 5;
-			a.splashRadius = 4;
+			a.splashRadius = 3;
 			a.damage = 10;
 			a.damageType = DamageTypeFlags::Physical;
 			a.effectType = EffectTypeEnum::Physical;
@@ -199,7 +199,7 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.firingPeriod = 30;
 			a.firingRange = 6;
-			a.splashRadius = 2;
+			a.splashRadius = 1.5;
 			a.damage = 100;
 			a.manaCost = 30;
 			a.damageType = DamageTypeFlags::Magic;

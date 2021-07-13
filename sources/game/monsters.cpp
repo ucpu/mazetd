@@ -87,9 +87,9 @@ namespace
 			{
 				const MonsterDebuffComponent &deb = e->value<MonsterDebuffComponent>(debComp);
 				if (any(deb.type & DamageTypeFlags::Slow) && none(deb.type & DamageTypeFlags::Haste))
-					mv.timeEnd += (mv.timeEnd - mv.timeStart) * 2;
+					mv.timeEnd += 3 * (mv.timeEnd - mv.timeStart) / 2;
 				if (none(deb.type & DamageTypeFlags::Slow) && any(deb.type & DamageTypeFlags::Haste))
-					mv.timeEnd -= (mv.timeEnd - mv.timeStart) / 2;
+					mv.timeEnd -= 1 * (mv.timeEnd - mv.timeStart) / 2;
 			}
 		}, true);
 	}
