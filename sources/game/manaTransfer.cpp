@@ -38,9 +38,11 @@ namespace
 		EntityComponent *distrComp = gameEntities()->component<ManaDistributorComponent>();
 		EntityComponent *storComp = gameEntities()->component<ManaStorageComponent>();
 		EntityComponent *potenComp = gameEntities()->component<PotentialComponent>();
+		EntityComponent *pivotComp = gameEntities()->component<PivotComponent>();
+		EntityComponent *posComp = gameEntities()->component<PositionComponent>();
 		SpatialQuery *buildingsQuery = spatialStructures();
 
-		if ((gameTime % 5) == 0)
+		if ((gameTime % 6) == 0)
 		{
 			// distribute mana
 			entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, const PotentialComponent &pot, ManaStorageComponent &stor) {
@@ -83,8 +85,8 @@ namespace
 
 				{
 					EffectConfig cfg;
-					cfg.pos1 = mp + vec3(0, e->value<PivotComponent>().elevation, 0);
-					cfg.pos2 = globalGrid->center(r.e->value<PositionComponent>().tile) + vec3(0, r.e->value<PivotComponent>().elevation, 0);
+					cfg.pos1 = mp + vec3(0, e->value<PivotComponent>(pivotComp).elevation, 0);
+					cfg.pos2 = globalGrid->center(r.e->value<PositionComponent>(posComp).tile) + vec3(0, r.e->value<PivotComponent>(pivotComp).elevation, 0);
 					cfg.type = EffectTypeEnum::Mana;
 					renderEffect(cfg);
 				}
@@ -105,7 +107,7 @@ namespace
 				pot.potential = pot.modified;
 			});
 		}
-		else for (uint32 iter = 0; iter < 3; iter++)
+		else for (uint32 iter = 0; iter < 5; iter++)
 		{
 			// spread potentials
 			entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, PotentialComponent &pot) {

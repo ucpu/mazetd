@@ -42,8 +42,9 @@ namespace
 		placeNewMana();
 
 		entitiesVisitor(gameEntities(), [](Entity *e, const PositionComponent &pos, const ManaCollectorComponent &col, ManaStorageComponent &stor) {
-			if (stor.mana >= stor.capacity)
+			if (stor.mana + col.collectAmount > stor.capacity)
 				return;
+
 			const ivec2 mp2 = globalGrid->position(pos.tile);
 			const vec3 mp3 = globalGrid->center(pos.tile);
 			const sint32 xa = mp2[0] - col.range.value - 0.5;
@@ -67,7 +68,7 @@ namespace
 						continue;
 
 					f &= ~TileFlags::Mana;
-					stor.mana++;
+					stor.mana += col.collectAmount;
 
 					{
 						EffectConfig cfg;
@@ -77,7 +78,7 @@ namespace
 						renderEffect(cfg);
 					}
 
-					if (stor.mana >= stor.capacity)
+					if (stor.mana + col.collectAmount > stor.capacity)
 						return;
 				}
 			}

@@ -32,71 +32,109 @@ namespace
 		MonsterComponent *m = nullptr;
 	};
 
-	Monster monster(uint32 name, const vec3 &towerPosition)
+	struct Augment : public Sorting
 	{
-		Monster m;
-		(Sorting &)m = sorting(name, towerPosition);
-		m.m = &m.e->value<MonsterComponent>();
-		return m;
+		AugmentComponent *a = nullptr;
+	};
+
+	Augment findAugment(AttackComponent &att, SpatialQuery *buildingsQuery, const vec3 &mp)
+	{
+		if (!att.useAugments)
+			return {};
+
+		buildingsQuery->intersection(Sphere(mp, 5));
+		std::vector<Augment> augs;
+		augs.reserve(buildingsQuery->result().size());
+		for (uint32 n : buildingsQuery->result())
+		{
+			Augment a;
+			(Sorting &)a = sorting(n, mp);
+			if (!a.e->has<AugmentComponent>())
+				continue;
+			a.a = &a.e->value<AugmentComponent>();
+			augs.push_back(a);
+		}
+		if (augs.empty())
+			return {};
+
+		std::partial_sort(augs.begin(), augs.begin() + 1, augs.end(), [](const Augment &a, const Augment &b) {
+			return a.d < b.d;
+		});
+
+		const Augment &a = augs[0];
+		att.damage *= a.a->damageMultiplier;
+		att.damageType = a.a->damageType;
+		att.effectType = a.a->effectType;
+
+		return a;
+	}
+
+	void filterMonsterTargets(const AttackComponent &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
+	{
+		monsters.clear();
+		monsters.reserve(monstersQuery->result().size());
+		for (uint32 n : monstersQuery->result())
+		{
+			Monster m;
+			(Sorting &)m = sorting(n, mp);
+			m.m = &m.e->value<MonsterComponent>();
+			if (none(att.damageType & ~m.m->immunities))
+				continue;
+			if (none(att.targetClasses & m.m->monsterClass))
+				continue;
+			monsters.push_back(m);
+		}
 	}
 
 	bool findTargetMonsters(const AttackComponent &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
 	{
-		monsters.clear();
 		monstersQuery->intersection(Sphere(mp, att.firingRange));
 		if (monstersQuery->result().empty())
 			return false;
 
-		monsters.reserve(monstersQuery->result().size());
-		for (uint32 n : monstersQuery->result())
-			monsters.push_back(monster(n, mp));
+		filterMonsterTargets(att, monstersQuery, monsters, mp);
+		if (monsters.empty())
+			return false;
+
 		std::partial_sort(monsters.begin(), monsters.begin() + 1, monsters.end(), [](const Monster &a, const Monster &b) {
 			return a.m->timeToArrive < b.m->timeToArrive;
-			});
+		});
 		return true;
 	}
 
-	void applyAugment(AttackComponent &att, SpatialQuery *buildingsQuery, const vec3 &mp, const vec3 &mpp)
+	bool checkManaCost(const AttackComponent &att, Entity *e)
 	{
-		if (!att.useAugments)
+		if (att.manaCost > 0)
+		{
+			ManaStorageComponent &mn = e->value<ManaStorageComponent>();
+			if (mn.mana < att.manaCost)
+				return false;
+			mn.mana -= att.manaCost;
+		}
+		return true;
+	}
+
+	void effectAugment(AttackComponent &att, const Augment &augment, const vec3 &mpp)
+	{
+		if (!augment.e)
 			return;
-		buildingsQuery->intersection(Sphere(mp, 5));
-		std::vector<Sorting> augs;
-		augs.reserve(buildingsQuery->result().size());
-		for (uint32 n : buildingsQuery->result())
-		{
-			Sorting s = sorting(n, mp);
-			if (s.e->has<AugmentComponent>())
-				augs.push_back(s);
-		}
-		if (!augs.empty())
-		{
-			std::partial_sort(augs.begin(), augs.begin() + 1, augs.end(), [](const Sorting &a, const Sorting &b) {
-				return a.d < b.d;
-				});
 
-			const Sorting &aug = augs[0];
-			ManaStorageComponent &mn = aug.e->value<ManaStorageComponent>();
-			if (mn.mana >= att.damage)
-			{
-				mn.mana -= att.damage;
+		// effect from the augment to the tower
+		EffectConfig cfg;
+		cfg.pos1 = augment.p + vec3(0, augment.e->value<PivotComponent>().elevation, 0);
+		cfg.pos2 = mpp;
+		cfg.type = att.effectType;
+		renderEffect(cfg);
+	}
 
-				{
-					const AugmentComponent &a = aug.e->value<AugmentComponent>();
-					att.damage *= 10;
-					att.damageType = a.damageType;
-					att.effectType = a.effectType;
-				}
-
-				{ // effect from the augment to the tower
-					EffectConfig cfg;
-					cfg.pos1 = aug.p + vec3(0, aug.e->value<PivotComponent>().elevation, 0);
-					cfg.pos2 = mpp;
-					cfg.type = att.effectType;
-					renderEffect(cfg);
-				}
-			}
-		}
+	void effectMonster(const AttackComponent &att, const Monster &m, const vec3 &mpp)
+	{
+		// effect from the tower to the monster
+		EffectConfig cfg;
+		cfg.pos1 = mpp;
+		cfg.pos2 = m.p + vec3(0, m.e->value<PivotComponent>().elevation, 0);
+		cfg.type = att.effectType;
+		renderEffect(cfg);
 	}
 
 	void applySplash(const AttackComponent &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
@@ -106,10 +144,7 @@ namespace
 			// search for all monsters inside the splash radius
 			monstersQuery->intersection(Sphere(monsters[0].p, att.splashRadius));
 			CAGE_ASSERT(!monstersQuery->result().empty());
-			monsters.clear();
-			monsters.reserve(monstersQuery->result().size());
-			for (uint32 n : monstersQuery->result())
-				monsters.push_back(monster(n, mp));
+			filterMonsterTargets(att, monstersQuery, monsters, mp);
 		}
 		else
 		{
@@ -118,31 +153,46 @@ namespace
 		}
 	}
 
-	void applyAttack(const Monster &m, const AttackComponent &att)
+	void attackMonster(const Monster &m, const AttackComponent &att)
 	{
-		if (att.damageType == DamageTypeEnum::None)
-			return;
+		constexpr DamageTypeFlags attackTypes = DamageTypeFlags::Physical | DamageTypeFlags::Fire | DamageTypeFlags::Water | DamageTypeFlags::Poison | DamageTypeFlags::Magic;
+		if (any(att.damageType & attackTypes & ~m.m->immunities))
+			m.m->life -= att.damage;
 
-		m.m->life -= att.damage;
+		constexpr DamageTypeFlags debuffTypes = DamageTypeFlags::Slow | DamageTypeFlags::Haste;
+		const DamageTypeFlags debuffs = att.damageType & debuffTypes & ~m.m->immunities;
+		if (any(debuffs))
+		{
+			MonsterDebuffComponent &md = m.e->value<MonsterDebuffComponent>();
+			md.type = debuffs;
+			md.endTime = gameTime + 30 * 5;
+		}
 	}
 
-	void applyDebuff(const Monster &m, const AttackComponent &att)
+	void effectMonster(const Monster &m, const AttackComponent &att)
 	{
-		if (att.debuffType == DebuffTypeEnum::None)
-			return;
-
-		MonsterDebuffComponent &md = m.e->value<MonsterDebuffComponent>();
-		md.type = att.debuffType;
-		md.endTime = gameTime + 30 * 5;
+		// effect around the monster
+		EffectConfig cfg;
+		cfg.pos1 = m.p + vec3(0, m.e->value<PivotComponent>().elevation, 0);
+		for (uint32 i = 0; i < 3; i++)
+		{
+			vec3 d = randomDirection3();
+			d[1] = abs(d[1]);
+			cfg.pos2 = cfg.pos1 + d * 0.5;
+			cfg.type = att.effectType;
+			renderEffect(cfg);
+		}
 	}
 
 	void engineUpdate()
 	{
 		if (!gameRunning)
 			return;
+
 		SpatialQuery *monstersQuery = spatialMonsters();
 		SpatialQuery *buildingsQuery = spatialStructures();
 		std::vector<Monster> monsters;
+
 		entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, AttackComponent &attOrig) {
 			if (attOrig.firingDelay > 0)
 			{
@@ -152,41 +202,19 @@ namespace
 
 			const vec3 mp = globalGrid->center(pos.tile);
 			const vec3 mpp = mp + vec3(0, e->value<PivotComponent>().elevation, 0);
-
-			if (!findTargetMonsters(attOrig, monstersQuery, monsters, mp))
-				return;
-
 			AttackComponent att = attOrig;
-			applyAugment(att, buildingsQuery, mp, mpp);
-
-			{ // effect from the tower to the monster
-				const Monster &m = monsters[0];
-				EffectConfig cfg;
-				cfg.pos1 = mpp;
-				cfg.pos2 = m.p + vec3(0, m.e->value<PivotComponent>().elevation, 0);
-				cfg.type = att.effectType;
-				renderEffect(cfg);
-			}
-
+			Augment augment = findAugment(att, buildingsQuery, mp);
+			if (!findTargetMonsters(att, monstersQuery, monsters, mp))
+				return;
+			if (!checkManaCost(att, e))
+				return;
+			effectAugment(att, augment, mpp);
+			effectMonster(att, monsters[0], mpp);
 			applySplash(att, monstersQuery, monsters, mp);
-
 			for (const Monster &m : monsters)
 			{
-				applyAttack(m, att);
-				applyDebuff(m, att);
-
-				{ // effect from the monster
-					EffectConfig cfg;
-					cfg.pos1 = m.p + vec3(0, m.e->value<PivotComponent>().elevation, 0);
-					for (uint32 i = 0; i < 3; i++)
-					{
-						vec3 d = randomDirection3();
-						d[1] = abs(d[1]);
-						cfg.pos2 = cfg.pos1 + d * 0.5;
-						cfg.type = att.effectType;
-						renderEffect(cfg);
-					}
-				}
+				attackMonster(m, att);
+				effectMonster(m, att);
 			}
 
 			attOrig.firingDelay += att.firingPeriod;

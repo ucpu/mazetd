@@ -355,14 +355,13 @@ void setScreenGame()
 		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
 		ll.vertical = true;
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Attacks";
+		txt.value = "Towers";
 	}
 
 	{
 		constexpr const char *names[] = {
 			"Cheap",
 			"Fast",
-			"Heavy",
 			"Splash",
 			"Sniper",
 		};
@@ -399,18 +398,18 @@ void setScreenGame()
 		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
 		ll.vertical = true;
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Mana";
+		txt.value = "Magic";
 	}
 
 	{
 		constexpr const char *names[] = {
+			"Mage Tower",
 			"Waterwheel",
 			"Sunbloom",
 			"Windmill",
 			"Snowmill",
 			"Relay",
 			"Capacitor",
-			//"Flesheater",
 		};
 		generateBuildingButtons(412, 1200, names);
 	}

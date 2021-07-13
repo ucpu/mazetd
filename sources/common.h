@@ -1,5 +1,5 @@
-#ifndef header_normalizedReal
-#define header_normalizedReal
+#ifndef header_common
+#define header_common
 
 #include <cage-core/math.h>
 
@@ -23,4 +23,4 @@ CAGE_FORCE_INLINE constexpr real stor(sint32 v)
 
 uint32 bitCount(uint32 v);
 
-#endif // !header_normalizedReal
+#endif // !header_common

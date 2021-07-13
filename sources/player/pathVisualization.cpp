@@ -1,5 +1,6 @@
 #include <cage-core/hashString.h>
 #include <cage-core/enumerate.h>
+#include <cage-core/color.h>
 #include <cage-engine/engine.h>
 #include <cage-engine/window.h>
 
@@ -31,7 +32,8 @@ namespace
 			return;
 		const auto &wp = globalWaypoints->waypoints[waypointIndex % globalWaypoints->waypoints.size()];
 		uint32 prev = m;
-		for (uint32 tile : wp->fullPath)
+		const real colorIndexScale = 1 / real(wp->fullPath.size());
+		for (const auto it : enumerate(wp->fullPath))
 		{
 			if (prev != m)
 			{
@@ -39,13 +41,15 @@ namespace
 				e->value<PathMarkComponent>();
 				CAGE_COMPONENT_ENGINE(Transform, t, e);
 				const vec3 a = globalGrid->center(prev);
-				const vec3 b = globalGrid->center(tile);
+				const vec3 b = globalGrid->center(*it);
 				t.position = interpolate(a, b, 0.5);
 				t.orientation = quat(b - a, vec3(0, 1, 0));
 				CAGE_COMPONENT_ENGINE(Render, r, e);
 				r.object = HashString("mazetd/misc/pathMark.obj");
+				r.color = colorValueToHeatmapRgb(real(it.index) * colorIndexScale);
+				std::swap(r.color[1], r.color[2]);
 			}
-			prev = tile;
+			prev = *it;
 		}
 		waypointIndex++;
 	}

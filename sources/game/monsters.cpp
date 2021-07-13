@@ -86,15 +86,10 @@ namespace
 			if (e->has(debComp))
 			{
 				const MonsterDebuffComponent &deb = e->value<MonsterDebuffComponent>(debComp);
-				switch (deb.type)
-				{
-				case DebuffTypeEnum::Slow:
+				if (any(deb.type & DamageTypeFlags::Slow) && none(deb.type & DamageTypeFlags::Haste))
 					mv.timeEnd += (mv.timeEnd - mv.timeStart) * 2;
-					break;
-				case DebuffTypeEnum::Haste:
+				if (none(deb.type & DamageTypeFlags::Slow) && any(deb.type & DamageTypeFlags::Haste))
 					mv.timeEnd -= (mv.timeEnd - mv.timeStart) / 2;
-					break;
-				}
 			}
 		}, true);
 	}

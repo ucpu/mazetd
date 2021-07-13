@@ -5,14 +5,31 @@
 
 #include "common.h"
 
-enum class DamageTypeEnum
+enum class DamageTypeFlags
 {
 	None = 0,
-	Physical,
-	Fire,
-	Water,
-	Poison,
+	Physical = 1u << 0,
+	Fire = 1u << 1,
+	Water = 1u << 2,
+	Poison = 1u << 3,
+	Magic = 1u << 4,
+	Slow = 1u << 5,
+	Haste = 1u << 6,
 };
+
+enum class MonsterClassFlags
+{
+	None = 0,
+	Regular = 1u << 0,
+	Flyer = 1u << 1,
+	Boss = 1u << 2,
+};
+
+namespace cage
+{
+	GCHL_ENUM_BITS(DamageTypeFlags);
+	GCHL_ENUM_BITS(MonsterClassFlags);
+}
 
 enum class EffectTypeEnum
 {
@@ -31,13 +48,6 @@ enum class ManaCollectorTypeEnum
 	Sun,
 	Wind,
 	Snow,
-};
-
-enum class DebuffTypeEnum
-{
-	None = 0,
-	Slow,
-	Haste,
 };
 
 struct PositionComponent
@@ -76,12 +86,12 @@ struct TrapComponent
 struct ManaStorageComponent
 {
 	uint32 mana = 0;
-	uint32 capacity = 20;
+	uint32 capacity = 100;
 };
 
 struct ManaDistributorComponent
 {
-	uint32 transferLimit = 10;
+	uint32 transferLimit = 100;
 	real range = 5;
 };
 
@@ -92,6 +102,7 @@ struct ManaCollectorComponent
 {
 	ManaCollectorTypeEnum type = ManaCollectorTypeEnum::None;
 	real range = 7;
+	uint32 collectAmount = 1;
 };
 
 struct AttackComponent
@@ -101,15 +112,17 @@ struct AttackComponent
 	real firingRange = 0;
 	real splashRadius = 0;
 	uint32 damage = 0;
-	DamageTypeEnum damageType = DamageTypeEnum::None;
-	DebuffTypeEnum debuffType = DebuffTypeEnum::None;
+	uint32 manaCost = 0;
+	DamageTypeFlags damageType = DamageTypeFlags::None;
 	EffectTypeEnum effectType = EffectTypeEnum::None;
+	MonsterClassFlags targetClasses = MonsterClassFlags::Regular | MonsterClassFlags::Flyer | MonsterClassFlags::Boss;
 	bool useAugments = false;
 };
 
 struct AugmentComponent
 {
-	DamageTypeEnum damageType = DamageTypeEnum::None;
+	uint32 damageMultiplier = 2;
+	DamageTypeFlags damageType = DamageTypeFlags::None;
 	EffectTypeEnum effectType = EffectTypeEnum::None;
 };
 
@@ -119,6 +132,8 @@ struct MonsterBaseProperties
 	uint32 damage = 1;
 	sint32 life = 100;
 	real speed = 0.05;
+	DamageTypeFlags immunities = DamageTypeFlags::None;
+	MonsterClassFlags monsterClass = MonsterClassFlags::Regular;
 };
 
 struct MonsterComponent : public MonsterBaseProperties
@@ -130,7 +145,7 @@ struct MonsterComponent : public MonsterBaseProperties
 struct MonsterDebuffComponent
 {
 	uint32 endTime = 0;
-	DebuffTypeEnum type = DebuffTypeEnum::None;
+	DamageTypeFlags type = DamageTypeFlags::None;
 };
 
 struct EngineComponent

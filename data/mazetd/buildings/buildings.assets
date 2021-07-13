@@ -25,9 +25,9 @@ scheme = model
 uvs = false
 tangents = false
 scale = 0.7
-heavy.obj?Black.001_Black.001
-heavy.obj?DarkRock_DarkRock
-heavy.obj?LargeSquareTowerBricks_Cube.031_LightRock.001
+splash.obj?Black.001_Black.001
+splash.obj?DarkRock_DarkRock
+splash.obj?LargeSquareTowerBricks_Cube.031_LightRock.001
 
 []
 scheme = model
@@ -43,10 +43,10 @@ scheme = model
 uvs = false
 tangents = false
 scale = 0.7
-splash.obj?Black.001_Black.001
-splash.obj?Celing.001_Celing.001
-splash.obj?DarkRock.001_DarkRock.001
-splash.obj?PointyTower_Cylinder_LightRock.001
+mage.obj?Black.001_Black.001
+mage.obj?Celing.001_Celing.001
+mage.obj?DarkRock.001_DarkRock.001
+mage.obj?PointyTower_Cylinder_LightRock.001
 
 []
 scheme = model
@@ -161,9 +161,9 @@ berry-tree.obj?berries;snow
 scheme = object
 cheap.object
 fast.object
-heavy.object
-sniper.object
 splash.object
+sniper.object
+mage.object
 wall.object
 augment-fire.object
 augment-poison.object

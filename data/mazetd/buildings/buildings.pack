@@ -1,13 +1,13 @@
 []
 cheap.object
 fast.object
-heavy.object
 sniper.object
 splash.object
 wall.object
 augment-fire.object
 augment-poison.object
 augment-water.object
+mage.object
 mana-capacitor.object
 mana-relay.object
 trap-haste.object
