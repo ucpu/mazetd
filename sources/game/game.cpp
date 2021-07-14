@@ -11,6 +11,8 @@ vec3 MovementComponent::position() const
 	return interpolate(ca, cb, fac);
 }
 
+void setScreenGameOver();
+
 namespace
 {
 	Holder<EntityManager> initializeManager()
@@ -44,6 +46,8 @@ namespace
 	{
 		if (gameRunning)
 			gameTime++;
+		if (playerHealth <= 0)
+			setScreenGameOver();
 	}
 
 	void gameReset()

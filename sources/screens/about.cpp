@@ -16,36 +16,23 @@ void setScreenAbout()
 
 	{
 		Entity *e = ents->create(1);
-		CAGE_COMPONENT_GUI(LayoutSplitter, l, e);
-		l.vertical = true;
-		l.inverse = true;
+		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		sc.alignment = vec2(0, 1);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		CAGE_COMPONENT_GUI(Parent, p, e);
-		p.parent = 1;
-		p.order = 2;
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
-		sc.alignment = vec2(0, 0.5);
-	}
-
-	{
-		Entity *e = ents->create(3);
 		CAGE_COMPONENT_GUI(Parent, parent, e);
-		parent.parent = 2;
+		parent.parent = 1;
 		CAGE_COMPONENT_GUI(Button, control, e);
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Back";
+		txt.value = "Continue";
 		CAGE_COMPONENT_GUI(Event, ev, e);
 		ev.event.bind<&buttonBack>();
 	}
 
 	{
 		Entity *e = ents->create(4);
-		CAGE_COMPONENT_GUI(Parent, p, e);
-		p.parent = 1;
-		p.order = 1;
 		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
 		sc.alignment = vec2(0.45, 0.45);
 	}
@@ -60,11 +47,10 @@ void setScreenAbout()
 	}
 
 	constexpr const char *lines[] = {
-		"About",
-		"aMAZEing",
-		"tower",
-		"defense",
-		"game",
+		"aMAZEing Tower Defense",
+		"Free game",
+		"Made by Tomáš Malý",
+		"https://github.com/ucpu/mazetd",
 	};
 
 	uint32 idx = 0;

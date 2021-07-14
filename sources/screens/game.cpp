@@ -7,6 +7,8 @@
 
 uint32 structureMoneyCost(uint32 id);
 
+void setScreenGameMenu();
+
 namespace
 {
 	EventListener<void()> engineUpdateListener;

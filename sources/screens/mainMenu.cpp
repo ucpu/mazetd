@@ -1,5 +1,8 @@
 #include "screens.h"
 
+void setScreenGenerating();
+void setScreenAbout();
+
 namespace
 {
 	bool buttonStart(uint32)

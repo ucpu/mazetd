@@ -11,8 +11,3 @@ void removeGuiEntitiesWithParent(uint32 parent);
 EventDispatcher<bool()> &eventGuiClean();
 
 void setScreenMainmenu();
-void setScreenAbout();
-void setScreenGenerating();
-void setScreenGame();
-void setScreenGameMenu();
-void setScreenFinish();

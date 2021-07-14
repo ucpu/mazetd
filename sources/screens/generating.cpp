@@ -1,6 +1,8 @@
 #include "screens.h"
 #include "../grid.h"
 
+void setScreenGame();
+
 namespace
 {
 	EventListener<void()> engineUpdateListener;

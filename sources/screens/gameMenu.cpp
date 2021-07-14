@@ -1,6 +1,8 @@
 #include "screens.h"
 #include "../game.h"
 
+void setScreenGame();
+
 namespace
 {
 	bool buttonResume(uint32)
