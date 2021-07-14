@@ -5,6 +5,8 @@
 #include "../grid.h"
 #include "../game.h"
 
+uint32 structureMoneyCost(uint32 id);
+
 namespace
 {
 	EventListener<void()> engineUpdateListener;
@@ -131,10 +133,22 @@ namespace
 		});
 	}
 
+	void updateBuildingsList()
+	{
+		entitiesVisitor(engineGui()->entities(), [&](Entity *e, const GuiButtonComponent &, const GuiTextComponent &, GuiTextFormatComponent &format) {
+			const uint32 name = e->name();
+			const uint32 cost = structureMoneyCost(name);
+			if (cost == m)
+				return;
+			format.color = playerMoney < cost ? vec3(1, 0, 0) : name == playerBuildingSelection ? vec3(0, 1, 0) : vec3(1);
+		});
+	}
+
 	void engineUpdate()
 	{
 		updateTopBar();
 		updateCursor();
+		updateBuildingsList();
 	}
 
 	void guiClean()
@@ -146,17 +160,7 @@ namespace
 	bool buildingSelectionClick(uint32 id)
 	{
 		EntityManager *ents = engineGui()->entities();
-		if (playerBuildingSelection != 0 && ents->has(playerBuildingSelection))
-		{
-			Entity *e = ents->get(playerBuildingSelection);
-			e->remove(ents->component<GuiTextFormatComponent>());
-		}
 		playerBuildingSelection = id;
-		{
-			Entity *e = ents->get(playerBuildingSelection);
-			CAGE_COMPONENT_GUI(TextFormat, tf, e);
-			tf.color = vec3(1, 0, 0);
-		}
 		return true;
 	}
 
@@ -172,8 +176,113 @@ namespace
 			CAGE_COMPONENT_GUI(Button, but, e);
 			CAGE_COMPONENT_GUI(Text, txt, e);
 			txt.value = names[i];
+			CAGE_COMPONENT_GUI(TextFormat, format, e);
 			CAGE_COMPONENT_GUI(Event, evt, e);
 			evt.event.bind<&buildingSelectionClick>();
+		}
+	}
+
+	void generateBuildingsList()
+	{
+		removeGuiEntitiesWithParent(401);
+
+		EntityManager *ents = engineGui()->entities();
+
+		{
+			constexpr const char *names[] = {
+				"Wall",
+			};
+			generateBuildingButtons(401, 900, names);
+			buildingSelectionClick(900);
+		}
+
+		{
+			Entity *e = ents->create(410);
+			CAGE_COMPONENT_GUI(Parent, pp, e);
+			pp.parent = 401;
+			pp.order = 1;
+			CAGE_COMPONENT_GUI(Spoiler, sp, e);
+			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+			ll.vertical = true;
+			CAGE_COMPONENT_GUI(Text, txt, e);
+			txt.value = "Towers";
+		}
+
+		{
+			constexpr const char *names[] = {
+				"Cheap",
+				"Fast",
+				"Splash",
+				"Sniper",
+			};
+			generateBuildingButtons(410, 1000, names);
+		}
+
+		{
+			Entity *e = ents->create(411);
+			CAGE_COMPONENT_GUI(Parent, pp, e);
+			pp.parent = 401;
+			pp.order = 2;
+			CAGE_COMPONENT_GUI(Spoiler, sp, e);
+			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+			ll.vertical = true;
+			CAGE_COMPONENT_GUI(Text, txt, e);
+			txt.value = "Augments";
+		}
+
+		{
+			constexpr const char *names[] = {
+				"Fire",
+				"Water",
+				"Poison",
+			};
+			generateBuildingButtons(411, 1100, names);
+		}
+
+		{
+			Entity *e = ents->create(412);
+			CAGE_COMPONENT_GUI(Parent, pp, e);
+			pp.parent = 401;
+			pp.order = 3;
+			CAGE_COMPONENT_GUI(Spoiler, sp, e);
+			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+			ll.vertical = true;
+			CAGE_COMPONENT_GUI(Text, txt, e);
+			txt.value = "Magic";
+		}
+
+		{
+			constexpr const char *names[] = {
+				"Mage Tower",
+				"Waterwheel",
+				"Sunbloom",
+				"Windmill",
+				"Snowmill",
+				"Relay",
+				"Capacitor",
+			};
+			generateBuildingButtons(412, 1200, names);
+		}
+
+		{
+			Entity *e = ents->create(413);
+			CAGE_COMPONENT_GUI(Parent, pp, e);
+			pp.parent = 401;
+			pp.order = 4;
+			CAGE_COMPONENT_GUI(Spoiler, sp, e);
+			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+			ll.vertical = true;
+			CAGE_COMPONENT_GUI(Text, txt, e);
+			txt.value = "Traps";
+		}
+
+		{
+			constexpr const char *names[] = {
+				"Spikes",
+				"Slowing",
+				"Hastening",
+			};
+			generateBuildingButtons(413, 1300, names);
 		}
 	}
 }
@@ -428,102 +537,7 @@ void setScreenGame()
 		ll.vertical = true;
 	}
 
-	{
-		constexpr const char *names[] = {
-			"Wall",
-		};
-		generateBuildingButtons(401, 900, names);
-		buildingSelectionClick(900);
-	}
-
-	{
-		Entity *e = ents->create(410);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
-		pp.parent = 401;
-		pp.order = 1;
-		CAGE_COMPONENT_GUI(Spoiler, sp, e);
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
-		ll.vertical = true;
-		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Towers";
-	}
-
-	{
-		constexpr const char *names[] = {
-			"Cheap",
-			"Fast",
-			"Splash",
-			"Sniper",
-		};
-		generateBuildingButtons(410, 1000, names);
-	}
-
-	{
-		Entity *e = ents->create(411);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
-		pp.parent = 401;
-		pp.order = 2;
-		CAGE_COMPONENT_GUI(Spoiler, sp, e);
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
-		ll.vertical = true;
-		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Augments";
-	}
-
-	{
-		constexpr const char *names[] = {
-			"Fire",
-			"Water",
-			"Poison",
-		};
-		generateBuildingButtons(411, 1100, names);
-	}
-
-	{
-		Entity *e = ents->create(412);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
-		pp.parent = 401;
-		pp.order = 3;
-		CAGE_COMPONENT_GUI(Spoiler, sp, e);
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
-		ll.vertical = true;
-		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Magic";
-	}
-
-	{
-		constexpr const char *names[] = {
-			"Mage Tower",
-			"Waterwheel",
-			"Sunbloom",
-			"Windmill",
-			"Snowmill",
-			"Relay",
-			"Capacitor",
-		};
-		generateBuildingButtons(412, 1200, names);
-	}
-
-	{
-		Entity *e = ents->create(413);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
-		pp.parent = 401;
-		pp.order = 4;
-		CAGE_COMPONENT_GUI(Spoiler, sp, e);
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
-		ll.vertical = true;
-		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Traps";
-	}
-
-	{
-		constexpr const char *names[] = {
-			"Spikes",
-			"Slowing",
-			"Hastening",
-		};
-		generateBuildingButtons(413, 1300, names);
-	}
+	generateBuildingsList();
 
 	// monster properties
 

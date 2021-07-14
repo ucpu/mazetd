@@ -22,6 +22,7 @@ namespace
 		man->defineComponent(NameComponent());
 		man->defineComponent(BuildingComponent());
 		man->defineComponent(TrapComponent());
+		man->defineComponent(RefundCostComponent());
 		man->defineComponent(ManaStorageComponent());
 		man->defineComponent(ManaDistributorComponent());
 		man->defineComponent(ManaReceiverComponent());
@@ -54,7 +55,7 @@ namespace
 		playerCursorPosition = vec3::Nan();
 		playerCursorTile = m;
 		playerHealth = 100;
-		playerMoney = 500;
+		playerMoney = 1000;
 		playerBuildingSelection = 0;
 	}
 
@@ -94,6 +95,6 @@ bool gameRunning = false;
 vec3 playerCursorPosition;
 uint32 playerCursorTile;
 sint32 playerHealth;
-uint32 playerMoney;
+sint32 playerMoney;
 uint32 playerBuildingSelection;
 bool playerPanning = false;

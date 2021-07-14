@@ -83,6 +83,11 @@ struct BuildingComponent
 struct TrapComponent
 {};
 
+struct RefundCostComponent
+{
+	uint32 cost = 0;
+};
+
 struct ManaStorageComponent
 {
 	uint32 mana = 0;
@@ -166,7 +171,7 @@ extern bool gameRunning;
 extern vec3 playerCursorPosition;
 extern uint32 playerCursorTile;
 extern sint32 playerHealth;
-extern uint32 playerMoney;
+extern sint32 playerMoney;
 extern uint32 playerBuildingSelection;
 extern bool playerPanning;
 

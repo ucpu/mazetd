@@ -9,6 +9,37 @@
 
 void destroyShortestPathVisualizationMarks();
 
+uint32 structureMoneyCost(uint32 id)
+{
+	switch (id)
+	{
+		// wall
+	case 900: return 5;
+		// attack towers
+	case 1000: return 50;
+	case 1001: return 150;
+	case 1002: return 150;
+	case 1003: return 150;
+		// augments
+	case 1100: return 600;
+	case 1101: return 600;
+	case 1102: return 600;
+		// magic
+	case 1200: return 300; // mage
+	case 1201: return 400; // collectors
+	case 1202: return 400;
+	case 1203: return 400;
+	case 1204: return 400;
+	case 1205: return 200; // relay
+	case 1206: return 2000; // capacitor
+		// traps
+	case 1300: return 50; // spikes
+	case 1301: return 300; // slow
+	case 1302: return 200; // haste
+	default: return m;
+	}
+}
+
 namespace
 {
 	WindowEventListeners listeners;
@@ -87,35 +118,38 @@ namespace
 
 	void placeTile()
 	{
-		TileFlags &flags = globalGrid->flags[playerCursorTile];
-
 		if (selectionIsTrap())
 		{
 			if (!canPlaceTrap())
 				return;
-
-			// todo take some money
-
-			flags |= TileFlags::Trap;
 		}
 		else
 		{
 			if (!canPlaceBuilding())
 				return;
-
-			// todo take some money
-
-			flags |= TileFlags::Building;
-			globalWaypoints->update();
 		}
+
+		const uint32 moneyCost = structureMoneyCost(playerBuildingSelection);
+		CAGE_ASSERT(moneyCost != m);
+		if (playerMoney < moneyCost)
+			return;
+		playerMoney -= moneyCost;
 
 		Entity *e = gameEntities()->createUnique();
 		e->value<PositionComponent>().tile = playerCursorTile;
+		e->value<RefundCostComponent>().cost = 9 * moneyCost / 10;
 
 		if (selectionIsTrap())
+		{
 			e->value<TrapComponent>();
+			globalGrid->flags[playerCursorTile] |= TileFlags::Trap;
+		}
 		else
+		{
 			e->value<BuildingComponent>();
+			globalGrid->flags[playerCursorTile] |= TileFlags::Building;
+			globalWaypoints->update();
+		}
 
 		switch (playerBuildingSelection)
 		{
@@ -320,7 +354,7 @@ namespace
 			entitiesVisitor(gameEntities(), [](Entity *e, const PositionComponent &p, const TrapComponent &) {
 				if (p.tile == playerCursorTile)
 				{
-					// todo return some money
+					playerMoney += e->value<RefundCostComponent>().cost;
 					e->destroy();
 				}
 			}, true);
@@ -334,7 +368,7 @@ namespace
 			entitiesVisitor(gameEntities(), [](Entity *e, const PositionComponent &p, const BuildingComponent &) {
 				if (p.tile == playerCursorTile)
 				{
-					// todo return some money
+					playerMoney += e->value<RefundCostComponent>().cost;
 					e->destroy();
 				}
 			}, true);
