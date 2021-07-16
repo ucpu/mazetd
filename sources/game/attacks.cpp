@@ -37,11 +37,8 @@ namespace
 		AugmentComponent *a = nullptr;
 	};
 
-	Augment findAugment(AttackComponent &att, SpatialQuery *buildingsQuery, const vec3 &mp)
+	Augment findAugment(const AttackComponent &atc, AttackData &att, SpatialQuery *buildingsQuery, const vec3 &mp)
 	{
-		if (!att.useAugments)
-			return {};
-
 		buildingsQuery->intersection(Sphere(mp, 5));
 		std::vector<Augment> augs;
 		augs.reserve(buildingsQuery->result().size());
@@ -62,14 +59,12 @@ namespace
 		});
 
 		const Augment &a = augs[0];
-		att.damage *= a.a->damageMultiplier;
-		att.damageType = a.a->damageType;
-		att.effectType = a.a->effectType;
+		att = atc.data[(int)a.a->data];
 
 		return a;
 	}
 
-	void filterMonsterTargets(const AttackComponent &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
+	void filterMonsterTargets(const AttackData &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
 	{
 		monsters.clear();
 		monsters.reserve(monstersQuery->result().size());
@@ -86,7 +81,7 @@ namespace
 		}
 	}
 
-	bool findTargetMonsters(const AttackComponent &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
+	bool findTargetMonsters(const AttackData &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
 	{
 		monstersQuery->intersection(Sphere(mp, att.firingRange));
 		if (monstersQuery->result().empty())
@@ -102,19 +97,22 @@ namespace
 		return true;
 	}
 
-	bool checkManaCost(const AttackComponent &att, Entity *e)
+	bool checkManaCost(const AttackData &att, Entity *e)
 	{
 		if (att.manaCost > 0)
 		{
+			e->value<ManaReceiverComponent>();
 			ManaStorageComponent &mn = e->value<ManaStorageComponent>();
 			if (mn.mana < att.manaCost)
 				return false;
 			mn.mana -= att.manaCost;
 		}
+		else
+			e->remove<ManaReceiverComponent>();
 		return true;
 	}
 
-	void effectAugment(AttackComponent &att, const Augment &augment, const vec3 &mpp)
+	void effectAugment(const AttackData &att, const Augment &augment, const vec3 &mpp)
 	{
 		if (!augment.e)
 			return;
@@ -127,7 +125,7 @@ namespace
 		renderEffect(cfg);
 	}
 
-	void effectMonster(const AttackComponent &att, const Monster &m, const vec3 &mpp)
+	void effectMonster(const AttackData &att, const Monster &m, const vec3 &mpp)
 	{
 		// effect from the tower to the monster
 		EffectConfig cfg;
@@ -137,7 +135,7 @@ namespace
 		renderEffect(cfg);
 	}
 
-	void applySplash(const AttackComponent &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
+	void applySplash(const AttackData &att, SpatialQuery *monstersQuery, std::vector<Monster> &monsters, const vec3 &mp)
 	{
 		if (att.splashRadius > 0)
 		{
@@ -153,7 +151,7 @@ namespace
 		}
 	}
 
-	void attackMonster(const Monster &m, const AttackComponent &att)
+	void attackMonster(const Monster &m, const AttackData &att)
 	{
 		constexpr DamageTypeFlags attackTypes = DamageTypeFlags::Physical | DamageTypeFlags::Fire | DamageTypeFlags::Water | DamageTypeFlags::Poison | DamageTypeFlags::Magic;
 		if (any(att.damageType & attackTypes & ~m.m->immunities))
@@ -169,7 +167,7 @@ namespace
 		}
 	}
 
-	void effectMonster(const Monster &m, const AttackComponent &att)
+	void effectMonster(const Monster &m, const AttackData &att)
 	{
 		// effect around the monster
 		EffectConfig cfg;
@@ -193,17 +191,17 @@ namespace
 		SpatialQuery *buildingsQuery = spatialStructures();
 		std::vector<Monster> monsters;
 
-		entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, AttackComponent &attOrig) {
-			if (attOrig.firingDelay > 0)
+		entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, AttackComponent &atc) {
+			if (atc.firingDelay > 0)
 			{
-				attOrig.firingDelay--;
+				atc.firingDelay--;
 				return;
 			}
 
 			const vec3 mp = globalGrid->center(pos.tile);
 			const vec3 mpp = mp + vec3(0, e->value<PivotComponent>().elevation, 0);
-			AttackComponent att = attOrig;
-			Augment augment = findAugment(att, buildingsQuery, mp);
+			AttackData att = atc.data[0];
+			Augment augment = atc.useAugments ? findAugment(atc, att, buildingsQuery, mp) : Augment();
 			if (!findTargetMonsters(att, monstersQuery, monsters, mp))
 				return;
 			if (!checkManaCost(att, e))
@@ -217,7 +215,7 @@ namespace
 				effectMonster(m, att);
 			}
 
-			attOrig.firingDelay += att.firingPeriod;
+			atc.firingDelay += att.firingPeriod;
 		});
 	}
 

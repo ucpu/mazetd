@@ -53,39 +53,6 @@ namespace
 		EntityManager *ents = engineGui()->entities();
 		sint32 index = 0;
 
-		{
-			struct Pair
-			{
-				TileFlags flag = TileFlags::None;
-				StringLiteral name;
-			};
-
-			constexpr const Pair pairs[] = {
-				Pair{ TileFlags::Water, "Water Tile" },
-				Pair{ TileFlags::Sun, "Sun Tile" },
-				Pair{ TileFlags::Wind, "Wind Tile" },
-				Pair{ TileFlags::Snow, "Snow Tile" },
-				Pair{ TileFlags::Waypoint, "Monsters Waypoint" },
-				Pair{ TileFlags::Mana, "Harvestable Mana" },
-			};
-
-			const TileFlags flags = globalGrid->flags[playerCursorTile];
-
-			for (const auto &p : pairs)
-			{
-				if (none(flags & p.flag))
-					continue;
-
-				Entity *e = ents->createUnique();
-				CAGE_COMPONENT_GUI(Parent, pp, e);
-				pp.parent = 201;
-				pp.order = index++;
-				CAGE_COMPONENT_GUI(Label, lab, e);
-				CAGE_COMPONENT_GUI(Text, txt, e);
-				txt.value = string(p.name);
-			}
-		}
-
 		entitiesVisitor(gameEntities(), [&](Entity *g, const PositionComponent &po, const NameComponent &nm) {
 			if (po.tile != playerCursorTile)
 				return;
@@ -133,6 +100,39 @@ namespace
 				}
 			}
 		});
+
+		{
+			struct Pair
+			{
+				TileFlags flag = TileFlags::None;
+				StringLiteral name;
+			};
+
+			constexpr const Pair pairs[] = {
+				Pair{ TileFlags::Mana, "Harvestable Mana" },
+				Pair{ TileFlags::Waypoint, "Monsters Waypoint" },
+				Pair{ TileFlags::Water, "Water Tile" },
+				Pair{ TileFlags::Sun, "Sun Tile" },
+				Pair{ TileFlags::Wind, "Wind Tile" },
+				Pair{ TileFlags::Snow, "Snow Tile" },
+			};
+
+			const TileFlags flags = globalGrid->flags[playerCursorTile];
+
+			for (const auto &p : pairs)
+			{
+				if (none(flags & p.flag))
+					continue;
+
+				Entity *e = ents->createUnique();
+				CAGE_COMPONENT_GUI(Parent, pp, e);
+				pp.parent = 201;
+				pp.order = index++;
+				CAGE_COMPONENT_GUI(Label, lab, e);
+				CAGE_COMPONENT_GUI(Text, txt, e);
+				txt.value = string(p.name);
+			}
+		}
 	}
 
 	void updateBuildingsList()
@@ -216,6 +216,7 @@ namespace
 				"Fast",
 				"Splash",
 				"Sniper",
+				"Mage",
 			};
 			generateBuildingButtons(410, 1000, names);
 		}
@@ -250,12 +251,11 @@ namespace
 			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
 			ll.vertical = true;
 			CAGE_COMPONENT_GUI(Text, txt, e);
-			txt.value = "Magic";
+			txt.value = "Mana";
 		}
 
 		{
 			constexpr const char *names[] = {
-				"Mage Tower",
 				"Waterwheel",
 				"Sunbloom",
 				"Windmill",
@@ -394,7 +394,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(200);
 		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
-		sc.alignment = vec2(0, 0);
+		sc.alignment = vec2(0, 1);
 	}
 
 	{
@@ -546,7 +546,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(500);
 		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
-		sc.alignment = vec2(0, 1);
+		sc.alignment = vec2(0, 0);
 	}
 
 	{

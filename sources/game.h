@@ -50,6 +50,15 @@ enum class ManaCollectorTypeEnum
 	Snow,
 };
 
+enum class AugmentEnum
+{
+	None = 0,
+	Fire,
+	Water,
+	Poison,
+	Total,
+};
+
 struct PositionComponent
 {
 	uint32 tile = m;
@@ -110,10 +119,9 @@ struct ManaCollectorComponent
 	uint32 collectAmount = 1;
 };
 
-struct AttackComponent
+struct AttackData
 {
 	uint32 firingPeriod = 0;
-	uint32 firingDelay = 30;
 	real firingRange = 0;
 	real splashRadius = 0;
 	uint32 damage = 0;
@@ -121,14 +129,20 @@ struct AttackComponent
 	DamageTypeFlags damageType = DamageTypeFlags::None;
 	EffectTypeEnum effectType = EffectTypeEnum::None;
 	MonsterClassFlags targetClasses = MonsterClassFlags::Regular | MonsterClassFlags::Flyer | MonsterClassFlags::Boss;
+};
+
+struct AttackComponent
+{
+	uint32 firingDelay = 30;
+	AttackData data[(int)AugmentEnum::Total];
 	bool useAugments = false;
+
+	void initAugmentData();
 };
 
 struct AugmentComponent
 {
-	uint32 damageMultiplier = 2;
-	DamageTypeFlags damageType = DamageTypeFlags::None;
-	EffectTypeEnum effectType = EffectTypeEnum::None;
+	AugmentEnum data = AugmentEnum::None;
 };
 
 struct MonsterBaseProperties

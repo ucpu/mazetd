@@ -20,24 +20,40 @@ uint32 structureMoneyCost(uint32 id)
 	case 1001: return 150;
 	case 1002: return 150;
 	case 1003: return 150;
+	case 1004: return 300; // mage
 		// augments
 	case 1100: return 600;
 	case 1101: return 600;
 	case 1102: return 600;
 		// magic
-	case 1200: return 300; // mage
-	case 1201: return 400; // collectors
+	case 1200: return 400; // collectors
+	case 1201: return 400;
 	case 1202: return 400;
 	case 1203: return 400;
-	case 1204: return 400;
-	case 1205: return 200; // relay
-	case 1206: return 2000; // capacitor
+	case 1204: return 200; // relay
+	case 1205: return 2000; // capacitor
 		// traps
 	case 1300: return 50; // spikes
 	case 1301: return 300; // slow
 	case 1302: return 200; // haste
 	default: return m;
 	}
+}
+
+void AttackComponent::initAugmentData()
+{
+	for (AugmentEnum a : { AugmentEnum::Fire, AugmentEnum::Water, AugmentEnum::Poison })
+	{
+		data[(int)a] = data[0];
+		data[(int)a].manaCost = data[(int)a].damage;
+		data[(int)a].damage *= 3;
+	}
+	data[(int)AugmentEnum::Fire].damageType = DamageTypeFlags::Fire;
+	data[(int)AugmentEnum::Fire].effectType = EffectTypeEnum::Fire;
+	data[(int)AugmentEnum::Water].damageType = DamageTypeFlags::Water;
+	data[(int)AugmentEnum::Water].effectType = EffectTypeEnum::Water;
+	data[(int)AugmentEnum::Poison].damageType = DamageTypeFlags::Poison;
+	data[(int)AugmentEnum::Poison].effectType = EffectTypeEnum::Poison;
 }
 
 namespace
@@ -99,16 +115,16 @@ namespace
 		case 1001: return HashString("mazetd/buildings/fast.object");
 		case 1002: return HashString("mazetd/buildings/splash.object");
 		case 1003: return HashString("mazetd/buildings/sniper.object");
+		case 1004: return HashString("mazetd/buildings/mage.object");
 		case 1100: return HashString("mazetd/buildings/augment-fire.object");
 		case 1101: return HashString("mazetd/buildings/augment-water.object");
 		case 1102: return HashString("mazetd/buildings/augment-poison.object");
-		case 1200: return HashString("mazetd/buildings/mage.object");
-		case 1201: return HashString("mazetd/buildings/collector-water.object");
-		case 1202: return HashString("mazetd/buildings/collector-sun.object");
-		case 1203: return HashString("mazetd/buildings/collector-wind.object");
-		case 1204: return HashString("mazetd/buildings/collector-snow.object");
-		case 1205: return HashString("mazetd/buildings/mana-relay.object");
-		case 1206: return HashString("mazetd/buildings/mana-capacitor.object");
+		case 1200: return HashString("mazetd/buildings/collector-water.object");
+		case 1201: return HashString("mazetd/buildings/collector-sun.object");
+		case 1202: return HashString("mazetd/buildings/collector-wind.object");
+		case 1203: return HashString("mazetd/buildings/collector-snow.object");
+		case 1204: return HashString("mazetd/buildings/mana-relay.object");
+		case 1205: return HashString("mazetd/buildings/mana-capacitor.object");
 		case 1300: return HashString("mazetd/buildings/trap-spikes.object");
 		case 1301: return HashString("mazetd/buildings/trap-slow.object");
 		case 1302: return HashString("mazetd/buildings/trap-haste.object");
@@ -162,87 +178,88 @@ namespace
 			e->value<NameComponent>().name = "Cheap Tower";
 			e->value<PivotComponent>().elevation = 1.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod = 30;
-			a.firingRange = 5;
-			a.damage = 5;
-			a.damageType = DamageTypeFlags::Physical;
-			a.effectType = EffectTypeEnum::Physical;
+			a.data[0].firingPeriod = 30;
+			a.data[0].firingRange = 5;
+			a.data[0].damage = 5;
+			a.data[0].damageType = DamageTypeFlags::Physical;
+			a.data[0].effectType = EffectTypeEnum::Physical;
+			a.useAugments = false;
 		} break;
 		case 1001: // fast
 		{
 			e->value<NameComponent>().name = "Fast Tower";
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod = 10;
-			a.firingRange = 5;
-			a.damage = 10;
-			a.damageType = DamageTypeFlags::Physical;
-			a.effectType = EffectTypeEnum::Physical;
+			a.data[0].firingPeriod = 10;
+			a.data[0].firingRange = 5;
+			a.data[0].damage = 10;
+			a.data[0].damageType = DamageTypeFlags::Physical;
+			a.data[0].effectType = EffectTypeEnum::Physical;
 			a.useAugments = true;
+			a.initAugmentData();
 		} break;
 		case 1002: // splash
 		{
 			e->value<NameComponent>().name = "Splash Tower";
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod = 30;
-			a.firingRange = 5;
-			a.splashRadius = 3;
-			a.damage = 10;
-			a.damageType = DamageTypeFlags::Physical;
-			a.effectType = EffectTypeEnum::Physical;
+			a.data[0].firingPeriod = 30;
+			a.data[0].firingRange = 5;
+			a.data[0].splashRadius = 3;
+			a.data[0].damage = 10;
+			a.data[0].damageType = DamageTypeFlags::Physical;
+			a.data[0].effectType = EffectTypeEnum::Physical;
 			a.useAugments = true;
+			a.initAugmentData();
 		} break;
 		case 1003: // sniper
 		{
 			e->value<NameComponent>().name = "Sniper Tower";
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod = 90;
-			a.firingRange = 15;
-			a.damage = 30;
-			a.damageType = DamageTypeFlags::Physical;
-			a.effectType = EffectTypeEnum::Physical;
+			a.data[0].firingPeriod = 90;
+			a.data[0].firingRange = 15;
+			a.data[0].damage = 30;
+			a.data[0].damageType = DamageTypeFlags::Physical;
+			a.data[0].effectType = EffectTypeEnum::Physical;
 			a.useAugments = true;
+			a.initAugmentData();
+		} break;
+		case 1004: // mage
+		{
+			e->value<NameComponent>().name = "Mage Tower";
+			e->value<PivotComponent>().elevation = 2.5;
+			AttackComponent &a = e->value<AttackComponent>();
+			a.data[0].firingPeriod = 30;
+			a.data[0].firingRange = 6;
+			a.data[0].splashRadius = 1.5;
+			a.data[0].damage = 100;
+			a.data[0].manaCost = 30;
+			a.data[0].damageType = DamageTypeFlags::Magic;
+			a.data[0].effectType = EffectTypeEnum::Mana;
+			a.useAugments = false;
+			e->value<ManaStorageComponent>();
+			e->value<ManaReceiverComponent>();
 		} break;
 		case 1100: // fire augment
 		{
 			e->value<NameComponent>().name = "Fire Augment";
 			e->value<PivotComponent>().elevation = 1.5;
-			e->value<AugmentComponent>().damageType = DamageTypeFlags::Fire;
-			e->value<AugmentComponent>().effectType = EffectTypeEnum::Fire;
+			e->value<AugmentComponent>().data = AugmentEnum::Fire;
 		} break;
 		case 1101: // water augment
 		{
 			e->value<NameComponent>().name = "Water Augment";
 			e->value<PivotComponent>().elevation = 1.5;
-			e->value<AugmentComponent>().damageType = DamageTypeFlags::Water;
-			e->value<AugmentComponent>().effectType = EffectTypeEnum::Water;
+			e->value<AugmentComponent>().data = AugmentEnum::Water;
 		} break;
 		case 1102: // poison augment
 		{
 			e->value<NameComponent>().name = "Poison Augment";
 			e->value<PivotComponent>().elevation = 1.5;
-			e->value<AugmentComponent>().damageType = DamageTypeFlags::Poison;
-			e->value<AugmentComponent>().effectType = EffectTypeEnum::Poison;
+			e->value<AugmentComponent>().data = AugmentEnum::Poison;
 		} break;
-		case 1200: // mage
-		{
-			e->value<NameComponent>().name = "Mage Tower";
-			e->value<PivotComponent>().elevation = 2.5;
-			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod = 30;
-			a.firingRange = 6;
-			a.splashRadius = 1.5;
-			a.damage = 100;
-			a.manaCost = 30;
-			a.damageType = DamageTypeFlags::Magic;
-			a.effectType = EffectTypeEnum::Mana;
-			a.useAugments = false;
-			e->value<ManaStorageComponent>();
-			e->value<ManaReceiverComponent>();
-		} break;
-		case 1201: // water collector
+		case 1200: // water collector
 		{
 			e->value<NameComponent>().name = "Waterwheel Collector";
 			e->value<PivotComponent>().elevation = 1;
@@ -251,7 +268,7 @@ namespace
 			e->value<ManaCollectorComponent>().collectAmount = 20;
 			e->value<ManaDistributorComponent>();
 		} break;
-		case 1202: // sun collector
+		case 1201: // sun collector
 		{
 			e->value<NameComponent>().name = "Sunbloom Collector";
 			e->value<PivotComponent>().elevation = 1;
@@ -260,7 +277,7 @@ namespace
 			e->value<ManaCollectorComponent>().collectAmount = 10;
 			e->value<ManaDistributorComponent>();
 		} break;
-		case 1203: // wind collector
+		case 1202: // wind collector
 		{
 			e->value<NameComponent>().name = "Windmill Collector";
 			e->value<PivotComponent>().elevation = 1;
@@ -269,7 +286,7 @@ namespace
 			e->value<ManaCollectorComponent>().collectAmount = 10;
 			e->value<ManaDistributorComponent>();
 		} break;
-		case 1204: // snow collector
+		case 1203: // snow collector
 		{
 			e->value<NameComponent>().name = "Snowmill Collector";
 			e->value<PivotComponent>().elevation = 1;
@@ -278,7 +295,7 @@ namespace
 			e->value<ManaCollectorComponent>().collectAmount = 20;
 			e->value<ManaDistributorComponent>();
 		} break;
-		case 1205: // mana relay
+		case 1204: // mana relay
 		{
 			e->value<NameComponent>().name = "Mana Relay";
 			e->value<PivotComponent>().elevation = 2.5;
@@ -286,7 +303,7 @@ namespace
 			e->value<ManaDistributorComponent>().range = 10;
 			e->value<ManaReceiverComponent>();
 		} break;
-		case 1206: // mana capacitor
+		case 1205: // mana capacitor
 		{
 			e->value<NameComponent>().name = "Mana Capacitor";
 			e->value<PivotComponent>().elevation = 1.3;
@@ -299,32 +316,35 @@ namespace
 			e->value<NameComponent>().name = "Spikes Trap";
 			e->value<PivotComponent>().elevation = 0.2;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod = 5;
-			a.firingRange = 0.5;
-			a.damage = 2;
-			a.damageType = DamageTypeFlags::Physical;
-			a.effectType = EffectTypeEnum::Physical;
-			a.targetClasses &= ~MonsterClassFlags::Flyer;
+			a.data[0].firingPeriod = 5;
+			a.data[0].firingRange = 0.5;
+			a.data[0].damage = 2;
+			a.data[0].damageType = DamageTypeFlags::Physical;
+			a.data[0].effectType = EffectTypeEnum::Physical;
+			a.data[0].targetClasses &= ~MonsterClassFlags::Flyer;
+			a.useAugments = false;
 		} break;
 		case 1301: // slow trap
 		{
 			e->value<NameComponent>().name = "Slowing Trap";
 			e->value<PivotComponent>().elevation = 0.2;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod = 5;
-			a.firingRange = 0.5;
-			a.damageType = DamageTypeFlags::Slow;
-			a.targetClasses &= ~MonsterClassFlags::Flyer;
+			a.data[0].firingPeriod = 5;
+			a.data[0].firingRange = 0.5;
+			a.data[0].damageType = DamageTypeFlags::Slow;
+			a.data[0].targetClasses &= ~MonsterClassFlags::Flyer;
+			a.useAugments = false;
 		} break;
 		case 1302: // haste trap
 		{
 			e->value<NameComponent>().name = "Hastening Trap";
 			e->value<PivotComponent>().elevation = 0.2;
 			AttackComponent &a = e->value<AttackComponent>();
-			a.firingPeriod = 5;
-			a.firingRange = 0.5;
-			a.damageType = DamageTypeFlags::Haste;
-			a.targetClasses &= ~MonsterClassFlags::Flyer;
+			a.data[0].firingPeriod = 5;
+			a.data[0].firingRange = 0.5;
+			a.data[0].damageType = DamageTypeFlags::Haste;
+			a.data[0].targetClasses &= ~MonsterClassFlags::Flyer;
+			a.useAugments = false;
 		} break;
 		default:
 		{
