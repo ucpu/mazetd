@@ -13,29 +13,24 @@ uint32 structureMoneyCost(uint32 id)
 {
 	switch (id)
 	{
-		// wall
-	case 900: return 5;
-		// attack towers
-	case 1000: return 50;
-	case 1001: return 150;
-	case 1002: return 150;
-	case 1003: return 150;
-	case 1004: return 300; // mage
-		// augments
-	case 1100: return 600;
-	case 1101: return 600;
-	case 1102: return 600;
-		// magic
-	case 1200: return 400; // collectors
-	case 1201: return 400;
-	case 1202: return 400;
-	case 1203: return 400;
-	case 1204: return 200; // relay
-	case 1205: return 2000; // capacitor
-		// traps
-	case 1300: return 50; // spikes
-	case 1301: return 300; // slow
-	case 1302: return 200; // haste
+	case 900: return 5; // wall
+	case 1000: return 30; // cheap
+	case 1001: return 150; // fast
+	case 1002: return 150; // splash
+	case 1003: return 150; // sniper
+	case 1004: return 400; // mage
+	case 1100: return 600; // fire augment
+	case 1101: return 600; // water augment
+	case 1102: return 600; // poison augment
+	case 1200: return 500; // water collector
+	case 1201: return 500; // sun collector
+	case 1202: return 500; // wind collector
+	case 1203: return 500; // snow collector
+	case 1204: return 300; // mana relay
+	case 1205: return 2000; // mana capacitor
+	case 1300: return 25; // spikes trap
+	case 1301: return 300; // slow trap
+	case 1302: return 200; // haste trap
 	default: return m;
 	}
 }
@@ -180,7 +175,7 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.data[0].firingPeriod = 30;
 			a.data[0].firingRange = 5;
-			a.data[0].damage = 5;
+			a.data[0].damage = 10;
 			a.data[0].damageType = DamageTypeFlags::Physical;
 			a.data[0].effectType = EffectTypeEnum::Physical;
 			a.useAugments = false;
@@ -205,7 +200,7 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.data[0].firingPeriod = 30;
 			a.data[0].firingRange = 5;
-			a.data[0].splashRadius = 3;
+			a.data[0].splashRadius = 2;
 			a.data[0].damage = 10;
 			a.data[0].damageType = DamageTypeFlags::Physical;
 			a.data[0].effectType = EffectTypeEnum::Physical;
@@ -219,7 +214,7 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.data[0].firingPeriod = 90;
 			a.data[0].firingRange = 15;
-			a.data[0].damage = 30;
+			a.data[0].damage = 50;
 			a.data[0].damageType = DamageTypeFlags::Physical;
 			a.data[0].effectType = EffectTypeEnum::Physical;
 			a.useAugments = true;
@@ -232,7 +227,6 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.data[0].firingPeriod = 30;
 			a.data[0].firingRange = 6;
-			a.data[0].splashRadius = 1.5;
 			a.data[0].damage = 100;
 			a.data[0].manaCost = 30;
 			a.data[0].damageType = DamageTypeFlags::Magic;
@@ -321,7 +315,7 @@ namespace
 			a.data[0].damage = 2;
 			a.data[0].damageType = DamageTypeFlags::Physical;
 			a.data[0].effectType = EffectTypeEnum::Physical;
-			a.data[0].targetClasses &= ~MonsterClassFlags::Flyer;
+			a.data[0].invalidClasses = MonsterClassFlags::Flyer;
 			a.useAugments = false;
 		} break;
 		case 1301: // slow trap
@@ -332,7 +326,7 @@ namespace
 			a.data[0].firingPeriod = 5;
 			a.data[0].firingRange = 0.5;
 			a.data[0].damageType = DamageTypeFlags::Slow;
-			a.data[0].targetClasses &= ~MonsterClassFlags::Flyer;
+			a.data[0].invalidClasses = MonsterClassFlags::Flyer;
 			a.useAugments = false;
 		} break;
 		case 1302: // haste trap
@@ -343,7 +337,7 @@ namespace
 			a.data[0].firingPeriod = 5;
 			a.data[0].firingRange = 0.5;
 			a.data[0].damageType = DamageTypeFlags::Haste;
-			a.data[0].targetClasses &= ~MonsterClassFlags::Flyer;
+			a.data[0].invalidClasses = MonsterClassFlags::Flyer;
 			a.useAugments = false;
 		} break;
 		default:

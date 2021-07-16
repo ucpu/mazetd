@@ -128,7 +128,7 @@ struct AttackData
 	uint32 manaCost = 0;
 	DamageTypeFlags damageType = DamageTypeFlags::None;
 	EffectTypeEnum effectType = EffectTypeEnum::None;
-	MonsterClassFlags targetClasses = MonsterClassFlags::Regular | MonsterClassFlags::Flyer | MonsterClassFlags::Boss;
+	MonsterClassFlags invalidClasses = MonsterClassFlags::None;
 };
 
 struct AttackComponent
@@ -150,7 +150,7 @@ struct MonsterBaseProperties
 	StringLiteral name;
 	uint32 money = 10;
 	uint32 damage = 1;
-	sint32 life = 100;
+	sint32 life = 50;
 	real speed = 0.05;
 	DamageTypeFlags immunities = DamageTypeFlags::None;
 	MonsterClassFlags monsterClass = MonsterClassFlags::Regular;

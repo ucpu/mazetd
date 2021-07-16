@@ -75,7 +75,7 @@ namespace
 			m.m = &m.e->value<MonsterComponent>();
 			if (none(att.damageType & ~m.m->immunities))
 				continue;
-			if (none(att.targetClasses & m.m->monsterClass))
+			if (any(att.invalidClasses & m.m->monsterClass))
 				continue;
 			monsters.push_back(m);
 		}
