@@ -6,6 +6,14 @@
 
 #include <bitset>
 
+vec3 MovementComponent::position() const
+{
+	const vec3 ca = globalGrid->center(tileStart);
+	const vec3 cb = globalGrid->center(tileEnd);
+	const real fac = saturate(real(gameTime - (sint64)timeStart) / real(timeEnd - (sint64)timeStart));
+	return interpolate(ca, cb, fac);
+}
+
 uint32 bitCount(uint32 v)
 {
 	return std::bitset<32>(v).count();

@@ -1,15 +1,6 @@
 #include <cage-engine/engine.h>
 
 #include "../game.h"
-#include "../grid.h"
-
-vec3 MovementComponent::position() const
-{
-	const vec3 ca = globalGrid->center(tileStart);
-	const vec3 cb = globalGrid->center(tileEnd);
-	const real fac = saturate(real(gameTime - (sint64)timeStart) / real(timeEnd - (sint64)timeStart));
-	return interpolate(ca, cb, fac);
-}
 
 void setScreenGameOver();
 
@@ -42,17 +33,6 @@ namespace
 		eventGameReset().dispatch();
 	}
 
-	void engineUpdate()
-	{
-		for (uint32 i = 0; i < gameSpeed; i++)
-		{
-			if (!gameRunning)
-				break;
-			CAGE_ASSERT(globalGrid);
-			eventGameUpdate().dispatch();
-		}
-	}
-
 	void gameReset()
 	{
 		gameTime = 0;
@@ -81,7 +61,6 @@ namespace
 	struct Callbacks
 	{
 		EventListener<void()> engineInitListener;
-		EventListener<void()> engineUpdateListener;
 		EventListener<void()> gameResetListener;
 		EventListener<bool()> gameUpdateListener;
 
@@ -89,8 +68,6 @@ namespace
 		{
 			engineInitListener.attach(controlThread().initialize, 200);
 			engineInitListener.bind<&engineInit>();
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
 			gameResetListener.attach(eventGameReset(), -100);
 			gameResetListener.bind<&gameReset>();
 			gameUpdateListener.attach(eventGameUpdate(), -500);
