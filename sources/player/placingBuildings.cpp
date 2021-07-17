@@ -200,7 +200,7 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.data[0].firingPeriod = 30;
 			a.data[0].firingRange = 5;
-			a.data[0].splashRadius = 2;
+			a.data[0].splashRadius = 3;
 			a.data[0].damage = 10;
 			a.data[0].damageType = DamageTypeFlags::Physical;
 			a.data[0].effectType = EffectTypeEnum::Physical;

@@ -54,6 +54,11 @@ namespace
 		return bits;
 	}
 
+	uint32 allSpawnPointsBits()
+	{
+		return bitsApplyLimit(m, numeric_cast<uint32>(globalWaypoints->waypoints.size()));
+	}
+
 	void generateMonsterProperties()
 	{
 		monsterSpawningProperties.clear();
@@ -303,18 +308,18 @@ void SpawningGroup::generate()
 {
 	*this = {};
 
-	const MonsterSpawningProperties &proto = monsterSpawningProperties[groupIndex % monsterSpawningProperties.size()];
+	const uint32 monsterVarietes = numeric_cast<uint32>(monsterSpawningProperties.size());
+	const MonsterSpawningProperties &proto = monsterSpawningProperties[groupIndex % monsterVarietes];
 	(MonsterSpawningProperties &)*this = proto;
 
-	if (groupIndex < monsterSpawningProperties.size() * 2)
+	if (groupIndex < monsterVarietes * 2)
 		immunities = DamageTypeFlags::None;
 
-	life += groupIndex * 10 + numeric_cast<uint32>(sqr(groupIndex / 5));
+	life += groupIndex * 15 + numeric_cast<uint32>(sqr(groupIndex / 5));
 	speed += groupIndex * 0.00002;
-	money += groupIndex / 15;
 
-	spawnPointsBits = shortestSpawnPointBits();
-	spawnRounds += groupIndex / 7;
+	spawnPointsBits = groupIndex < monsterVarietes ? shortestSpawnPointBits() : allSpawnPointsBits();
+	spawnRounds += groupIndex / 10;
 	spawnPeriod = numeric_cast<uint32>(1 / proto.speed);
 
 	groupIndex++;
