@@ -3,7 +3,7 @@
 
 namespace
 {
-	bool buttonContinue(uint32)
+	bool buttonStop(uint32)
 	{
 		eventGameReset().dispatch();
 		setScreenMainmenu();
@@ -28,9 +28,9 @@ void setScreenGameOver()
 		parent.parent = 1;
 		CAGE_COMPONENT_GUI(Button, control, e);
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Continue";
+		txt.value = "Stop";
 		CAGE_COMPONENT_GUI(Event, ev, e);
-		ev.event.bind<&buttonContinue>();
+		ev.event.bind<&buttonStop>();
 	}
 
 	{

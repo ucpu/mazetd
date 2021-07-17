@@ -66,6 +66,7 @@ namespace
 				// the monster has reached its final waypoint
 				playerHealth -= mo.damage;
 				e->destroy();
+				gameSpeed = 1;
 				return;
 			}
 

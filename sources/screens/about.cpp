@@ -26,7 +26,7 @@ void setScreenAbout()
 		parent.parent = 1;
 		CAGE_COMPONENT_GUI(Button, control, e);
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = "Continue";
+		txt.value = "Back";
 		CAGE_COMPONENT_GUI(Event, ev, e);
 		ev.event.bind<&buttonBack>();
 	}
@@ -34,7 +34,7 @@ void setScreenAbout()
 	{
 		Entity *e = ents->create(4);
 		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
-		sc.alignment = vec2(0.45, 0.45);
+		sc.alignment = vec2(0.5, 0.2);
 	}
 
 	{
@@ -50,7 +50,17 @@ void setScreenAbout()
 		"aMAZEing Tower Defense",
 		"Free game",
 		"Made by Tomáš Malý",
-		"https://github.com/ucpu/mazetd",
+		"Graphics by Quaternius, Kenney and others",
+		"Open source: https://github.com/ucpu/mazetd",
+		"",
+		"LMB - placing selected building",
+		"MMB - destroy building",
+		"RMB - move camera",
+		"Wheel - zoom",
+		"WSAD - move camera",
+		"QE - rotate camera",
+		"Spacebar - visualize monsters paths",
+		"PGUP/DN - speed up/down the game",
 	};
 
 	uint32 idx = 0;
