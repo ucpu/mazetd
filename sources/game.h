@@ -156,6 +156,29 @@ struct MonsterBaseProperties
 	MonsterClassFlags monsterClass = MonsterClassFlags::Regular;
 };
 
+struct MonsterSpawningProperties : public MonsterBaseProperties
+{
+	uint32 modelName = 0;
+	uint32 animationName = 0;
+};
+
+struct SpawningGroup : public MonsterSpawningProperties
+{
+	uint32 spawnPointsBits = m;
+	uint32 spawnRounds = 15;
+	uint32 spawnSimultaneously = 1;
+	uint32 spawnPeriod = 0;
+	uint32 spawnDelay = 0;
+	bool checkingMonstersCounts = true;
+
+	static inline uint32 groupIndex = 0;
+
+	void spawnOne();
+	void process();
+	void generate();
+	void init();
+};
+
 struct MonsterComponent : public MonsterBaseProperties
 {
 	uint32 visitedWaypointsBits = 0;
@@ -188,6 +211,8 @@ extern sint32 playerHealth;
 extern sint32 playerMoney;
 extern uint32 playerBuildingSelection;
 extern bool playerPanning;
+
+extern SpawningGroup spawningGroup;
 
 struct EffectConfig
 {

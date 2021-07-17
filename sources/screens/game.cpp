@@ -289,9 +289,13 @@ namespace
 	}
 }
 
-void updateSpawningMonsterPropertiesScreen(const MonsterBaseProperties &mo)
+void updateSpawningMonsterPropertiesScreen()
 {
 	removeGuiEntitiesWithParent(501);
+
+	const SpawningGroup &mo = spawningGroup;
+	if (!mo.name)
+		return;
 
 	EntityManager *ents = engineGui()->entities();
 	sint32 index = 0;
@@ -303,7 +307,7 @@ void updateSpawningMonsterPropertiesScreen(const MonsterBaseProperties &mo)
 		pp.order = index++;
 		CAGE_COMPONENT_GUI(Label, lab, e);
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = string(mo.name);
+		txt.value = stringizer() + SpawningGroup::groupIndex + ": " + mo.name;
 	}
 
 	if (mo.monsterClass != MonsterClassFlags::Regular)
@@ -356,6 +360,16 @@ void updateSpawningMonsterPropertiesScreen(const MonsterBaseProperties &mo)
 		for (const auto &it : pairs)
 			if (any(mo.immunities & it.flag))
 				txt.value += stringizer() + " " + string(it.name);
+	}
+
+	{ // amount
+		Entity *e = ents->createUnique();
+		CAGE_COMPONENT_GUI(Parent, pp, e);
+		pp.parent = 501;
+		pp.order = index++;
+		CAGE_COMPONENT_GUI(Label, lab, e);
+		CAGE_COMPONENT_GUI(Text, txt, e);
+		txt.value = stringizer() + "Amount: " + (mo.spawnRounds * mo.spawnSimultaneously);
 	}
 
 	{ // life
@@ -560,4 +574,6 @@ void setScreenGame()
 		CAGE_COMPONENT_GUI(Text, txt, e);
 		txt.value = "Spawning";
 	}
+
+	updateSpawningMonsterPropertiesScreen();
 }

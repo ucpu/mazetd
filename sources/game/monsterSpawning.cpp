@@ -9,16 +9,10 @@
 #include <algorithm>
 #include <functional>
 
-void updateSpawningMonsterPropertiesScreen(const MonsterBaseProperties &monster);
+void updateSpawningMonsterPropertiesScreen();
 
 namespace
 {
-	struct MonsterSpawningProperties : public MonsterBaseProperties
-	{
-		uint32 modelName = 0;
-		uint32 animationName = 0;
-	};
-
 	std::vector<MonsterSpawningProperties> monsterSpawningProperties;
 
 	uint32 bitsApplyLimit(uint32 bits, uint32 limit)
@@ -60,106 +54,11 @@ namespace
 		return bits;
 	}
 
-	struct SpawningGroup : public MonsterSpawningProperties
-	{
-		uint32 spawnPointsBits = m;
-		uint32 spawnRounds = 15;
-		uint32 spawnSimultaneously = 1;
-		uint32 spawnPeriod = 0;
-		uint32 spawnDelay = 0;
-
-		bool checkingMonstersCounts = true;
-
-		static inline uint32 groupIndex = 0;
-
-		void spawnOne()
-		{
-			Entity *e = gameEntities()->createUnique();
-
-			const uint32 spawnPointIndex = bitsPickOneIndex(spawnPointsBits);
-			const uint32 position = globalWaypoints->waypoints[spawnPointIndex]->tile;
-			e->value<PositionComponent>().tile = position;
-			e->value<NameComponent>().name = string(name);
-
-			MonsterComponent &mo = e->value<MonsterComponent>();
-			(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)*this;
-			mo.visitedWaypointsBits = 1u << spawnPointIndex;
-			mo.timeToArrive = gameTime + numeric_cast<uint32>(stor(globalWaypoints->find(position, mo.visitedWaypointsBits).distance) / mo.speed);
-
-			MovementComponent &mv = e->value<MovementComponent>();
-			mv.tileStart = mv.tileEnd = position;
-			mv.timeStart = mv.timeEnd = gameTime;
-
-			Entity *f = e->value<EngineComponent>().entity;
-			CAGE_COMPONENT_ENGINE(Render, r, f);
-			r.object = modelName;
-			CAGE_COMPONENT_ENGINE(SkeletalAnimation, a, f);
-			a.name = animationName;
-			a.offset = randomRange(0.f, 1e6f);
-		}
-
-		void process()
-		{
-			if (spawnDelay > 0)
-			{
-				spawnDelay--;
-				return;
-			}
-
-			if (checkingMonstersCounts && gameEntities()->component<MonsterComponent>()->count() > groupIndex / 3)
-				return;
-
-			CAGE_ASSERT(spawnRounds > 0);
-			spawnRounds--;
-			spawnDelay += spawnPeriod;
-			checkingMonstersCounts = false;
-
-			for (uint32 simultaneously = 0; simultaneously < spawnSimultaneously; simultaneously++)
-				spawnOne();
-
-			if (spawnRounds == 0)
-				generate();
-		}
-
-		void generate()
-		{
-			*this = {};
-
-			const MonsterSpawningProperties &proto = monsterSpawningProperties[groupIndex % monsterSpawningProperties.size()];
-			(MonsterSpawningProperties &)*this = proto;
-
-			if (groupIndex < monsterSpawningProperties.size() * 2)
-				immunities = DamageTypeFlags::None;
-
-			life += groupIndex * 10 + numeric_cast<uint32>(sqr(groupIndex / 5));
-			speed += groupIndex * 0.00002;
-			money += groupIndex / 15;
-
-			spawnPointsBits = shortestSpawnPointBits();
-			spawnRounds += groupIndex / 7;
-			spawnPeriod = numeric_cast<uint32>(1 / proto.speed);
-
-			updateSpawningMonsterPropertiesScreen(*this);
-			groupIndex++;
-		}
-
-		void init()
-		{
-			*this = {};
-			spawnRounds = 1;
-			spawnSimultaneously = 0;
-			spawnDelay = 150;
-			groupIndex = 0;
-		}
-	};
-
-	SpawningGroup spawning;
-
 	void engineUpdate()
 	{
 		if (!globalGrid || !gameRunning)
 			return;
-		spawning.process();
+		spawningGroup.process();
 	}
 
 	void generateMonsterProperties()
@@ -335,7 +234,7 @@ namespace
 	void gameReset()
 	{
 		generateMonsterProperties();
-		spawning.init();
+		spawningGroup.init();
 	}
 
 	struct Callbacks
@@ -352,3 +251,85 @@ namespace
 		}
 	} callbacksInstance;
 }
+
+void SpawningGroup::spawnOne()
+{
+	Entity *e = gameEntities()->createUnique();
+
+	const uint32 spawnPointIndex = bitsPickOneIndex(spawnPointsBits);
+	const uint32 position = globalWaypoints->waypoints[spawnPointIndex]->tile;
+	e->value<PositionComponent>().tile = position;
+	e->value<NameComponent>().name = string(name);
+
+	MonsterComponent &mo = e->value<MonsterComponent>();
+	(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)*this;
+	mo.visitedWaypointsBits = 1u << spawnPointIndex;
+	mo.timeToArrive = gameTime + numeric_cast<uint32>(stor(globalWaypoints->find(position, mo.visitedWaypointsBits).distance) / mo.speed);
+
+	MovementComponent &mv = e->value<MovementComponent>();
+	mv.tileStart = mv.tileEnd = position;
+	mv.timeStart = mv.timeEnd = gameTime;
+
+	Entity *f = e->value<EngineComponent>().entity;
+	CAGE_COMPONENT_ENGINE(Render, r, f);
+	r.object = modelName;
+	CAGE_COMPONENT_ENGINE(SkeletalAnimation, a, f);
+	a.name = animationName;
+	a.offset = randomRange(0.f, 1e6f);
+}
+
+void SpawningGroup::process()
+{
+	if (spawnDelay > 0)
+	{
+		spawnDelay--;
+		return;
+	}
+
+	if (checkingMonstersCounts && gameEntities()->component<MonsterComponent>()->count() > groupIndex / 3)
+		return;
+
+	CAGE_ASSERT(spawnRounds > 0);
+	spawnRounds--;
+	spawnDelay += spawnPeriod;
+	checkingMonstersCounts = false;
+
+	for (uint32 simultaneously = 0; simultaneously < spawnSimultaneously; simultaneously++)
+		spawnOne();
+
+	if (spawnRounds == 0)
+		generate();
+}
+
+void SpawningGroup::generate()
+{
+	*this = {};
+
+	const MonsterSpawningProperties &proto = monsterSpawningProperties[groupIndex % monsterSpawningProperties.size()];
+	(MonsterSpawningProperties &)*this = proto;
+
+	if (groupIndex < monsterSpawningProperties.size() * 2)
+		immunities = DamageTypeFlags::None;
+
+	life += groupIndex * 10 + numeric_cast<uint32>(sqr(groupIndex / 5));
+	speed += groupIndex * 0.00002;
+	money += groupIndex / 15;
+
+	spawnPointsBits = shortestSpawnPointBits();
+	spawnRounds += groupIndex / 7;
+	spawnPeriod = numeric_cast<uint32>(1 / proto.speed);
+
+	groupIndex++;
+	updateSpawningMonsterPropertiesScreen();
+}
+
+void SpawningGroup::init()
+{
+	*this = {};
+	spawnRounds = 1;
+	spawnSimultaneously = 0;
+	spawnDelay = 150;
+	groupIndex = 0;
+}
+
+SpawningGroup spawningGroup;
