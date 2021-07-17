@@ -44,15 +44,19 @@ namespace
 
 	void engineUpdate()
 	{
-		if (gameRunning)
-			gameTime++;
-		if (playerHealth <= 0)
-			setScreenGameOver();
+		for (uint32 i = 0; i < gameSpeed; i++)
+		{
+			if (!gameRunning)
+				break;
+			CAGE_ASSERT(globalGrid);
+			eventGameUpdate().dispatch();
+		}
 	}
 
 	void gameReset()
 	{
 		gameTime = 0;
+		gameSpeed = 1;
 		gameRunning = false;
 		gameEntities()->destroy();
 
@@ -63,20 +67,34 @@ namespace
 		playerBuildingSelection = 0;
 	}
 
+	bool gameUpdate()
+	{
+		gameTime++;
+		if (playerHealth <= 0)
+		{
+			setScreenGameOver();
+			return true;
+		}
+		return false;
+	}
+
 	struct Callbacks
 	{
 		EventListener<void()> engineInitListener;
 		EventListener<void()> engineUpdateListener;
 		EventListener<void()> gameResetListener;
+		EventListener<bool()> gameUpdateListener;
 
 		Callbacks()
 		{
 			engineInitListener.attach(controlThread().initialize, 200);
 			engineInitListener.bind<&engineInit>();
-			engineUpdateListener.attach(controlThread().update, -500);
+			engineUpdateListener.attach(controlThread().update);
 			engineUpdateListener.bind<&engineUpdate>();
 			gameResetListener.attach(eventGameReset(), -100);
 			gameResetListener.bind<&gameReset>();
+			gameUpdateListener.attach(eventGameUpdate(), -500);
+			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
 }
@@ -93,7 +111,14 @@ EventDispatcher<bool()> &eventGameReset()
 	return e;
 }
 
+EventDispatcher<bool()> &eventGameUpdate()
+{
+	static EventDispatcher<bool()> e;
+	return e;
+}
+
 uint32 gameTime = 0;
+uint32 gameSpeed = 1;
 bool gameRunning = false;
 
 vec3 playerCursorPosition;

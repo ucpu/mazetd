@@ -34,11 +34,8 @@ namespace
 		}
 	}
 
-	void engineUpdate()
+	void gameUpdate()
 	{
-		if (!gameRunning || !globalGrid)
-			return;
-
 		placeNewMana();
 
 		entitiesVisitor(gameEntities(), [](Entity *e, const PositionComponent &pos, const ManaCollectorComponent &col, ManaStorageComponent &stor) {
@@ -87,12 +84,12 @@ namespace
 
 	struct Callbacks
 	{
-		EventListener<void()> engineUpdateListener;
+		EventListener<void()> gameUpdateListener;
 
 		Callbacks()
 		{
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
+			gameUpdateListener.attach(eventGameUpdate());
+			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
 }

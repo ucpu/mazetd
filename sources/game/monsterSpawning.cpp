@@ -54,13 +54,6 @@ namespace
 		return bits;
 	}
 
-	void engineUpdate()
-	{
-		if (!globalGrid || !gameRunning)
-			return;
-		spawningGroup.process();
-	}
-
 	void generateMonsterProperties()
 	{
 		monsterSpawningProperties.clear();
@@ -237,17 +230,22 @@ namespace
 		spawningGroup.init();
 	}
 
+	void gameUpdate()
+	{
+		spawningGroup.process();
+	}
+
 	struct Callbacks
 	{
-		EventListener<void()> engineUpdateListener;
 		EventListener<void()> gameResetListener;
+		EventListener<void()> gameUpdateListener;
 
 		Callbacks()
 		{
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
 			gameResetListener.attach(eventGameReset());
 			gameResetListener.bind<&gameReset>();
+			gameUpdateListener.attach(eventGameUpdate());
+			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
 }

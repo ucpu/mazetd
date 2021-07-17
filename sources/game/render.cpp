@@ -7,7 +7,12 @@
 
 namespace
 {
-	void engineUpdate()
+	void gameReset()
+	{
+		engineEntities()->destroy();
+	}
+
+	void gameUpdate()
 	{
 		entitiesVisitor(gameEntities(), [](Entity *e, MovementComponent &mv, EngineComponent &ec) {
 			CAGE_COMPONENT_ENGINE(Transform, t, ec.entity);
@@ -17,11 +22,6 @@ namespace
 			t.position = interpolate(a, b, f);
 			t.orientation = quat(b - a, vec3(0, 1, 0));
 		});
-	}
-
-	void gameReset()
-	{
-		engineEntities()->destroy();
 	}
 
 	void engineComponentAdded(Entity *e)
@@ -45,17 +45,17 @@ namespace
 
 	struct Callbacks
 	{
-		EventListener<void()> engineUpdateListener;
 		EventListener<void()> gameResetListener;
+		EventListener<void()> gameUpdateListener;
 		EventListener<void(Entity *)> engineComponentAddedListener;
 		EventListener<void(Entity *)> engineComponentRemovedListener;
 
 		Callbacks()
 		{
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
 			gameResetListener.attach(eventGameReset(), -90);
 			gameResetListener.bind<&gameReset>();
+			gameUpdateListener.attach(eventGameUpdate());
+			gameUpdateListener.bind<&gameUpdate>();
 			{
 				EntityComponent *ec = gameEntities()->component<EngineComponent>();
 				engineComponentAddedListener.attach(ec->group()->entityAdded);

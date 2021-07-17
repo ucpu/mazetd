@@ -182,11 +182,8 @@ namespace
 		}
 	}
 
-	void engineUpdate()
+	void gameUpdate()
 	{
-		if (!gameRunning)
-			return;
-
 		SpatialQuery *monstersQuery = spatialMonsters();
 		SpatialQuery *buildingsQuery = spatialStructures();
 		std::vector<Monster> monsters;
@@ -221,12 +218,12 @@ namespace
 
 	struct Callbacks
 	{
-		EventListener<void()> engineUpdateListener;
+		EventListener<void()> gameUpdateListener;
 
 		Callbacks()
 		{
-			engineUpdateListener.attach(controlThread().update, 50);
-			engineUpdateListener.bind<&engineUpdate>();
+			gameUpdateListener.attach(eventGameUpdate(), 50);
+			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
 }

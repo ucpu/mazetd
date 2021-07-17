@@ -18,29 +18,17 @@ namespace
 	void updateMonsterAnimations()
 	{
 		EntityComponent *aniComp = engineEntities()->component<SkeletalAnimationComponent>();
-		if (gameRunning)
-		{
-			entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
-				Entity *f = en.entity;
-				if (!f->has(aniComp))
-					return;
-				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
-				const uint32 moveDur = mv.timeEnd - mv.timeStart;
-				const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
-				const real moveSpeed = dist / moveDur;
-				a.speed = moveSpeed / mo.speed;
-			});
-		}
-		else
-		{
-			entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
-				Entity *f = en.entity;
-				if (!f->has(aniComp))
-					return;
-				SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
-				a.speed = 0;
-			});
-		}
+		const uint32 speed = gameRunning ? gameSpeed : 0;
+		entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
+			Entity *f = en.entity;
+			if (!f->has(aniComp))
+				return;
+			SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
+			const uint32 moveDur = mv.timeEnd - mv.timeStart;
+			const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
+			const real moveSpeed = dist / moveDur;
+			a.speed = speed * moveSpeed / mo.speed;
+		});
 	}
 
 	void killMonsters()
@@ -108,8 +96,10 @@ namespace
 		if (!globalGrid)
 			return;
 		updateMonsterAnimations();
-		if (!gameRunning)
-			return;
+	}
+
+	void gameUpdate()
+	{
 		killMonsters();
 		moveMonsters();
 		updateDebuffs();
@@ -118,11 +108,14 @@ namespace
 	struct Callbacks
 	{
 		EventListener<void()> engineUpdateListener;
+		EventListener<void()> gameUpdateListener;
 
 		Callbacks()
 		{
 			engineUpdateListener.attach(controlThread().update);
 			engineUpdateListener.bind<&engineUpdate>();
+			gameUpdateListener.attach(eventGameUpdate());
+			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
 }

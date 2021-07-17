@@ -12,7 +12,7 @@ namespace
 	Holder<SpatialQuery> monstersQuery = newSpatialQuery(monstersData.share());
 	Holder<SpatialQuery> structsQuery = newSpatialQuery(structsData.share());
 
-	void engineUpdate()
+	void gameUpdate()
 	{
 		monstersData->clear();
 		structsData->clear();
@@ -37,12 +37,12 @@ namespace
 
 	struct Callbacks
 	{
-		EventListener<void()> engineUpdateListener;
+		EventListener<void()> gameUpdateListener;
 
 		Callbacks()
 		{
-			engineUpdateListener.attach(controlThread().update, 30);
-			engineUpdateListener.bind<&engineUpdate>();
+			gameUpdateListener.attach(eventGameUpdate(), 30);
+			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
 }

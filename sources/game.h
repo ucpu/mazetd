@@ -198,11 +198,13 @@ struct EngineComponent
 
 EntityManager *gameEntities();
 EventDispatcher<bool()> &eventGameReset();
+EventDispatcher<bool()> &eventGameUpdate();
 
 SpatialQuery *spatialMonsters();
 SpatialQuery *spatialStructures();
 
 extern uint32 gameTime;
+extern uint32 gameSpeed;
 extern bool gameRunning;
 
 extern vec3 playerCursorPosition;

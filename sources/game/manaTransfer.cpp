@@ -29,11 +29,8 @@ namespace
 		uint32 transfer = 0;
 	};
 
-	void engineUpdate()
+	void gameUpdate()
 	{
-		if (!gameRunning)
-			return;
-
 		EntityComponent *recvComp = gameEntities()->component<ManaReceiverComponent>();
 		EntityComponent *distrComp = gameEntities()->component<ManaDistributorComponent>();
 		EntityComponent *storComp = gameEntities()->component<ManaStorageComponent>();
@@ -140,14 +137,14 @@ namespace
 	struct Callbacks
 	{
 		EventListener<void()> engineInitListener;
-		EventListener<void()> engineUpdateListener;
+		EventListener<void()> gameUpdateListener;
 
 		Callbacks()
 		{
 			engineInitListener.attach(controlThread().initialize);
 			engineInitListener.bind<&engineInit>();
-			engineUpdateListener.attach(controlThread().update, 35); // after spatial update
-			engineUpdateListener.bind<&engineUpdate>();
+			gameUpdateListener.attach(eventGameUpdate(), 35); // after spatial update
+			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
 }
