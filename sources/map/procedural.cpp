@@ -69,11 +69,6 @@ namespace
 			return max(abs(a), abs(b)) / off;
 		}
 
-		real find(real value, real lower, real upper)
-		{
-			return (value - lower) / (upper - lower);
-		}
-
 		void material(const vec3 &pos3, TileFlags flags, vec3 &albedo, real &roughness) override
 		{
 			const vec2 pos2 = vec2(pos3[0], pos3[2]);

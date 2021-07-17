@@ -1,3 +1,4 @@
+#include <cage-core/enumerate.h>
 #include <cage-core/pointerRangeHolder.h>
 
 #include "generate.h"
@@ -72,6 +73,25 @@ namespace
 		for (uint32 s = 0; s < total; s++)
 			if (comps[s] != largestId)
 				g->flags[s] = TileFlags::Invalid;
+	}
+
+	void findBorder(Grid *g)
+	{
+		const uint32 w = g->resolution[0];
+		for (auto it : enumerate(g->flags))
+		{
+			const ivec2 mp = g->position(it.index);
+			if (none(g->flags[it.index] & TileFlags::Invalid))
+				continue;
+			for (const ivec2 off : { ivec2(-1, 0), ivec2(1, 0), ivec2(0, -1), ivec2(0, 1) })
+			{
+				const uint32 j = g->index(mp + off);
+				if (j == m)
+					continue;
+				if (none(g->flags[j] & TileFlags::Invalid))
+					*it |= TileFlags::Border;
+			}
+		}
 	}
 }
 
@@ -150,6 +170,7 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 		g->flags = vec;
 	}
 	fillUnreachable(+g);
+	findBorder(+g);
 	{
 		uint32 valid = 0;
 		for (TileFlags f : g->flags)

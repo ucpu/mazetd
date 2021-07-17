@@ -7,11 +7,12 @@ enum class TileFlags : uint16
 {
 	None = 0,
 	Invalid = 1u << 0, // tile is outside playable area
-	Waypoint = 1u << 1, // passable tile that player may not build on
-	Water = 1u << 2,
-	Sun = 1u << 3,
-	Wind = 1u << 4,
-	Snow = 1u << 5,
+	Border = 1u << 1, // invalid tile that has a valid neighbor
+	Waypoint = 1u << 2, // passable tile that player may not build on
+	Water = 1u << 5,
+	Sun = 1u << 6,
+	Wind = 1u << 7,
+	Snow = 1u << 8,
 	Mana = 1u << 13, // mana ready for player to harvest
 	Building = 1u << 14, // walls, towers and other impassable structures built by the player
 	Trap = 1u << 15, // passable structures built by the player

@@ -77,6 +77,23 @@ namespace
 			chunksUploadQueue.push(std::move(chunk));
 		}
 
+		real sdf(const vec3 &pos)
+		{
+			real d = procedural->sdf(pos);
+			const uint32 i = grid->index(pos);
+			if (i != m)
+			{
+				const TileFlags f = grid->flags[i];
+				if (any(f & TileFlags::Invalid) && none(f & TileFlags::Water))
+				{
+					const real e = saturate(find(pos[1], -7.5, -6.5));
+					const real o = any(f & TileFlags::Border) ? 1 : 1.5;
+					d += o * e;
+				}
+			}
+			return d;
+		}
+
 		void makeMeshes()
 		{
 			{ // reset rendering queues and assets
@@ -85,22 +102,22 @@ namespace
 			}
 			{
 				MarchingCubesCreateConfig cfg;
-				cfg.box = Aabb(vec3(-80, -15, -80), vec3(80, 10, 80));
+				cfg.box = Aabb(vec3(-80, -15, -80), vec3(80, 15, 80));
 				cfg.clip = true;
 #ifdef CAGE_DEBUG
-				cfg.resolution = ivec3(cfg.box.size() * 0.3);
+				cfg.resolution = ivec3(cfg.box.size() * 0.5);
 #else
-				cfg.resolution = ivec3(cfg.box.size() * 2);
+				cfg.resolution = ivec3(cfg.box.size() * 2.5);
 #endif // CAGE_DEBUG
 				Holder<MarchingCubes> mc = newMarchingCubes(cfg);
-				mc->updateByPosition(Delegate<real(const vec3 &)>().bind<Procedural, &Procedural::sdf>(+procedural));
+				mc->updateByPosition(Delegate<real(const vec3 &)>().bind<Maker, &Maker::sdf>(this));
 				msh = mc->makeMesh();
 			}
 			meshDiscardDisconnected(+msh);
 			{
 				MeshSimplifyConfig cfg;
-				cfg.approximateError = 0.2;
-				cfg.minEdgeLength = 0.3;
+				cfg.approximateError = 0.1;
+				cfg.minEdgeLength = 0.1;
 				cfg.maxEdgeLength = 3;
 #ifdef CAGE_DEBUG
 				cfg.iterations = 2;

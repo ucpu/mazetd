@@ -22,3 +22,8 @@ struct Procedural : private Immovable
 Holder<Procedural> newProcedural();
 Holder<Grid> newGrid(Holder<Procedural> procedural);
 Holder<Waypoints> newWaypoints(Holder<Grid> grid);
+
+inline real find(real value, real lower, real upper)
+{
+	return (value - lower) / (upper - lower);
+}
