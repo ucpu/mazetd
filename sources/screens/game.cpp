@@ -259,7 +259,7 @@ namespace
 				"Waterwheel",
 				"Sunbloom",
 				"Windmill",
-				"Snowmill",
+				"Snowmelt",
 				"Relay",
 				"Capacitor",
 			};

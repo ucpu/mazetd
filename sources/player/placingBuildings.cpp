@@ -14,11 +14,11 @@ uint32 structureMoneyCost(uint32 id)
 	switch (id)
 	{
 	case 900: return 5; // wall
-	case 1000: return 30; // cheap
-	case 1001: return 150; // fast
-	case 1002: return 150; // splash
-	case 1003: return 150; // sniper
-	case 1004: return 400; // mage
+	case 1000: return 40; // cheap // 1 Dps / 4 $
+	case 1001: return 150; // fast // 1 Dps / 5 $ (augment: 1 Dps / 0.25 #ps / 1.25 $)
+	case 1002: return 150; // splash // 1 Dps / 15 $ (augment: 1 Dps / 0.75 #ps / 3.75 $)
+	case 1003: return 150; // sniper // 1 Dps / 7.5 $ (augment: 1 Dps / 0.375 #ps / 1.875 $)
+	case 1004: return 200; // mage // 1 Dps / 0.2 #ps / 2 $
 	case 1100: return 600; // fire augment
 	case 1101: return 600; // water augment
 	case 1102: return 600; // poison augment
@@ -28,7 +28,7 @@ uint32 structureMoneyCost(uint32 id)
 	case 1203: return 500; // snow collector
 	case 1204: return 300; // mana relay
 	case 1205: return 2000; // mana capacitor
-	case 1300: return 25; // spikes trap
+	case 1300: return 40; // spikes trap // 1 Dps / 3.333 $
 	case 1301: return 300; // slow trap
 	case 1302: return 200; // haste trap
 	default: return m;
@@ -40,8 +40,8 @@ void AttackComponent::initAugmentData()
 	for (AugmentEnum a : { AugmentEnum::Fire, AugmentEnum::Water, AugmentEnum::Poison })
 	{
 		data[(int)a] = data[0];
-		data[(int)a].manaCost = data[(int)a].damage;
-		data[(int)a].damage *= 3;
+		data[(int)a].damage *= 4;
+		data[(int)a].manaCost = data[0].firingPeriod; // 30 mana per second
 	}
 	data[(int)AugmentEnum::Fire].damageType = DamageTypeFlags::Fire;
 	data[(int)AugmentEnum::Fire].effectType = EffectTypeEnum::Fire;
@@ -214,7 +214,7 @@ namespace
 			AttackComponent &a = e->value<AttackComponent>();
 			a.data[0].firingPeriod = 90;
 			a.data[0].firingRange = 15;
-			a.data[0].damage = 50;
+			a.data[0].damage = 60;
 			a.data[0].damageType = DamageTypeFlags::Physical;
 			a.data[0].effectType = EffectTypeEnum::Physical;
 			a.useAugments = true;
@@ -226,9 +226,9 @@ namespace
 			e->value<PivotComponent>().elevation = 2.5;
 			AttackComponent &a = e->value<AttackComponent>();
 			a.data[0].firingPeriod = 30;
-			a.data[0].firingRange = 6;
+			a.data[0].firingRange = 5;
 			a.data[0].damage = 100;
-			a.data[0].manaCost = 30;
+			a.data[0].manaCost = 20;
 			a.data[0].damageType = DamageTypeFlags::Magic;
 			a.data[0].effectType = EffectTypeEnum::Mana;
 			a.useAugments = false;
@@ -282,7 +282,7 @@ namespace
 		} break;
 		case 1203: // snow collector
 		{
-			e->value<NameComponent>().name = "Snowmill Collector";
+			e->value<NameComponent>().name = "Snowmelt Collector";
 			e->value<PivotComponent>().elevation = 1;
 			e->value<ManaStorageComponent>();
 			e->value<ManaCollectorComponent>().type = ManaCollectorTypeEnum::Snow;
