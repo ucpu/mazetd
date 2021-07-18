@@ -14,20 +14,20 @@ uint32 structureMoneyCost(uint32 id)
 	switch (id)
 	{
 	case 900: return 5; // wall
-	case 1000: return 40; // cheap // 1 Dps / 4 $
-	case 1001: return 150; // fast // 1 Dps / 5 $ (augment: 1 Dps / 0.25 #ps / 1.25 $)
-	case 1002: return 150; // splash // 1 Dps / 15 $ (augment: 1 Dps / 0.75 #ps / 3.75 $)
-	case 1003: return 150; // sniper // 1 Dps / 7.5 $ (augment: 1 Dps / 0.375 #ps / 1.875 $)
-	case 1004: return 200; // mage // 1 Dps / 0.2 #ps / 2 $
-	case 1100: return 600; // fire augment
-	case 1101: return 600; // water augment
-	case 1102: return 600; // poison augment
-	case 1200: return 500; // water collector
-	case 1201: return 500; // sun collector
-	case 1202: return 500; // wind collector
-	case 1203: return 500; // snow collector
-	case 1204: return 300; // mana relay
-	case 1205: return 2000; // mana capacitor
+	case 1000: return 40; // cheap // 1 Dps = 4 $
+	case 1001: return 150; // fast // 1 Dps = 5 $ / augment: 1 Dps = 0.25 #ps = 1.25 $ / total: 1 Dps = 3 $
+	case 1002: return 150; // splash // 1 Dps = 15 $ / augment: 1 Dps = 0.75 #ps = 3.75 $
+	case 1003: return 150; // sniper // 1 Dps = 7.5 $ / augment: 1 Dps = 0.375 #ps = 1.875 $
+	case 1004: return 200; // mage // 1 Dps = 0.2 #ps = 2 $ / total: 1 Dps = 3 $
+	case 1100: return 500; // fire augment
+	case 1101: return 500; // water augment
+	case 1102: return 500; // poison augment
+	case 1200: return 300; // water collector
+	case 1201: return 300; // sun collector // (produces: 120 #ps)
+	case 1202: return 300; // wind collector
+	case 1203: return 300; // snow collector
+	case 1204: return 100; // mana relay // (transfers: 500 #ps)
+	case 1205: return 1500; // mana capacitor
 	case 1300: return 40; // spikes trap // 1 Dps / 3.333 $
 	case 1301: return 300; // slow trap
 	case 1302: return 200; // haste trap

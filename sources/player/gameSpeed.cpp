@@ -46,6 +46,11 @@ namespace
 		gameUpdateSchedule = controlThread().scheduler()->newSchedule(cfg);
 	}
 
+	void engineFinish()
+	{
+		gameUpdateSchedule.clear();
+	}
+
 	void engineUpdate()
 	{
 		if (gameSpeed > 0)
@@ -55,12 +60,15 @@ namespace
 	struct Callbacks
 	{
 		EventListener<void()> engineInitListener;
+		EventListener<void()> engineFinishListener;
 		EventListener<void()> engineUpdateListener;
 
 		Callbacks()
 		{
 			engineInitListener.attach(controlThread().initialize);
 			engineInitListener.bind<&engineInit>();
+			engineFinishListener.attach(controlThread().finalize);
+			engineFinishListener.bind<&engineFinish>();
 			engineUpdateListener.attach(controlThread().update);
 			engineUpdateListener.bind<&engineUpdate>();
 		}
