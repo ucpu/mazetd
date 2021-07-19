@@ -148,7 +148,7 @@ struct AugmentComponent
 struct MonsterBaseProperties
 {
 	StringLiteral name;
-	uint32 money = 12;
+	uint32 money = 15;
 	uint32 damage = 1;
 	sint32 life = 50;
 	real speed = 0.05;
@@ -165,13 +165,13 @@ struct MonsterSpawningProperties : public MonsterBaseProperties
 struct SpawningGroup : public MonsterSpawningProperties
 {
 	uint32 spawnPointsBits = m;
-	uint32 spawnRounds = 15;
+	uint32 spawnCount = 15;
 	uint32 spawnSimultaneously = 1;
 	uint32 spawnPeriod = 0;
 	uint32 spawnDelay = 0;
 	bool checkingMonstersCounts = true;
 
-	static inline uint32 groupIndex = 0;
+	static inline uint32 waveIndex = 0;
 
 	void spawnOne();
 	void process();

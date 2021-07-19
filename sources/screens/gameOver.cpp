@@ -58,6 +58,6 @@ void setScreenGameOver()
 		parent.order = 1;
 		CAGE_COMPONENT_GUI(Label, label, e);
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = stringizer() + "Waves: " + SpawningGroup::groupIndex;
+		txt.value = stringizer() + "Waves: " + SpawningGroup::waveIndex;
 	}
 }

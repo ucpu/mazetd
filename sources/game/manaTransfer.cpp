@@ -95,9 +95,7 @@ namespace
 				const bool r = e->has(recvComp);
 				const bool d = e->has(distrComp);
 				CAGE_ASSERT(r || d);
-				if (!d)
-					pot.modified = 0;
-				else if (!r)
+				if (d && !r)
 					pot.modified = 1;
 				else
 					pot.modified = real(stor.mana) / stor.capacity;

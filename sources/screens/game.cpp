@@ -307,7 +307,7 @@ void updateSpawningMonsterPropertiesScreen()
 		pp.order = index++;
 		CAGE_COMPONENT_GUI(Label, lab, e);
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = stringizer() + SpawningGroup::groupIndex + ": " + mo.name;
+		txt.value = stringizer() + SpawningGroup::waveIndex + ": " + mo.name;
 	}
 
 	if (mo.monsterClass != MonsterClassFlags::Regular)
@@ -369,7 +369,7 @@ void updateSpawningMonsterPropertiesScreen()
 		pp.order = index++;
 		CAGE_COMPONENT_GUI(Label, lab, e);
 		CAGE_COMPONENT_GUI(Text, txt, e);
-		txt.value = stringizer() + "Amount: " + (mo.spawnRounds * mo.spawnSimultaneously);
+		txt.value = stringizer() + "Amount: " + (mo.spawnCount * mo.spawnSimultaneously);
 	}
 
 	{ // life

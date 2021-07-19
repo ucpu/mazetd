@@ -14,7 +14,7 @@ uint32 structureMoneyCost(uint32 id)
 	switch (id)
 	{
 	case 900: return 5; // wall
-	case 1000: return 40; // cheap // 1 Dps = 4 $
+	case 1000: return 45; // cheap // 1 Dps = 4.5 $
 	case 1001: return 150; // fast // 1 Dps = 5 $ / augment: 1 Dps = 0.25 #ps = 1.25 $ / total: 1 Dps = 3 $
 	case 1002: return 150; // splash // 1 Dps = 15 $ / augment: 1 Dps = 0.75 #ps = 3.75 $
 	case 1003: return 150; // sniper // 1 Dps = 7.5 $ / augment: 1 Dps = 0.375 #ps = 1.875 $
@@ -28,7 +28,7 @@ uint32 structureMoneyCost(uint32 id)
 	case 1203: return 300; // snow collector
 	case 1204: return 100; // mana relay // (transfers: 500 #ps)
 	case 1205: return 1500; // mana capacitor
-	case 1300: return 40; // spikes trap // 1 Dps / 3.333 $
+	case 1300: return 50; // spikes trap // 1 Dps = 4.166 $
 	case 1301: return 300; // slow trap
 	case 1302: return 200; // haste trap
 	default: return m;

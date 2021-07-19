@@ -289,18 +289,18 @@ void SpawningGroup::process()
 		return;
 	}
 
-	if (checkingMonstersCounts && gameEntities()->component<MonsterComponent>()->count() > groupIndex / 3)
+	if (checkingMonstersCounts && gameEntities()->component<MonsterComponent>()->count() > waveIndex / 3)
 		return;
 
-	CAGE_ASSERT(spawnRounds > 0);
-	spawnRounds--;
+	CAGE_ASSERT(spawnCount > 0);
+	spawnCount--;
 	spawnDelay += spawnPeriod;
 	checkingMonstersCounts = false;
 
 	for (uint32 simultaneously = 0; simultaneously < spawnSimultaneously; simultaneously++)
 		spawnOne();
 
-	if (spawnRounds == 0)
+	if (spawnCount == 0)
 		generate();
 }
 
@@ -309,30 +309,30 @@ void SpawningGroup::generate()
 	*this = {};
 
 	const uint32 monsterVarietes = numeric_cast<uint32>(monsterSpawningProperties.size());
-	const MonsterSpawningProperties &proto = monsterSpawningProperties[groupIndex % monsterVarietes];
+	const MonsterSpawningProperties &proto = monsterSpawningProperties[waveIndex % monsterVarietes];
 	(MonsterSpawningProperties &)*this = proto;
 
-	if (groupIndex < monsterVarietes * 2)
+	if (waveIndex < monsterVarietes * 2)
 		immunities = DamageTypeFlags::None;
 
-	life += groupIndex * 15 + numeric_cast<uint32>(sqr(groupIndex / 5));
-	speed += groupIndex * 0.00002;
+	life += waveIndex * 15 + numeric_cast<uint32>(sqr(waveIndex / 5));
+	speed += waveIndex * 0.00002;
 
-	spawnPointsBits = groupIndex < monsterVarietes ? shortestSpawnPointBits() : allSpawnPointsBits();
-	spawnRounds += groupIndex / 10;
+	spawnPointsBits = waveIndex < monsterVarietes ? shortestSpawnPointBits() : allSpawnPointsBits();
+	spawnCount += waveIndex / 10; // total 64 600 monsters (total 969 000 $) at 1000th wave
 	spawnPeriod = numeric_cast<uint32>(1 / proto.speed);
 
-	groupIndex++;
+	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();
 }
 
 void SpawningGroup::init()
 {
 	*this = {};
-	spawnRounds = 1;
+	spawnCount = 1;
 	spawnSimultaneously = 0;
 	spawnDelay = 150;
-	groupIndex = 0;
+	waveIndex = 0;
 }
 
 SpawningGroup spawningGroup;
