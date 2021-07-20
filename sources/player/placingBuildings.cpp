@@ -8,6 +8,7 @@
 #include "../grid.h"
 
 void destroyShortestPathVisualizationMarks();
+void spatialUpdateStructures();
 
 uint32 structureMoneyCost(uint32 id)
 {
@@ -127,7 +128,7 @@ namespace
 		}
 	}
 
-	void placeTile()
+	void placeStructure()
 	{
 		if (selectionIsTrap())
 		{
@@ -149,18 +150,6 @@ namespace
 		Entity *e = gameEntities()->createUnique();
 		e->value<PositionComponent>().tile = playerCursorTile;
 		e->value<RefundCostComponent>().cost = 9 * moneyCost / 10;
-
-		if (selectionIsTrap())
-		{
-			e->value<TrapComponent>();
-			globalGrid->flags[playerCursorTile] |= TileFlags::Trap;
-		}
-		else
-		{
-			e->value<BuildingComponent>();
-			globalGrid->flags[playerCursorTile] |= TileFlags::Building;
-			globalWaypoints->update();
-		}
 
 		switch (playerBuildingSelection)
 		{
@@ -354,10 +343,22 @@ namespace
 			ta.startTime = randomRange(0u, 1000000000u);
 		}
 
+		if (selectionIsTrap())
+		{
+			e->value<TrapComponent>();
+			globalGrid->flags[playerCursorTile] |= TileFlags::Trap;
+		}
+		else
+		{
+			e->value<BuildingComponent>();
+			globalGrid->flags[playerCursorTile] |= TileFlags::Building;
+			globalWaypoints->update();
+		}
 		destroyShortestPathVisualizationMarks();
+		spatialUpdateStructures();
 	}
 
-	void clearTile()
+	void clearStructure()
 	{
 		TileFlags &flags = globalGrid->flags[playerCursorTile];
 
@@ -389,6 +390,7 @@ namespace
 		}
 
 		destroyShortestPathVisualizationMarks();
+		spatialUpdateStructures();
 	}
 
 	bool mouseEvent(MouseButtonsFlags buttons, ModifiersFlags mods, const ivec2 &)
@@ -398,10 +400,10 @@ namespace
 		switch (buttons)
 		{
 		case MouseButtonsFlags::Left:
-			placeTile();
+			placeStructure();
 			return true;
 		case MouseButtonsFlags::Middle:
-			clearTile();
+			clearStructure();
 			return true;
 		}
 		return false;

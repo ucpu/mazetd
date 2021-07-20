@@ -12,35 +12,33 @@ namespace
 	Holder<SpatialQuery> monstersQuery = newSpatialQuery(monstersData.share());
 	Holder<SpatialQuery> structsQuery = newSpatialQuery(structsData.share());
 
-	void gameUpdate()
+	void gameReset()
 	{
 		monstersData->clear();
 		structsData->clear();
-		if (!globalGrid)
-			return;
+	}
+
+	void gameUpdate()
+	{
+		monstersData->clear();
+		CAGE_ASSERT(globalGrid);
 
 		entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &) {
 			monstersData->update(e->name(), mv.position());
 		});
 
-		entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const BuildingComponent &) {
-			structsData->update(e->name(), globalGrid->center(pos.tile));
-		});
-
-		entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const TrapComponent &) {
-			structsData->update(e->name(), globalGrid->center(pos.tile));
-		});
-
 		monstersData->rebuild();
-		structsData->rebuild();
 	}
 
 	struct Callbacks
 	{
+		EventListener<void()> gameResetListener;
 		EventListener<void()> gameUpdateListener;
 
 		Callbacks()
 		{
+			gameResetListener.attach(eventGameReset());
+			gameResetListener.bind<&gameReset>();
 			gameUpdateListener.attach(eventGameUpdate(), 30);
 			gameUpdateListener.bind<&gameUpdate>();
 		}
@@ -55,4 +53,20 @@ SpatialQuery *spatialMonsters()
 SpatialQuery *spatialStructures()
 {
 	return +structsQuery;
+}
+
+void spatialUpdateStructures()
+{
+	structsData->clear();
+	CAGE_ASSERT(globalGrid);
+
+	entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const BuildingComponent &) {
+		structsData->update(e->name(), globalGrid->center(pos.tile));
+		});
+
+	entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const TrapComponent &) {
+		structsData->update(e->name(), globalGrid->center(pos.tile));
+		});
+
+	structsData->rebuild();
 }
