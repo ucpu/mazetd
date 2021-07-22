@@ -7,16 +7,16 @@
 
 namespace
 {
-	bool keyPress(uint32, uint32 scanCode, ModifiersFlags)
+	bool keyPress(uint32 key, ModifiersFlags)
 	{
-		switch (scanCode)
+		switch (key)
 		{
-		case 78: // numeric plus
-		case 329: // page up
+		case 334: // numeric plus
+		case 266: // page up
 			gameSpeed = min(gameSpeed + 1, 10u);
 			return true;
-		case 74: // numeric minus
-		case 337: // page down
+		case 333: // numeric minus
+		case 267: // page down
 			gameSpeed = min(gameSpeed, gameSpeed - 1);
 			return true;
 		}

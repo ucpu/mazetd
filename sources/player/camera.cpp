@@ -122,13 +122,13 @@ namespace
 		if (engineWindow()->isFocused())
 		{
 			vec2 mv2;
-			if (engineWindow()->keyboardScanCode(17)) // w
+			if (engineWindow()->keyboardKey(87)) // w
 				mv2[1] -= 1;
-			if (engineWindow()->keyboardScanCode(31)) // s
+			if (engineWindow()->keyboardKey(83)) // s
 				mv2[1] += 1;
-			if (engineWindow()->keyboardScanCode(30)) // a
+			if (engineWindow()->keyboardKey(65)) // a
 				mv2[0] -= 1;
-			if (engineWindow()->keyboardScanCode(32)) // d
+			if (engineWindow()->keyboardKey(68)) // d
 				mv2[0] += 1;
 			if (mv2 != vec2())
 			{
@@ -139,9 +139,9 @@ namespace
 				updateCamera();
 			}
 			real yaw;
-			if (engineWindow()->keyboardScanCode(16)) // q
+			if (engineWindow()->keyboardKey(81)) // q
 				yaw += 1;
-			if (engineWindow()->keyboardScanCode(18)) // e
+			if (engineWindow()->keyboardKey(69)) // e
 				yaw -= 1;
 			if (yaw != 0)
 			{

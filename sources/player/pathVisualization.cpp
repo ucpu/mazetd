@@ -54,9 +54,9 @@ namespace
 		waypointIndex++;
 	}
 
-	bool keyRepeat(uint32, uint32 scanCode, ModifiersFlags)
+	bool keyRepeat(uint32 key, ModifiersFlags)
 	{
-		if (scanCode != 57) // spacebar
+		if (key != 32) // spacebar
 			return false;
 		placeMarks();
 		return true;
