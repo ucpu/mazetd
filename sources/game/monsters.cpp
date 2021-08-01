@@ -27,7 +27,7 @@ namespace
 	{
 		EntityComponent *aniComp = engineEntities()->component<SkeletalAnimationComponent>();
 		const uint32 speed = gameRunning ? gameSpeed : 0;
-		entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
+		entitiesVisitor([&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
 			Entity *f = en.entity;
 			if (!f->has(aniComp))
 				return;
@@ -36,25 +36,25 @@ namespace
 			const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
 			const real moveSpeed = dist / moveDur;
 			a.speed = speed * moveSpeed / mo.speed;
-		});
+		}, gameEntities(), false);
 	}
 
 	void killMonsters()
 	{
-		entitiesVisitor(gameEntities(), [&](Entity *e, const MonsterComponent &mo) {
+		entitiesVisitor([&](Entity *e, const MonsterComponent &mo) {
 			if (mo.life <= 0)
 			{
 				playerMoney += mo.money;
 				createMonsterGhost(e);
 				e->destroy();
 			}
-		}, true);
+		}, gameEntities(), true);
 	}
 
 	void moveMonsters()
 	{
 		EntityComponent *debComp = gameEntities()->component<MonsterDebuffComponent>();
-		entitiesVisitor(gameEntities(), [&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
+		entitiesVisitor([&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
 			CAGE_ASSERT(po.tile == mv.tileEnd);
 			if (gameTime < mv.timeEnd)
 				return;
@@ -88,16 +88,16 @@ namespace
 				if (none(deb.type & DamageTypeFlags::Slow) && any(deb.type & DamageTypeFlags::Haste))
 					mv.timeEnd -= 1 * (mv.timeEnd - mv.timeStart) / 2;
 			}
-		}, true);
+		}, gameEntities(), true);
 	}
 
 	void updateDebuffs()
 	{
 		EntityComponent *debComp = gameEntities()->component<MonsterDebuffComponent>();
-		entitiesVisitor(gameEntities(), [&](Entity *e, const MonsterDebuffComponent &deb) {
+		entitiesVisitor([&](Entity *e, const MonsterDebuffComponent &deb) {
 			if (gameTime >= deb.endTime)
 				e->remove(debComp);
-		}, true);
+		}, gameEntities(), true);
 	}
 
 	void engineUpdate()

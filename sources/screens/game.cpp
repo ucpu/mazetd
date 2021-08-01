@@ -53,7 +53,7 @@ namespace
 		EntityManager *ents = engineGui()->entities();
 		sint32 index = 0;
 
-		entitiesVisitor(gameEntities(), [&](Entity *g, const PositionComponent &po, const NameComponent &nm) {
+		entitiesVisitor([&](Entity *g, const PositionComponent &po, const NameComponent &nm) {
 			if (po.tile != playerCursorTile)
 				return;
 
@@ -99,7 +99,7 @@ namespace
 					txt.value = stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
 				}
 			}
-		});
+		}, gameEntities(), false);
 
 		{
 			struct Pair
@@ -137,13 +137,13 @@ namespace
 
 	void updateBuildingsList()
 	{
-		entitiesVisitor(engineGui()->entities(), [&](Entity *e, const GuiButtonComponent &, const GuiTextComponent &, GuiTextFormatComponent &format) {
+		entitiesVisitor([&](Entity *e, const GuiButtonComponent &, const GuiTextComponent &, GuiTextFormatComponent &format) {
 			const uint32 name = e->name();
 			const uint32 cost = structureMoneyCost(name);
 			if (cost == m)
 				return;
 			format.color = playerMoney < cost ? vec3(1, 0, 0) : name == playerBuildingSelection ? vec3(0, 1, 0) : vec3(1);
-		});
+		}, engineGui()->entities(), false);
 	}
 
 	void engineUpdate()

@@ -22,12 +22,12 @@ namespace
 		const uint64 time = engineControlTime();
 		Entity *cam = engineEntities()->get(1);
 		CAGE_COMPONENT_ENGINE(Transform, ct, cam);
-		entitiesVisitor(engineEntities(), [&](Entity *e, TransformComponent &tr, const RenderEffectComponent &re) {
+		entitiesVisitor([&](Entity *e, TransformComponent &tr, const RenderEffectComponent &re) {
 			tr.position += re.move;
 			tr.orientation = quat(tr.position - ct.position, ct.orientation * vec3(0, 1, 0));
 			if (time > re.timeToDie)
 				e->destroy();
-		}, true);
+		}, engineEntities(), true);
 	}
 
 	struct Callbacks

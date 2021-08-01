@@ -188,7 +188,7 @@ namespace
 		SpatialQuery *buildingsQuery = spatialStructures();
 		std::vector<Monster> monsters;
 
-		entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, AttackComponent &atc) {
+		entitiesVisitor([&](Entity *e, const PositionComponent &pos, AttackComponent &atc) {
 			if (atc.firingDelay > 0)
 			{
 				atc.firingDelay--;
@@ -213,7 +213,7 @@ namespace
 			}
 
 			atc.firingDelay += att.firingPeriod;
-		});
+		}, gameEntities(), false);
 	}
 
 	struct Callbacks

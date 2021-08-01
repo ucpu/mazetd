@@ -72,10 +72,10 @@ namespace
 			if (paths->distances[p->tile] == m)
 				return true; // disconnected spawner
 		bool blocked = false;
-		entitiesVisitor(gameEntities(), [&](const PositionComponent &p, const MonsterComponent &) {
+		entitiesVisitor([&](const PositionComponent &p, const MonsterComponent &) {
 			if (paths->distances[p.tile] == m)
 				blocked = true; // disconnected monster
-		});
+		}, gameEntities(), false);
 		return blocked;
 	}
 
@@ -366,13 +366,13 @@ namespace
 		{
 			flags &= ~TileFlags::Trap;
 
-			entitiesVisitor(gameEntities(), [](Entity *e, const PositionComponent &p, const TrapComponent &) {
+			entitiesVisitor([](Entity *e, const PositionComponent &p, const TrapComponent &) {
 				if (p.tile == playerCursorTile)
 				{
 					playerMoney += e->value<RefundCostComponent>().cost;
 					e->destroy();
 				}
-			}, true);
+			}, gameEntities(), true);
 		}
 		
 		if (any(flags & TileFlags::Building))
@@ -380,13 +380,13 @@ namespace
 			flags &= ~TileFlags::Building;
 			globalWaypoints->update();
 
-			entitiesVisitor(gameEntities(), [](Entity *e, const PositionComponent &p, const BuildingComponent &) {
+			entitiesVisitor([](Entity *e, const PositionComponent &p, const BuildingComponent &) {
 				if (p.tile == playerCursorTile)
 				{
 					playerMoney += e->value<RefundCostComponent>().cost;
 					e->destroy();
 				}
-			}, true);
+			}, gameEntities(), true);
 		}
 
 		destroyShortestPathVisualizationMarks();

@@ -23,9 +23,9 @@ namespace
 		monstersData->clear();
 		CAGE_ASSERT(globalGrid);
 
-		entitiesVisitor(gameEntities(), [&](Entity *e, const MovementComponent &mv, const MonsterComponent &) {
+		entitiesVisitor([&](Entity *e, const MovementComponent &mv, const MonsterComponent &) {
 			monstersData->update(e->name(), mv.position());
-		});
+		}, gameEntities(), false);
 
 		monstersData->rebuild();
 	}
@@ -60,13 +60,13 @@ void spatialUpdateStructures()
 	structsData->clear();
 	CAGE_ASSERT(globalGrid);
 
-	entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const BuildingComponent &) {
+	entitiesVisitor([&](Entity *e, const PositionComponent &pos, const BuildingComponent &) {
 		structsData->update(e->name(), globalGrid->center(pos.tile));
-		});
+	}, gameEntities(), false);
 
-	entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const TrapComponent &) {
+	entitiesVisitor([&](Entity *e, const PositionComponent &pos, const TrapComponent &) {
 		structsData->update(e->name(), globalGrid->center(pos.tile));
-		});
+	}, gameEntities(), false);
 
 	structsData->rebuild();
 }

@@ -42,7 +42,7 @@ namespace
 		if ((gameTime % 6) == 0)
 		{
 			// distribute mana
-			entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, const PotentialComponent &pot, ManaStorageComponent &stor) {
+			entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, const PotentialComponent &pot, ManaStorageComponent &stor) {
 				if (stor.mana == 0)
 					return;
 
@@ -87,10 +87,10 @@ namespace
 					cfg.type = EffectTypeEnum::Mana;
 					renderEffect(cfg);
 				}
-			});
+			}, gameEntities(), false);
 
 			// reset potentials
-			entitiesVisitor(gameEntities(), [&](Entity *e, const ManaStorageComponent &stor) {
+			entitiesVisitor([&](Entity *e, const ManaStorageComponent &stor) {
 				PotentialComponent &pot = e->value<PotentialComponent>(potenComp);
 				const bool r = e->has(recvComp);
 				const bool d = e->has(distrComp);
@@ -100,12 +100,12 @@ namespace
 				else
 					pot.modified = real(stor.mana) / stor.capacity;
 				pot.potential = pot.modified;
-			});
+			}, gameEntities(), false);
 		}
 		else for (uint32 iter = 0; iter < 5; iter++)
 		{
 			// spread potentials
-			entitiesVisitor(gameEntities(), [&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, PotentialComponent &pot) {
+			entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, PotentialComponent &pot) {
 				uint32 cnt = 5;
 				real sum = pot.potential * cnt;
 				buildingsQuery->intersection(Sphere(globalGrid->center(pos.tile), distr.range));
@@ -123,12 +123,12 @@ namespace
 					cnt++;
 				}
 				pot.modified = sum / cnt;
-			});
+			}, gameEntities(), false);
 
 			// apply modified
-			entitiesVisitor(gameEntities(), [&](PotentialComponent &pot) {
+			entitiesVisitor([&](PotentialComponent &pot) {
 				pot.potential = pot.modified;
-			});
+			}, gameEntities(), false);
 		}
 	}
 

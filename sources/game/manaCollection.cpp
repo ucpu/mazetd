@@ -38,7 +38,7 @@ namespace
 	{
 		placeNewMana();
 
-		entitiesVisitor(gameEntities(), [](Entity *e, const PositionComponent &pos, const ManaCollectorComponent &col, ManaStorageComponent &stor) {
+		entitiesVisitor([](Entity *e, const PositionComponent &pos, const ManaCollectorComponent &col, ManaStorageComponent &stor) {
 			if (stor.mana + col.collectAmount > stor.capacity)
 				return;
 
@@ -79,7 +79,7 @@ namespace
 						return;
 				}
 			}
-		});
+		}, gameEntities(), false);
 	}
 
 	struct Callbacks

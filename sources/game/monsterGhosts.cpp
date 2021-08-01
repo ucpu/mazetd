@@ -18,13 +18,13 @@ namespace
 
 	void engineUpdate()
 	{
-		entitiesVisitor(engineEntities(), [&](Entity *e, TransformComponent &tr, RenderComponent &re, const GhostComponent &gh) {
+		entitiesVisitor([&](Entity *e, TransformComponent &tr, RenderComponent &re, const GhostComponent &gh) {
 			tr.orientation = gh.rot * tr.orientation;
 			tr.position += gh.mov;
 			re.opacity -= 0.004;
 			if (re.opacity < 0.02)
 				e->destroy();
-		}, true);
+		}, engineEntities(), true);
 	}
 
 	struct Callbacks
