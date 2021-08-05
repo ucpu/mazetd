@@ -111,8 +111,8 @@ void Waypoints::update()
 		return;
 
 	CAGE_LOG_DEBUG(SeverityEnum::Info, "paths", "recomputing paths");
-	tasksRun(Delegate<void(uint32)>().bind<Waypoints *, &directionsThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
-	tasksRun(Delegate<void(uint32)>().bind<Waypoints *, &waypointThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
+	tasksRunBlocking("paths directions", Delegate<void(uint32)>().bind<Waypoints *, &directionsThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
+	tasksRunBlocking("paths waypoints", Delegate<void(uint32)>().bind<Waypoints *, &waypointThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
 
 	{ // average full path
 		uint32 sum = 0;

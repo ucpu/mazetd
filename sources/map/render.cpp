@@ -2,9 +2,10 @@
 #include <cage-core/serialization.h>
 #include <cage-core/entities.h>
 #include <cage-engine/engine.h>
-#include <cage-engine/graphics.h>
 #include <cage-engine/assetStructs.h>
 #include <cage-engine/opengl.h>
+#include <cage-engine/model.h>
+#include <cage-engine/texture.h>
 
 #include "generate.h"
 

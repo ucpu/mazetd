@@ -10,7 +10,7 @@ void cleanGui()
 	gui->skipAllEventsUntilNextUpdate();
 	eventGuiClean().dispatch();
 	eventGuiClean().detach();
-	gui->setFocus(0);
+	gui->focus(0);
 	gui->entities()->destroy();
 	gui->widgetEvent.detach();
 }

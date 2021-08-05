@@ -131,7 +131,7 @@ namespace
 				meshes = meshChunking(+msh, cfg);
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "mesh chunks: " + meshes.size());
-			tasksRun<const Holder<Mesh>>(Delegate<void(const Holder<Mesh> &)>().bind<Maker, &Maker::makeChunk>(this), *meshes, -10);
+			tasksRunBlocking<const Holder<Mesh>>("make chunk", Delegate<void(const Holder<Mesh> &)>().bind<Maker, &Maker::makeChunk>(this), *meshes, -10);
 		}
 	};
 

@@ -3,7 +3,7 @@
 #include <cage-core/logger.h>
 #include <cage-engine/engine.h>
 #include <cage-engine/window.h>
-#include <cage-engine/engineProfiling.h>
+#include <cage-engine/engineStatistics.h>
 #include <cage-engine/fullscreenSwitcher.h>
 #include <cage-engine/highPerformanceGpuHint.h>
 
@@ -39,8 +39,8 @@ int main(int argc, const char *args[])
 
 		{
 			Holder<FullscreenSwitcher> fullscreen = newFullscreenSwitcher({});
-			Holder<EngineProfiling> engineProfiling = newEngineProfiling();
-			engineProfiling->profilingScope = EngineProfilingScopeEnum::None;
+			Holder<EngineStatistics> engineStatistics = newEngineStatistics();
+			engineStatistics->statisticsScope = EngineStatisticsScopeEnum::None;
 
 			engineStart();
 		}
