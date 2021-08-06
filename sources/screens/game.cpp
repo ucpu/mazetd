@@ -26,19 +26,19 @@ namespace
 
 		{ // path tiles
 			Entity *e = ents->get(312);
-			CAGE_COMPONENT_GUI(Text, txt, e);
+			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = stringizer() + globalWaypoints->minFullDistance;
 		}
 
 		{ // health
 			Entity *e = ents->get(314);
-			CAGE_COMPONENT_GUI(Text, txt, e);
+			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = stringizer() + playerHealth;
 		}
 
 		{ // dollars
 			Entity *e = ents->get(316);
-			CAGE_COMPONENT_GUI(Text, txt, e);
+			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = stringizer() + playerMoney;
 		}
 	}
@@ -59,22 +59,22 @@ namespace
 
 			{ // name
 				Entity *e = ents->createUnique();
-				CAGE_COMPONENT_GUI(Parent, pp, e);
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
 				pp.parent = 201;
 				pp.order = index++;
-				CAGE_COMPONENT_GUI(Label, lab, e);
-				CAGE_COMPONENT_GUI(Text, txt, e);
+				GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+				GuiTextComponent &txt = e->value<GuiTextComponent>();
 				txt.value = nm.name;
 			}
 
 			if (g->has<ManaStorageComponent>())
 			{ // mana
 				Entity *e = ents->createUnique();
-				CAGE_COMPONENT_GUI(Parent, pp, e);
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
 				pp.parent = 201;
 				pp.order = index++;
-				CAGE_COMPONENT_GUI(Label, lab, e);
-				CAGE_COMPONENT_GUI(Text, txt, e);
+				GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+				GuiTextComponent &txt = e->value<GuiTextComponent>();
 				txt.value = stringizer() + "Mana: " + g->value<ManaStorageComponent>().mana + " / " + g->value<ManaStorageComponent>().capacity;
 			}
 
@@ -82,20 +82,20 @@ namespace
 			{ // monster
 				{ // life
 					Entity *e = ents->createUnique();
-					CAGE_COMPONENT_GUI(Parent, pp, e);
+					GuiParentComponent &pp = e->value<GuiParentComponent>();
 					pp.parent = 201;
 					pp.order = index++;
-					CAGE_COMPONENT_GUI(Label, lab, e);
-					CAGE_COMPONENT_GUI(Text, txt, e);
+					GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+					GuiTextComponent &txt = e->value<GuiTextComponent>();
 					txt.value = stringizer() + "Life: " + g->value<MonsterComponent>().life;
 				}
 				{ // waypoints
 					Entity *e = ents->createUnique();
-					CAGE_COMPONENT_GUI(Parent, pp, e);
+					GuiParentComponent &pp = e->value<GuiParentComponent>();
 					pp.parent = 201;
 					pp.order = index++;
-					CAGE_COMPONENT_GUI(Label, lab, e);
-					CAGE_COMPONENT_GUI(Text, txt, e);
+					GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+					GuiTextComponent &txt = e->value<GuiTextComponent>();
 					txt.value = stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
 				}
 			}
@@ -125,11 +125,11 @@ namespace
 					continue;
 
 				Entity *e = ents->createUnique();
-				CAGE_COMPONENT_GUI(Parent, pp, e);
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
 				pp.parent = 201;
 				pp.order = index++;
-				CAGE_COMPONENT_GUI(Label, lab, e);
-				CAGE_COMPONENT_GUI(Text, txt, e);
+				GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+				GuiTextComponent &txt = e->value<GuiTextComponent>();
 				txt.value = string(p.name);
 			}
 		}
@@ -172,14 +172,14 @@ namespace
 		for (uint32 i = 0; i < names.size(); i++)
 		{
 			Entity *e = ents->create(ids + i);
-			CAGE_COMPONENT_GUI(Parent, pp, e);
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
 			pp.parent = parent;
 			pp.order = i;
-			CAGE_COMPONENT_GUI(Button, but, e);
-			CAGE_COMPONENT_GUI(Text, txt, e);
+			GuiButtonComponent &but = e->value<GuiButtonComponent>();
+			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = names[i];
-			CAGE_COMPONENT_GUI(TextFormat, format, e);
-			CAGE_COMPONENT_GUI(Event, evt, e);
+			GuiTextFormatComponent &format = e->value<GuiTextFormatComponent>();
+			GuiEventComponent &evt = e->value<GuiEventComponent>();
 			evt.event.bind<&buildingSelectionClick>();
 		}
 	}
@@ -200,13 +200,13 @@ namespace
 
 		{
 			Entity *e = ents->create(410);
-			CAGE_COMPONENT_GUI(Parent, pp, e);
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
 			pp.parent = 401;
 			pp.order = 1;
-			CAGE_COMPONENT_GUI(Spoiler, sp, e);
-			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+			GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
+			GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 			ll.vertical = true;
-			CAGE_COMPONENT_GUI(Text, txt, e);
+			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = "Towers";
 		}
 
@@ -223,13 +223,13 @@ namespace
 
 		{
 			Entity *e = ents->create(411);
-			CAGE_COMPONENT_GUI(Parent, pp, e);
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
 			pp.parent = 401;
 			pp.order = 2;
-			CAGE_COMPONENT_GUI(Spoiler, sp, e);
-			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+			GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
+			GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 			ll.vertical = true;
-			CAGE_COMPONENT_GUI(Text, txt, e);
+			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = "Augments";
 		}
 
@@ -244,13 +244,13 @@ namespace
 
 		{
 			Entity *e = ents->create(412);
-			CAGE_COMPONENT_GUI(Parent, pp, e);
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
 			pp.parent = 401;
 			pp.order = 3;
-			CAGE_COMPONENT_GUI(Spoiler, sp, e);
-			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+			GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
+			GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 			ll.vertical = true;
-			CAGE_COMPONENT_GUI(Text, txt, e);
+			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = "Mana";
 		}
 
@@ -268,13 +268,13 @@ namespace
 
 		{
 			Entity *e = ents->create(413);
-			CAGE_COMPONENT_GUI(Parent, pp, e);
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
 			pp.parent = 401;
 			pp.order = 4;
-			CAGE_COMPONENT_GUI(Spoiler, sp, e);
-			CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+			GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
+			GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 			ll.vertical = true;
-			CAGE_COMPONENT_GUI(Text, txt, e);
+			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = "Traps";
 		}
 
@@ -302,22 +302,22 @@ void updateSpawningMonsterPropertiesScreen()
 
 	{ // name
 		Entity *e = ents->createUnique();
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		CAGE_COMPONENT_GUI(Label, lab, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = stringizer() + SpawningGroup::waveIndex + ": " + mo.name;
 	}
 
 	if (mo.monsterClass != MonsterClassFlags::Regular)
 	{ // monster class
 		Entity *e = ents->createUnique();
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		CAGE_COMPONENT_GUI(Label, lab, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Class:";
 		struct Pair
 		{
@@ -337,11 +337,11 @@ void updateSpawningMonsterPropertiesScreen()
 	if (mo.immunities != DamageTypeFlags::None)
 	{ // immunities
 		Entity *e = ents->createUnique();
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		CAGE_COMPONENT_GUI(Label, lab, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Immunities:";
 		struct Pair
 		{
@@ -364,31 +364,31 @@ void updateSpawningMonsterPropertiesScreen()
 
 	{ // amount
 		Entity *e = ents->createUnique();
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		CAGE_COMPONENT_GUI(Label, lab, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = stringizer() + "Amount: " + (mo.spawnCount * mo.spawnSimultaneously);
 	}
 
 	{ // life
 		Entity *e = ents->createUnique();
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		CAGE_COMPONENT_GUI(Label, lab, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = stringizer() + "Life: " + mo.life;
 	}
 
 	{ // speed
 		Entity *e = ents->createUnique();
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		CAGE_COMPONENT_GUI(Label, lab, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = stringizer() + "Speed: " + (mo.speed * 20);
 	}
 }
@@ -407,19 +407,19 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(200);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0, 1);
 	}
 
 	{
 		Entity *e = ents->create(201);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 200;
-		CAGE_COMPONENT_GUI(Spoiler, sp, e);
+		GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
 		sp.collapsed = false;
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 		ll.vertical = true;
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Cursor";
 	}
 
@@ -427,113 +427,113 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(300);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0.5, 0);
 	}
 
 	{
 		Entity *e = ents->create(301);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 300;
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(310);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 301;
 		pp.order = 1;
-		CAGE_COMPONENT_GUI(Button, but, e);
-		CAGE_COMPONENT_GUI(Image, img, e);
+		GuiButtonComponent &but = e->value<GuiButtonComponent>();
+		GuiImageComponent &img = e->value<GuiImageComponent>();
 		img.textureName = HashString("mazetd/gui/menu.png");
-		CAGE_COMPONENT_GUI(Event, ev, e);
+		GuiEventComponent &ev = e->value<GuiEventComponent>();
 		ev.event.bind<&buttonMenu>();
 	}
 
 	{
 		Entity *e = ents->create(302);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 301;
 		pp.order = 2;
-		CAGE_COMPONENT_GUI(Panel, pnl, e);
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(311);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 302;
 		pp.order = 1;
-		CAGE_COMPONENT_GUI(Label, lb, e);
-		CAGE_COMPONENT_GUI(Image, img, e);
+		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		GuiImageComponent &img = e->value<GuiImageComponent>();
 		img.textureName = HashString("mazetd/gui/path.png");
 	}
 
 	{
 		Entity *e = ents->create(312);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 302;
 		pp.order = 2;
-		CAGE_COMPONENT_GUI(Label, lb, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "path";
 	}
 
 	{
 		Entity *e = ents->create(303);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 301;
 		pp.order = 3;
-		CAGE_COMPONENT_GUI(Panel, pnl, e);
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(313);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 303;
 		pp.order = 1;
-		CAGE_COMPONENT_GUI(Label, lb, e);
-		CAGE_COMPONENT_GUI(Image, img, e);
+		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		GuiImageComponent &img = e->value<GuiImageComponent>();
 		img.textureName = HashString("mazetd/gui/health.png");
 	}
 
 	{
 		Entity *e = ents->create(314);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 303;
 		pp.order = 2;
-		CAGE_COMPONENT_GUI(Label, lb, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "health";
 	}
 
 	{
 		Entity *e = ents->create(304);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 301;
 		pp.order = 4;
-		CAGE_COMPONENT_GUI(Panel, pnl, e);
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(315);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 304;
 		pp.order = 1;
-		CAGE_COMPONENT_GUI(Label, lb, e);
-		CAGE_COMPONENT_GUI(Image, img, e);
+		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		GuiImageComponent &img = e->value<GuiImageComponent>();
 		img.textureName = HashString("mazetd/gui/dollar.png");
 	}
 
 	{
 		Entity *e = ents->create(316);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 304;
 		pp.order = 2;
-		CAGE_COMPONENT_GUI(Label, lb, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "dollars";
 	}
 
@@ -541,15 +541,15 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(400);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(1, 0.5);
 	}
 
 	{
 		Entity *e = ents->create(401);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 400;
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 		ll.vertical = true;
 	}
 
@@ -559,19 +559,19 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(500);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0, 0);
 	}
 
 	{
 		Entity *e = ents->create(501);
-		CAGE_COMPONENT_GUI(Parent, pp, e);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 500;
-		CAGE_COMPONENT_GUI(Spoiler, sp, e);
+		GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
 		sp.collapsed = false;
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 		ll.vertical = true;
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Spawning";
 	}
 

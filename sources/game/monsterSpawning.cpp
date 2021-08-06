@@ -274,9 +274,9 @@ void SpawningGroup::spawnOne()
 	mv.timeStart = mv.timeEnd = gameTime;
 
 	Entity *f = e->value<EngineComponent>().entity;
-	CAGE_COMPONENT_ENGINE(Render, r, f);
+	RenderComponent &r = f->value<RenderComponent>();
 	r.object = modelName;
-	CAGE_COMPONENT_ENGINE(SkeletalAnimation, a, f);
+	SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>();
 	a.name = animationName;
 	a.offset = randomRange(0.f, 1e6f);
 }

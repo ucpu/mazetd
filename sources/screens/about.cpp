@@ -16,33 +16,33 @@ void setScreenAbout()
 
 	{
 		Entity *e = ents->create(1);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0, 1);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 1;
-		CAGE_COMPONENT_GUI(Button, control, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiButtonComponent &control = e->value<GuiButtonComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Back";
-		CAGE_COMPONENT_GUI(Event, ev, e);
+		GuiEventComponent &ev = e->value<GuiEventComponent>();
 		ev.event.bind<&buttonBack>();
 	}
 
 	{
 		Entity *e = ents->create(4);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0.5, 0.2);
 	}
 
 	{
 		Entity *e = ents->create(5);
-		CAGE_COMPONENT_GUI(Panel, panel, e);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiPanelComponent &panel = e->value<GuiPanelComponent>();
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 4;
-		CAGE_COMPONENT_GUI(LayoutLine, layout, e);
+		GuiLayoutLineComponent &layout = e->value<GuiLayoutLineComponent>();
 		layout.vertical = true;
 	}
 
@@ -67,11 +67,11 @@ void setScreenAbout()
 	for (const auto &it : lines)
 	{
 		Entity *e = engineGui()->entities()->createUnique();
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 5;
 		parent.order = idx;
-		CAGE_COMPONENT_GUI(Label, lab, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = it;
 		idx++;
 	}

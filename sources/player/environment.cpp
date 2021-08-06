@@ -7,13 +7,13 @@ namespace
 	void gameReset()
 	{
 		Entity *e = engineEntities()->createAnonymous();
-		CAGE_COMPONENT_ENGINE(Transform, t, e);
+		TransformComponent &t = e->value<TransformComponent>();
 		t.orientation = quat(degs(-50), randomAngle(), degs());
-		CAGE_COMPONENT_ENGINE(Light, l, e);
+		LightComponent &l = e->value<LightComponent>();
 		l.lightType = LightTypeEnum::Directional;
 		l.color = vec3(1);
 		l.intensity = 1.5;
-		CAGE_COMPONENT_ENGINE(Shadowmap, s, e);
+		ShadowmapComponent &s = e->value<ShadowmapComponent>();
 		s.resolution = 4096;
 		s.worldSize = vec3(80);
 	}

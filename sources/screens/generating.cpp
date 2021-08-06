@@ -33,16 +33,16 @@ void setScreenGenerating()
 
 	{
 		Entity *e = ents->create(1);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0.45, 0.05);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 1;
-		CAGE_COMPONENT_GUI(Label, label, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &label = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Generating";
 	}
 }

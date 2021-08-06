@@ -151,7 +151,7 @@ namespace
 		}
 
 		Entity *e = engineEntities()->get(1);
-		CAGE_COMPONENT_ENGINE(Transform, t, e);
+		TransformComponent &t = e->value<TransformComponent>();
 		t = interpolate(t, camTrans, 0.5);
 	}
 
@@ -159,9 +159,9 @@ namespace
 	{
 		Entity *e = engineEntities()->create(1);
 		updateCamera();
-		CAGE_COMPONENT_ENGINE(Transform, t, e);
+		TransformComponent &t = e->value<TransformComponent>();
 		t = camTrans;
-		CAGE_COMPONENT_ENGINE(Camera, c, e);
+		CameraComponent &c = e->value<CameraComponent>();
 		c.near = 0.3;
 		c.far = 300;
 		c.ambientColor = vec3(1);

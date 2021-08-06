@@ -21,7 +21,7 @@ namespace
 	{
 		const uint64 time = engineControlTime();
 		Entity *cam = engineEntities()->get(1);
-		CAGE_COMPONENT_ENGINE(Transform, ct, cam);
+		TransformComponent &ct = cam->value<TransformComponent>();
 		entitiesVisitor([&](Entity *e, TransformComponent &tr, const RenderEffectComponent &re) {
 			tr.position += re.move;
 			tr.orientation = quat(tr.position - ct.position, ct.orientation * vec3(0, 1, 0));
@@ -67,7 +67,7 @@ void renderEffect(const EffectConfig &config)
 	const vec3 dir = normalize(config.pos2 - config.pos1);
 	const uint32 n = max(uint32(dist.value), 1u);
 	Entity *cam = engineEntities()->get(1);
-	CAGE_COMPONENT_ENGINE(Transform, ct, cam);
+	TransformComponent &ct = cam->value<TransformComponent>();
 	for (uint32 i = 0; i < n; i++)
 	{
 		Entity *e = engineEntities()->createAnonymous();
@@ -75,12 +75,12 @@ void renderEffect(const EffectConfig &config)
 		const uint64 dur = randomRange(0.05, 0.15) * 1e6;
 		re.timeToDie = engineControlTime() + dur;
 		re.move = dir * (step / (real)dur);
-		CAGE_COMPONENT_ENGINE(Transform, tr, e);
+		TransformComponent &tr = e->value<TransformComponent>();
 		tr.position = config.pos1 + dir * (i + 0.2);
 		tr.orientation = quat(tr.position - ct.position, ct.orientation * vec3(0, 1, 0));
-		CAGE_COMPONENT_ENGINE(Render, r, e);
+		RenderComponent &r = e->value<RenderComponent>();
 		r.object = renderName(config);
-		CAGE_COMPONENT_ENGINE(TextureAnimation, ta, e);
+		TextureAnimationComponent &ta = e->value<TextureAnimationComponent>();
 		ta.startTime = randomRange(0u, 1000000000u);
 	}
 }

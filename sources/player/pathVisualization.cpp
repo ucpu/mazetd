@@ -39,12 +39,12 @@ namespace
 			{
 				Entity *e = engineEntities()->createAnonymous();
 				e->value<PathMarkComponent>();
-				CAGE_COMPONENT_ENGINE(Transform, t, e);
+				TransformComponent &t = e->value<TransformComponent>();
 				const vec3 a = globalGrid->center(prev);
 				const vec3 b = globalGrid->center(*it);
 				t.position = interpolate(a, b, 0.5);
 				t.orientation = quat(b - a, vec3(0, 1, 0));
-				CAGE_COMPONENT_ENGINE(Render, r, e);
+				RenderComponent &r = e->value<RenderComponent>();
 				r.object = HashString("mazetd/misc/pathMark.obj");
 				r.color = colorValueToHeatmapRgb(real(it.index) * colorIndexScale);
 				std::swap(r.color[1], r.color[2]);

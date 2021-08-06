@@ -18,46 +18,46 @@ void setScreenGameOver()
 
 	{
 		Entity *e = ents->create(1);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0, 1);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 1;
-		CAGE_COMPONENT_GUI(Button, control, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiButtonComponent &control = e->value<GuiButtonComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Stop";
-		CAGE_COMPONENT_GUI(Event, ev, e);
+		GuiEventComponent &ev = e->value<GuiEventComponent>();
 		ev.event.bind<&buttonStop>();
 	}
 
 	{
 		Entity *e = ents->create(3);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0.45, 0.05);
-		CAGE_COMPONENT_GUI(LayoutLine, ll, e);
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 		ll.vertical = true;
 	}
 
 	{
 		Entity *e = ents->create(4);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 3;
 		parent.order = 0;
-		CAGE_COMPONENT_GUI(Label, label, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &label = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Game Over";
 	}
 
 	{
 		Entity *e = ents->create(5);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 3;
 		parent.order = 1;
-		CAGE_COMPONENT_GUI(Label, label, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &label = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = stringizer() + "Waves: " + SpawningGroup::waveIndex;
 	}
 }

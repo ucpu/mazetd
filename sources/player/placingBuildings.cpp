@@ -337,9 +337,9 @@ namespace
 
 		{
 			Entity *f = e->value<EngineComponent>().entity;
-			CAGE_COMPONENT_ENGINE(Render, r, f);
+			RenderComponent &r = f->value<RenderComponent>();
 			r.object = structureModelName();
-			CAGE_COMPONENT_ENGINE(TextureAnimation, ta, f);
+			TextureAnimationComponent &ta = f->value<TextureAnimationComponent>();
 			ta.startTime = randomRange(0u, 1000000000u);
 		}
 

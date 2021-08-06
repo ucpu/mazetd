@@ -15,7 +15,7 @@ namespace
 	void gameUpdate()
 	{
 		entitiesVisitor([](Entity *e, MovementComponent &mv, EngineComponent &ec) {
-			CAGE_COMPONENT_ENGINE(Transform, t, ec.entity);
+			TransformComponent &t = ec.entity->value<TransformComponent>();
 			const real f = mv.timeEnd > mv.timeStart ? saturate(real(gameTime - mv.timeStart) / (mv.timeEnd - mv.timeStart)) : 0;
 			const vec3 a = globalGrid->center(mv.tileStart);
 			const vec3 b = globalGrid->center(mv.tileEnd);
@@ -30,7 +30,7 @@ namespace
 		EntityComponent *pc = gameEntities()->component<PositionComponent>();
 		if (e->has(pc))
 		{
-			CAGE_COMPONENT_ENGINE(Transform, t, f);
+			TransformComponent &t = f->value<TransformComponent>();
 			PositionComponent &p = e->value<PositionComponent>(pc);
 			t.position = globalGrid->center(p.tile);
 		}

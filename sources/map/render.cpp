@@ -128,8 +128,8 @@ namespace
 		}
 
 		Entity *e = engineEntities()->createAnonymous();
-		CAGE_COMPONENT_ENGINE(Transform, t, e);
-		CAGE_COMPONENT_ENGINE(Render, r, e);
+		TransformComponent &t = e->value<TransformComponent>();
+		RenderComponent &r = e->value<RenderComponent>();
 		r.object = re.model;
 
 		renderingChunks.push_back(std::move(re));

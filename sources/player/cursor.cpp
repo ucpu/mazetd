@@ -19,8 +19,8 @@ namespace
 		{
 			const ivec2 cur = engineWindow()->mousePosition();
 			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
-			CAGE_COMPONENT_ENGINE(Transform, t, c);
-			CAGE_COMPONENT_ENGINE(Camera, a, c);
+			TransformComponent &t = c->value<TransformComponent>();
+			CameraComponent &a = c->value<CameraComponent>();
 			const mat4 view = mat4(inverse(t));
 			const mat4 proj = perspectiveProjection(a.camera.perspectiveFov, real(res[0]) / real(res[1]), a.near, a.far);
 			const mat4 inv = inverse(proj * view);
@@ -39,10 +39,10 @@ namespace
 					if (!cursorMarker)
 					{
 						cursorMarker = engineEntities()->createAnonymous();
-						CAGE_COMPONENT_ENGINE(Render, r, cursorMarker);
+						RenderComponent &r = cursorMarker->value<RenderComponent>();
 						r.object = HashString("mazetd/misc/cursor.obj");
 					}
-					CAGE_COMPONENT_ENGINE(Transform, t, cursorMarker);
+					TransformComponent &t = cursorMarker->value<TransformComponent>();
 					t.position = globalGrid->center(playerCursorTile);
 					return;
 				}

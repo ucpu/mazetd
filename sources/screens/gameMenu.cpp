@@ -26,55 +26,55 @@ void setScreenGameMenu()
 
 	{
 		Entity *e = ents->create(1);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0.45, 0.05);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 1;
-		CAGE_COMPONENT_GUI(Label, label, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiLabelComponent &label = e->value<GuiLabelComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Pause";
 	}
 
 	{
 		Entity *e = ents->create(3);
-		CAGE_COMPONENT_GUI(Scrollbars, sc, e);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
 		sc.alignment = vec2(0.8, 0.666);
 	}
 
 	{
 		Entity *e = ents->create(4);
-		CAGE_COMPONENT_GUI(Panel, panel, e);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiPanelComponent &panel = e->value<GuiPanelComponent>();
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 3;
-		CAGE_COMPONENT_GUI(LayoutLine, layout, e);
+		GuiLayoutLineComponent &layout = e->value<GuiLayoutLineComponent>();
 		layout.vertical = true;
 	}
 
 	{
 		Entity *e = ents->create(5);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 4;
 		parent.order = 1;
-		CAGE_COMPONENT_GUI(Button, control, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiButtonComponent &control = e->value<GuiButtonComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Resume";
-		CAGE_COMPONENT_GUI(Event, ev, e);
+		GuiEventComponent &ev = e->value<GuiEventComponent>();
 		ev.event.bind<&buttonResume>();
 	}
 
 	{
 		Entity *e = ents->create(6);
-		CAGE_COMPONENT_GUI(Parent, parent, e);
+		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 4;
 		parent.order = 2;
-		CAGE_COMPONENT_GUI(Button, control, e);
-		CAGE_COMPONENT_GUI(Text, txt, e);
+		GuiButtonComponent &control = e->value<GuiButtonComponent>();
+		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Stop";
-		CAGE_COMPONENT_GUI(Event, ev, e);
+		GuiEventComponent &ev = e->value<GuiEventComponent>();
 		ev.event.bind<&buttonStop>();
 	}
 }
