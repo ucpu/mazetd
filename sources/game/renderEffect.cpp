@@ -48,11 +48,11 @@ namespace
 	{
 		switch (config.type)
 		{
-		case EffectTypeEnum::Physical: return HashString("mazetd/particles/sprite.obj;physical");
-		case EffectTypeEnum::Fire: return HashString("mazetd/particles/sprite.obj;fire");
-		case EffectTypeEnum::Water: return HashString("mazetd/particles/sprite.obj;water");
-		case EffectTypeEnum::Poison: return HashString("mazetd/particles/sprite.obj;poison");
-		case EffectTypeEnum::Mana: return HashString("mazetd/particles/sprite.obj;mana");
+		case DamageTypeEnum::Physical: return HashString("mazetd/particles/sprite.obj;physical");
+		case DamageTypeEnum::Fire: return HashString("mazetd/particles/sprite.obj;fire");
+		case DamageTypeEnum::Water: return HashString("mazetd/particles/sprite.obj;water");
+		case DamageTypeEnum::Poison: return HashString("mazetd/particles/sprite.obj;poison");
+		case DamageTypeEnum::Magic: return HashString("mazetd/particles/sprite.obj;mana");
 		default: return HashString("cage/model/fake.obj");
 		}
 	}
@@ -60,7 +60,7 @@ namespace
 
 void renderEffect(const EffectConfig &config)
 {
-	if (config.type == EffectTypeEnum::None)
+	if (config.type == DamageTypeEnum::None)
 		return;
 	const uint64 step = controlThread().updatePeriod();
 	const real dist = distance(config.pos1, config.pos2);

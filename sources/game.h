@@ -5,16 +5,27 @@
 
 #include "common.h"
 
+// flags & enums
+
+enum class DamageTypeEnum
+{
+	None = 0,
+	Physical = 1,
+	Fire = 2,
+	Water = 3,
+	Poison = 4,
+	Magic = 5,
+	Total,
+};
+
 enum class DamageTypeFlags
 {
 	None = 0,
-	Physical = 1u << 0,
-	Fire = 1u << 1,
-	Water = 1u << 2,
-	Poison = 1u << 3,
-	Magic = 1u << 4,
-	Slow = 1u << 5,
-	Haste = 1u << 6,
+	Physical = 1u << (uint32)DamageTypeEnum::Physical,
+	Fire = 1u << (uint32)DamageTypeEnum::Fire,
+	Water = 1u << (uint32)DamageTypeEnum::Water,
+	Poison = 1u << (uint32)DamageTypeEnum::Poison,
+	Magic = 1u << (uint32)DamageTypeEnum::Magic,
 };
 
 enum class MonsterClassFlags
@@ -23,22 +34,6 @@ enum class MonsterClassFlags
 	Regular = 1u << 0,
 	Flyer = 1u << 1,
 	Boss = 1u << 2,
-};
-
-namespace cage
-{
-	GCHL_ENUM_BITS(DamageTypeFlags);
-	GCHL_ENUM_BITS(MonsterClassFlags);
-}
-
-enum class EffectTypeEnum
-{
-	None = 0,
-	Physical,
-	Fire,
-	Water,
-	Poison,
-	Mana,
 };
 
 enum class ManaCollectorTypeEnum
@@ -50,100 +45,33 @@ enum class ManaCollectorTypeEnum
 	Snow,
 };
 
-enum class AugmentEnum
+enum class BonusTypeEnum
 {
 	None = 0,
-	Fire,
-	Water,
-	Poison,
-	Total,
+	Damage,
+	FiringRate,
+	FiringRange,
+	SplashRadius,
 };
 
-struct PositionComponent
+enum class TargetingEnum
 {
-	uint32 tile = m;
+	Random = 0,
+	Front, // first monster to finish the whole maze
+	Back, // last monster to finish the whole maze
+	Closest, // to the tower
+	Farthest, // from the tower
+	Strongest, // highest life
+	Weakest, // lowest life
 };
 
-struct MovementComponent
+namespace cage
 {
-	uint32 tileStart = m;
-	uint32 tileEnd = m;
-	uint32 timeStart = m;
-	uint32 timeEnd = 0;
+	GCHL_ENUM_BITS(DamageTypeFlags);
+	GCHL_ENUM_BITS(MonsterClassFlags);
+}
 
-	vec3 position() const;
-};
-
-struct PivotComponent
-{
-	real elevation = 0.5;
-};
-
-struct NameComponent
-{
-	string name;
-};
-
-// player structure that blocks paths
-struct BuildingComponent
-{};
-
-// player structure that does NOT block path
-struct TrapComponent
-{};
-
-struct RefundCostComponent
-{
-	uint32 cost = 0;
-};
-
-struct ManaStorageComponent
-{
-	uint32 mana = 0;
-	uint32 capacity = 100;
-};
-
-struct ManaDistributorComponent
-{
-	uint32 transferLimit = 100;
-	real range = 5;
-};
-
-struct ManaReceiverComponent
-{};
-
-struct ManaCollectorComponent
-{
-	ManaCollectorTypeEnum type = ManaCollectorTypeEnum::None;
-	real range = 7;
-	uint32 collectAmount = 1;
-};
-
-struct AttackData
-{
-	uint32 firingPeriod = 0;
-	real firingRange = 0;
-	real splashRadius = 0;
-	uint32 damage = 0;
-	uint32 manaCost = 0;
-	DamageTypeFlags damageType = DamageTypeFlags::None;
-	EffectTypeEnum effectType = EffectTypeEnum::None;
-	MonsterClassFlags invalidClasses = MonsterClassFlags::None;
-};
-
-struct AttackComponent
-{
-	uint32 firingDelay = 30;
-	AttackData data[(int)AugmentEnum::Total];
-	bool useAugments = false;
-
-	void initAugmentData();
-};
-
-struct AugmentComponent
-{
-	AugmentEnum data = AugmentEnum::None;
-};
+// structures
 
 struct MonsterBaseProperties
 {
@@ -179,22 +107,121 @@ struct SpawningGroup : public MonsterSpawningProperties
 	void init();
 };
 
-struct MonsterComponent : public MonsterBaseProperties
-{
-	uint32 visitedWaypointsBits = 0;
-	uint32 timeToArrive = 0; // timestamp at which the monster should arrive to the last waypoint
-};
-
-struct MonsterDebuffComponent
-{
-	uint32 endTime = 0;
-	DamageTypeFlags type = DamageTypeFlags::None;
-};
+// components
 
 struct EngineComponent
 {
 	Entity *entity = nullptr;
 };
+
+struct GuiModelComponent
+{
+	uint32 model = 0;
+};
+
+struct NameComponent
+{
+	string name;
+};
+
+struct PositionComponent
+{
+	uint32 tile = m;
+};
+
+struct MovementComponent
+{
+	uint32 tileStart = m;
+	uint32 tileEnd = m;
+	uint32 timeStart = m;
+	uint32 timeEnd = 0;
+
+	vec3 position() const;
+};
+
+struct MonsterComponent : public MonsterBaseProperties
+{
+	uint32 visitedWaypointsBits = 0;
+	uint32 timeToArrive = 0; // timestamp at which the monster should arrive to the final waypoint
+
+	struct DamageOverTime
+	{
+		uint32 duration = 0;
+		uint32 damage = 0;
+	};
+
+	DamageOverTime dots[(uint32)DamageTypeEnum::Total];
+
+	bool affected(DamageTypeEnum dmg) const;
+};
+
+// player structure that blocks paths
+struct BuildingComponent
+{};
+
+// player structure that does NOT block path
+struct TrapComponent
+{};
+
+struct PivotComponent
+{
+	real elevation = 0.5;
+};
+
+struct CostComponent
+{
+	uint32 cost = 0;
+};
+
+struct ManaStorageComponent
+{
+	uint32 mana = 0;
+	uint32 capacity = 100;
+};
+
+struct ManaDistributorComponent
+{
+	uint32 transferLimit = 100;
+	real range = 5;
+};
+
+struct ManaReceiverComponent
+{};
+
+struct ManaCollectorComponent
+{
+	ManaCollectorTypeEnum type = ManaCollectorTypeEnum::None;
+	real range = 7;
+	uint32 collectAmount = 1;
+};
+
+struct AttackComponent
+{
+	uint32 firingDelay = 30;
+};
+
+struct DamageComponent
+{
+	uint32 damage = 0;
+	MonsterClassFlags invalidClasses = MonsterClassFlags::None;
+};
+
+struct ModElementComponent
+{
+	DamageTypeEnum element = DamageTypeEnum::None;
+};
+
+struct ModBonusComponent
+{
+	BonusTypeEnum type = BonusTypeEnum::None;
+};
+
+struct ModTargetingComponent
+{
+	TargetingEnum targeting = TargetingEnum::Random;
+};
+
+// functions & globals
 
 EntityManager *gameEntities();
 EventDispatcher<bool()> &eventGameReset();
@@ -211,8 +238,8 @@ extern vec3 playerCursorPosition;
 extern uint32 playerCursorTile;
 extern sint32 playerHealth;
 extern sint32 playerMoney;
-extern uint32 playerBuildingSelection;
 extern bool playerPanning;
+extern Entity *playerBuildingSelection;
 
 extern SpawningGroup spawningGroup;
 
@@ -220,7 +247,7 @@ struct EffectConfig
 {
 	vec3 pos1 = vec3::Nan();
 	vec3 pos2 = vec3::Nan();
-	EffectTypeEnum type = EffectTypeEnum::None;
+	DamageTypeEnum type = DamageTypeEnum::None;
 };
 
 void renderEffect(const EffectConfig &config);

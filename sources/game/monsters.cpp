@@ -14,6 +14,11 @@ vec3 MovementComponent::position() const
 	return interpolate(ca, cb, fac);
 }
 
+bool MonsterComponent::affected(DamageTypeEnum dmg) const
+{
+	return dots[(uint32)dmg].duration > 0;
+}
+
 uint32 bitCount(uint32 v)
 {
 	return std::bitset<32>(v).count();
@@ -53,7 +58,6 @@ namespace
 
 	void moveMonsters()
 	{
-		EntityComponent *debComp = gameEntities()->component<MonsterDebuffComponent>();
 		entitiesVisitor([&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
 			CAGE_ASSERT(po.tile == mv.tileEnd);
 			if (gameTime < mv.timeEnd)
@@ -80,23 +84,10 @@ namespace
 			const uint32 timeAvail = mo.timeToArrive >= gameTime ? mo.timeToArrive - gameTime : 0;
 			mv.timeEnd = gameTime + timeAvail * distNext / go.distance;
 
-			if (e->has(debComp))
-			{
-				const MonsterDebuffComponent &deb = e->value<MonsterDebuffComponent>(debComp);
-				if (any(deb.type & DamageTypeFlags::Slow) && none(deb.type & DamageTypeFlags::Haste))
-					mv.timeEnd += 3 * (mv.timeEnd - mv.timeStart) / 2;
-				if (none(deb.type & DamageTypeFlags::Slow) && any(deb.type & DamageTypeFlags::Haste))
-					mv.timeEnd -= 1 * (mv.timeEnd - mv.timeStart) / 2;
-			}
-		}, gameEntities(), true);
-	}
-
-	void updateDebuffs()
-	{
-		EntityComponent *debComp = gameEntities()->component<MonsterDebuffComponent>();
-		entitiesVisitor([&](Entity *e, const MonsterDebuffComponent &deb) {
-			if (gameTime >= deb.endTime)
-				e->remove(debComp);
+			if (mo.affected(DamageTypeEnum::Water) && !mo.affected(DamageTypeEnum::Fire))
+				mv.timeEnd += 3 * (mv.timeEnd - mv.timeStart) / 2;
+			if (mo.affected(DamageTypeEnum::Fire) && !mo.affected(DamageTypeEnum::Water))
+				mv.timeEnd -= 1 * (mv.timeEnd - mv.timeStart) / 2;
 		}, gameEntities(), true);
 	}
 
@@ -111,7 +102,6 @@ namespace
 	{
 		killMonsters();
 		moveMonsters();
-		updateDebuffs();
 	}
 
 	struct Callbacks

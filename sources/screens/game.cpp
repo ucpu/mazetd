@@ -5,9 +5,8 @@
 #include "../grid.h"
 #include "../game.h"
 
-uint32 structureMoneyCost(uint32 id);
-
 void setScreenGameMenu();
+void generateBuildingsList();
 
 namespace
 {
@@ -135,157 +134,16 @@ namespace
 		}
 	}
 
-	void updateBuildingsList()
-	{
-		entitiesVisitor([&](Entity *e, const GuiButtonComponent &, const GuiTextComponent &, GuiTextFormatComponent &format) {
-			const uint32 name = e->name();
-			const uint32 cost = structureMoneyCost(name);
-			if (cost == m)
-				return;
-			format.color = playerMoney < cost ? vec3(1, 0, 0) : name == playerBuildingSelection ? vec3(0, 1, 0) : vec3(1);
-		}, engineGui()->entities(), false);
-	}
-
 	void engineUpdate()
 	{
 		updateTopBar();
 		updateCursor();
-		updateBuildingsList();
 	}
 
 	void guiClean()
 	{
 		engineUpdateListener.detach();
 		gameRunning = false;
-	}
-
-	bool buildingSelectionClick(uint32 id)
-	{
-		EntityManager *ents = engineGui()->entities();
-		playerBuildingSelection = id;
-		return true;
-	}
-
-	void generateBuildingButtons(uint32 parent, uint32 ids, PointerRange<const char *const> names)
-	{
-		EntityManager *ents = engineGui()->entities();
-		for (uint32 i = 0; i < names.size(); i++)
-		{
-			Entity *e = ents->create(ids + i);
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = parent;
-			pp.order = i;
-			GuiButtonComponent &but = e->value<GuiButtonComponent>();
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = names[i];
-			GuiTextFormatComponent &format = e->value<GuiTextFormatComponent>();
-			GuiEventComponent &evt = e->value<GuiEventComponent>();
-			evt.event.bind<&buildingSelectionClick>();
-		}
-	}
-
-	void generateBuildingsList()
-	{
-		removeGuiEntitiesWithParent(401);
-
-		EntityManager *ents = engineGui()->entities();
-
-		{
-			constexpr const char *names[] = {
-				"Wall",
-			};
-			generateBuildingButtons(401, 900, names);
-			buildingSelectionClick(900);
-		}
-
-		{
-			Entity *e = ents->create(410);
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 401;
-			pp.order = 1;
-			GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
-			GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-			ll.vertical = true;
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = "Towers";
-		}
-
-		{
-			constexpr const char *names[] = {
-				"Cheap",
-				"Fast",
-				"Splash",
-				"Sniper",
-				"Mage",
-			};
-			generateBuildingButtons(410, 1000, names);
-		}
-
-		{
-			Entity *e = ents->create(411);
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 401;
-			pp.order = 2;
-			GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
-			GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-			ll.vertical = true;
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = "Augments";
-		}
-
-		{
-			constexpr const char *names[] = {
-				"Fire",
-				"Water",
-				"Poison",
-			};
-			generateBuildingButtons(411, 1100, names);
-		}
-
-		{
-			Entity *e = ents->create(412);
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 401;
-			pp.order = 3;
-			GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
-			GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-			ll.vertical = true;
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = "Mana";
-		}
-
-		{
-			constexpr const char *names[] = {
-				"Waterwheel",
-				"Sunbloom",
-				"Windmill",
-				"Snowmelt",
-				"Relay",
-				"Capacitor",
-			};
-			generateBuildingButtons(412, 1200, names);
-		}
-
-		{
-			Entity *e = ents->create(413);
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 401;
-			pp.order = 4;
-			GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
-			GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-			ll.vertical = true;
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = "Traps";
-		}
-
-		{
-			constexpr const char *names[] = {
-				"Spikes",
-				"Slowing",
-				"Hastening",
-			};
-			generateBuildingButtons(413, 1300, names);
-		}
 	}
 }
 
@@ -354,8 +212,6 @@ void updateSpawningMonsterPropertiesScreen()
 			Pair{ DamageTypeFlags::Water, "Water" },
 			Pair{ DamageTypeFlags::Poison, "Poison" },
 			Pair{ DamageTypeFlags::Magic, "Magic" },
-			Pair{ DamageTypeFlags::Slow, "Slow" },
-			Pair{ DamageTypeFlags::Haste, "Haste" },
 		};
 		for (const auto &it : pairs)
 			if (any(mo.immunities & it.flag))

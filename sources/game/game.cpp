@@ -1,4 +1,5 @@
 #include <cage-engine/engine.h>
+#include <cage-engine/gui.h>
 
 #include "../game.h"
 
@@ -6,30 +7,39 @@ void setScreenGameOver();
 
 namespace
 {
-	Holder<EntityManager> initializeManager()
+	void registerEntityComponents(EntityManager *man)
 	{
-		Holder<EntityManager> man = newEntityManager();
-		man->defineComponent(PositionComponent());
-		man->defineComponent(MovementComponent());
-		man->defineComponent(PivotComponent());
 		man->defineComponent(NameComponent());
 		man->defineComponent(BuildingComponent());
 		man->defineComponent(TrapComponent());
-		man->defineComponent(RefundCostComponent());
+		man->defineComponent(PivotComponent());
+		man->defineComponent(CostComponent());
 		man->defineComponent(ManaStorageComponent());
 		man->defineComponent(ManaDistributorComponent());
 		man->defineComponent(ManaReceiverComponent());
 		man->defineComponent(ManaCollectorComponent());
-		man->defineComponent(AttackComponent());
-		man->defineComponent(AugmentComponent());
-		man->defineComponent(MonsterComponent());
-		man->defineComponent(MonsterDebuffComponent());
+		man->defineComponent(DamageComponent());
+		man->defineComponent(ModElementComponent());
+		man->defineComponent(ModBonusComponent());
+		man->defineComponent(ModTargetingComponent());
+	}
+
+	Holder<EntityManager> initializeManager()
+	{
+		Holder<EntityManager> man = newEntityManager();
+		registerEntityComponents(+man);
 		man->defineComponent(EngineComponent());
+		man->defineComponent(PositionComponent());
+		man->defineComponent(MovementComponent());
+		man->defineComponent(MonsterComponent());
+		man->defineComponent(AttackComponent());
 		return man;
 	}
 
 	void engineInit()
 	{
+		registerEntityComponents(engineGui()->entities());
+		engineGui()->entities()->defineComponent(GuiModelComponent());
 		eventGameReset().dispatch();
 	}
 
@@ -44,7 +54,7 @@ namespace
 		playerCursorTile = m;
 		playerHealth = 100;
 		playerMoney = 500;
-		playerBuildingSelection = 0;
+		playerBuildingSelection = nullptr;
 	}
 
 	bool gameUpdate()
@@ -102,5 +112,5 @@ vec3 playerCursorPosition;
 uint32 playerCursorTile;
 sint32 playerHealth;
 sint32 playerMoney;
-uint32 playerBuildingSelection;
 bool playerPanning = false;
+Entity *playerBuildingSelection;

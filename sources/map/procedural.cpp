@@ -81,7 +81,7 @@ namespace
 			{
 				const real noise = grassNoise->evaluate(pos3) * 0.1;
 				const vec3 grass = colorHsvToRgb(vec3(0.266, 0.6, 0.87 + noise));
-				const real factor = saturate(find(elev, -7.5, -6.5));
+				const real factor = saturate(find(elev, -7.2, -6.8));
 				albedo = interpolate(albedo, grass, factor);
 				const real r = roughnessNoise->evaluate(pos3 + 156) * 0.2 + 0.45;
 				roughness = interpolate(roughness, r, factor);
@@ -89,14 +89,14 @@ namespace
 			{
 				const real noise = dirtNoise->evaluate(pos3) * 0.2;
 				const vec3 dirt = colorHsvToRgb(vec3(0.144, 0.45 + noise, 0.8));
-				const real factor = saturate(find(elev, 0.5, 1.5));
+				const real factor = saturate(find(elev, 0.8, 1.2));
 				albedo = interpolate(albedo, dirt, factor);
 				const real r = roughnessNoise->evaluate(pos3 - 564) * 0.3 + 0.6;
 				roughness = interpolate(roughness, r, factor);
 			}
 			{
 				const vec3 snow = vec3(randomChance() * 0.1 + 0.9);
-				const real factor = saturate(find(elev, 5.5, 6.5));
+				const real factor = saturate(find(elev, 5.8, 6.2));
 				albedo = interpolate(albedo, snow, factor);
 				const real r = randomChance() * 0.3 + 0.7;
 				roughness = interpolate(roughness, r, factor);

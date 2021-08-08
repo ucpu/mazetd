@@ -84,7 +84,7 @@ namespace
 					EffectConfig cfg;
 					cfg.pos1 = mp + vec3(0, e->value<PivotComponent>(pivotComp).elevation, 0);
 					cfg.pos2 = globalGrid->center(r.e->value<PositionComponent>(posComp).tile) + vec3(0, r.e->value<PivotComponent>(pivotComp).elevation, 0);
-					cfg.type = EffectTypeEnum::Mana;
+					cfg.type = DamageTypeEnum::Magic;
 					renderEffect(cfg);
 				}
 			}, gameEntities(), false);
