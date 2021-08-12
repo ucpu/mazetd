@@ -9,12 +9,11 @@
 
 enum class DamageTypeEnum
 {
-	None = 0,
-	Physical = 1,
-	Fire = 2,
-	Water = 3,
-	Poison = 4,
-	Magic = 5,
+	Physical = 0,
+	Fire,
+	Water,
+	Poison,
+	Magic,
 	Total,
 };
 
@@ -52,6 +51,7 @@ enum class BonusTypeEnum
 	FiringRate,
 	FiringRange,
 	SplashRadius,
+	ManaDiscount,
 };
 
 enum class TargetingEnum
@@ -127,6 +127,8 @@ struct NameComponent
 struct PositionComponent
 {
 	uint32 tile = m;
+
+	vec3 position() const;
 };
 
 struct MovementComponent
@@ -203,12 +205,18 @@ struct AttackComponent
 struct DamageComponent
 {
 	uint32 damage = 0;
+	uint32 firingPeriod = 30;
+	real firingRange = 5;
+	real splashRadius = 0;
+	uint32 baseManaCost = 12;
+	uint32 baseManaCapacity = 100;
 	MonsterClassFlags invalidClasses = MonsterClassFlags::None;
+	bool acceptMods = true;
 };
 
 struct ModElementComponent
 {
-	DamageTypeEnum element = DamageTypeEnum::None;
+	DamageTypeEnum element = DamageTypeEnum::Total;
 };
 
 struct ModBonusComponent
@@ -247,7 +255,7 @@ struct EffectConfig
 {
 	vec3 pos1 = vec3::Nan();
 	vec3 pos2 = vec3::Nan();
-	DamageTypeEnum type = DamageTypeEnum::None;
+	DamageTypeEnum type = DamageTypeEnum::Total;
 };
 
 void renderEffect(const EffectConfig &config);

@@ -2,8 +2,22 @@
 #include <cage-engine/gui.h>
 
 #include "../game.h"
+#include "../grid.h"
 
 void setScreenGameOver();
+
+vec3 PositionComponent::position() const
+{
+	return globalGrid->center(tile);
+}
+
+vec3 MovementComponent::position() const
+{
+	const vec3 ca = globalGrid->center(tileStart);
+	const vec3 cb = globalGrid->center(tileEnd);
+	const real fac = saturate(real(gameTime - (sint64)timeStart) / real(timeEnd - (sint64)timeStart));
+	return interpolate(ca, cb, fac);
+}
 
 namespace
 {

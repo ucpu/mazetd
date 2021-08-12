@@ -67,7 +67,14 @@ namespace
 			{
 				Entity *e = generate(0, "Spikes");
 				e->value<TrapComponent>();
-				e->value<CostComponent>().cost = 50;
+				e->value<CostComponent>().cost = 30;
+				DamageComponent &d = e->value<DamageComponent>();
+				d.damage = 3;
+				d.firingPeriod = 6;
+				d.firingRange = 0.5;
+				d.splashRadius = 0.25;
+				d.invalidClasses = MonsterClassFlags::Flyer;
+				d.acceptMods = false;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/trap-spikes.object");
 			}
 
@@ -77,8 +84,11 @@ namespace
 				Entity *e = generate(1, "Light");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.5;
-				e->value<CostComponent>().cost = 150;
-				e->value<DamageComponent>().damage = 10;
+				e->value<CostComponent>().cost = 100;
+				DamageComponent &d = e->value<DamageComponent>();
+				d.damage = 10;
+				d.baseManaCost = 12;
+				d.baseManaCapacity = 120;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-light.object");
 			}
 
@@ -86,8 +96,11 @@ namespace
 				Entity *e = generate(1, "Medium");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.5;
-				e->value<CostComponent>().cost = 500;
-				e->value<DamageComponent>().damage = 30;
+				e->value<CostComponent>().cost = 1500;
+				DamageComponent &d = e->value<DamageComponent>();
+				d.damage = 100;
+				d.baseManaCost = 100;
+				d.baseManaCapacity = 1000;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-medium.object");
 			}
 
@@ -95,8 +108,11 @@ namespace
 				Entity *e = generate(1, "Heavy");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.5;
-				e->value<CostComponent>().cost = 2000;
-				e->value<DamageComponent>().damage = 100;
+				e->value<CostComponent>().cost = 20000;
+				DamageComponent &d = e->value<DamageComponent>();
+				d.damage = 1000;
+				d.baseManaCost = 800;
+				d.baseManaCapacity = 8000;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-heavy.object");
 			}
 
@@ -113,6 +129,7 @@ namespace
 				{ "Firing Rate", BonusTypeEnum::FiringRate, HashString("mazetd/buildings/bonus-firingRate.object") },
 				{ "Firing Range", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
 				{ "Splash Radius", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
+				{ "Mana Discount", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
 			};
 
 			for (const auto &it : bonusData)
@@ -157,7 +174,7 @@ namespace
 			struct ElementsData
 			{
 				StringLiteral name;
-				DamageTypeEnum element = DamageTypeEnum::None;
+				DamageTypeEnum element = DamageTypeEnum::Total;
 				uint32 model = 0;
 			};
 			constexpr ElementsData elementsData[] = {
@@ -221,7 +238,7 @@ namespace
 				Entity *e = generate(5, "Mana Capacitor");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.3;
-				e->value<CostComponent>().cost = 2000;
+				e->value<CostComponent>().cost = 3000;
 				e->value<ManaStorageComponent>().capacity = 5000;
 				e->value<ManaReceiverComponent>();
 				e->value<ManaDistributorComponent>();

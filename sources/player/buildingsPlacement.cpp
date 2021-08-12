@@ -97,6 +97,8 @@ namespace
 		copyComp<ManaDistributorComponent>(e);
 		copyComp<ManaReceiverComponent>(e);
 		copyComp<ManaCollectorComponent>(e);
+		if (playerBuildingSelection->has<DamageComponent>())
+			e->value<AttackComponent>();
 
 		{
 			Entity *f = e->value<EngineComponent>().entity;

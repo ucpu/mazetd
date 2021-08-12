@@ -92,13 +92,10 @@ namespace
 			// reset potentials
 			entitiesVisitor([&](Entity *e, const ManaStorageComponent &stor) {
 				PotentialComponent &pot = e->value<PotentialComponent>(potenComp);
-				const bool r = e->has(recvComp);
-				const bool d = e->has(distrComp);
-				CAGE_ASSERT(r || d);
-				if (d && !r)
-					pot.modified = 1;
-				else
+				if (e->has(recvComp))
 					pot.modified = real(stor.mana) / stor.capacity;
+				else
+					pot.modified = 1;
 				pot.potential = pot.modified;
 			}, gameEntities(), false);
 		}

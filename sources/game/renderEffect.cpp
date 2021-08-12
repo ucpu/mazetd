@@ -60,7 +60,7 @@ namespace
 
 void renderEffect(const EffectConfig &config)
 {
-	if (config.type == DamageTypeEnum::None)
+	if (config.type >= DamageTypeEnum::Total)
 		return;
 	const uint64 step = controlThread().updatePeriod();
 	const real dist = distance(config.pos1, config.pos2);

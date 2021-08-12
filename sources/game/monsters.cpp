@@ -6,14 +6,6 @@
 
 #include <bitset>
 
-vec3 MovementComponent::position() const
-{
-	const vec3 ca = globalGrid->center(tileStart);
-	const vec3 cb = globalGrid->center(tileEnd);
-	const real fac = saturate(real(gameTime - (sint64)timeStart) / real(timeEnd - (sint64)timeStart));
-	return interpolate(ca, cb, fac);
-}
-
 bool MonsterComponent::affected(DamageTypeEnum dmg) const
 {
 	return dots[(uint32)dmg].duration > 0;
@@ -44,16 +36,11 @@ namespace
 		}, gameEntities(), false);
 	}
 
-	void killMonsters()
+	void engineUpdate()
 	{
-		entitiesVisitor([&](Entity *e, const MonsterComponent &mo) {
-			if (mo.life <= 0)
-			{
-				playerMoney += mo.money;
-				createMonsterGhost(e);
-				e->destroy();
-			}
-		}, gameEntities(), true);
+		if (!globalGrid)
+			return;
+		updateMonsterAnimations();
 	}
 
 	void moveMonsters()
@@ -91,30 +78,91 @@ namespace
 		}, gameEntities(), true);
 	}
 
-	void engineUpdate()
+	template<DamageTypeEnum A, DamageTypeEnum B>
+	void dotsEliminateOposing(MonsterComponent &mo)
 	{
-		if (!globalGrid)
-			return;
-		updateMonsterAnimations();
+		constexpr uint32 a = (uint32)A;
+		constexpr uint32 b = (uint32)B;
+		auto &dots = mo.dots;
+		if (dots[a].duration > 0 && dots[b].duration > 0)
+		{
+			dots[a].damage = 0;
+			dots[b].damage = 0;
+			dots[a].duration = min(dots[a].duration, 30u);
+			dots[b].duration = min(dots[b].duration, 30u);
+		}
 	}
 
-	void gameUpdate()
+	template<DamageTypeEnum Type>
+	void applyDot(MonsterComponent &mo, const vec3 &mpp)
 	{
-		killMonsters();
-		moveMonsters();
+		constexpr DamageTypeEnum strengthen = Type == DamageTypeEnum::Physical ? DamageTypeEnum::Poison : DamageTypeEnum::Magic;
+		
+		auto &dot = mo.dots[(uint32)Type];
+		uint32 dmg = dot.damage;
+		if (dot.duration > 1)
+			dmg /= dot.duration;
+		if (dot.duration > 0)
+			dot.duration--;
+		if (dmg == 0)
+			return;
+
+		const bool super = mo.dots[(uint32)strengthen].damage > 0;
+		mo.life -= super ? dmg * 3 : dmg;
+		dot.damage -= dmg;
+
+		EffectConfig cfg;
+		cfg.pos1 = mpp;
+		const uint32 cnt = dot.duration > 0 ? 1 : 3;
+		for (uint32 i = 0; i < cnt; i++)
+		{
+			vec3 d = randomDirection3();
+			cfg.pos2 = cfg.pos1 + d * (super ? 0.5 : 0.3);
+			cfg.type = Type;
+			renderEffect(cfg);
+		}
+	}
+
+	vec3 monsterPosition(Entity *e)
+	{
+		vec3 p = e->has<MovementComponent>() ? e->value<MovementComponent>().position() : e->value<PositionComponent>().position();
+		return p + vec3(0, e->value<PivotComponent>().elevation, 0);
+	}
+
+	void damageMonsters()
+	{
+		entitiesVisitor([&](Entity *e, MonsterComponent &mo) {
+			const vec3 mpp = monsterPosition(e);
+			dotsEliminateOposing<DamageTypeEnum::Fire, DamageTypeEnum::Water>(mo);
+			dotsEliminateOposing<DamageTypeEnum::Poison, DamageTypeEnum::Magic>(mo);
+			applyDot<DamageTypeEnum::Physical>(mo, mpp);
+			applyDot<DamageTypeEnum::Fire>(mo, mpp);
+			applyDot<DamageTypeEnum::Water>(mo, mpp);
+			applyDot<DamageTypeEnum::Poison>(mo, mpp);
+			applyDot<DamageTypeEnum::Magic>(mo, mpp);
+			if (mo.life <= 0)
+			{
+				playerMoney += mo.money;
+				createMonsterGhost(e);
+				e->destroy();
+			}
+		}, gameEntities(), true);
 	}
 
 	struct Callbacks
 	{
 		EventListener<void()> engineUpdateListener;
-		EventListener<void()> gameUpdateListener;
+		EventListener<void()> damageUpdateListener;
+		EventListener<void()> moveUpdateListener;
 
 		Callbacks()
 		{
 			engineUpdateListener.attach(controlThread().update);
 			engineUpdateListener.bind<&engineUpdate>();
-			gameUpdateListener.attach(eventGameUpdate());
-			gameUpdateListener.bind<&gameUpdate>();
+			moveUpdateListener.attach(eventGameUpdate());
+			moveUpdateListener.bind<&moveMonsters>();
+			damageUpdateListener.attach(eventGameUpdate(), 51); // right after attacks
+			damageUpdateListener.bind<&damageMonsters>();
 		}
 	} callbacksInstance;
 }
