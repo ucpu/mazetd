@@ -83,7 +83,7 @@ namespace
 			{
 				Entity *e = generate(1, "Light");
 				e->value<BuildingComponent>();
-				e->value<PivotComponent>().elevation = 1.5;
+				e->value<PivotComponent>().elevation = 2.1;
 				e->value<CostComponent>().cost = 100;
 				DamageComponent &d = e->value<DamageComponent>();
 				d.damage = 10;
@@ -95,7 +95,7 @@ namespace
 			{
 				Entity *e = generate(1, "Medium");
 				e->value<BuildingComponent>();
-				e->value<PivotComponent>().elevation = 2.5;
+				e->value<PivotComponent>().elevation = 2.6;
 				e->value<CostComponent>().cost = 1500;
 				DamageComponent &d = e->value<DamageComponent>();
 				d.damage = 100;
@@ -107,7 +107,7 @@ namespace
 			{
 				Entity *e = generate(1, "Heavy");
 				e->value<BuildingComponent>();
-				e->value<PivotComponent>().elevation = 2.5;
+				e->value<PivotComponent>().elevation = 2.8;
 				e->value<CostComponent>().cost = 20000;
 				DamageComponent &d = e->value<DamageComponent>();
 				d.damage = 1000;
@@ -204,10 +204,10 @@ namespace
 				uint32 model = 0;
 			};
 			constexpr ManaData manaData[] = {
-				{ "Waterwheel Collector", ManaCollectorTypeEnum::Water, 20, HashString("mazetd/buildings/collector-water.object") },
-				{ "Sunbloom Collector", ManaCollectorTypeEnum::Sun, 10, HashString("mazetd/buildings/collector-sun.object") },
-				{ "Windmill Collector", ManaCollectorTypeEnum::Wind, 10, HashString("mazetd/buildings/collector-wind.object") },
-				{ "Snowmelt Collector", ManaCollectorTypeEnum::Snow, 20, HashString("mazetd/buildings/collector-snow.object") },
+				{ "Waterwheel Collector", ManaCollectorTypeEnum::Water, 20, HashString("mazetd/buildings/mana-collector-water.object") },
+				{ "Sunbloom Collector", ManaCollectorTypeEnum::Sun, 10, HashString("mazetd/buildings/mana-collector-sun.object") },
+				{ "Windmill Collector", ManaCollectorTypeEnum::Wind, 10, HashString("mazetd/buildings/mana-collector-wind.object") },
+				{ "Snowmelt Collector", ManaCollectorTypeEnum::Snow, 20, HashString("mazetd/buildings/mana-collector-snow.object") },
 			};
 
 			for (const auto &it : manaData)

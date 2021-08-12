@@ -1,6 +1,4 @@
-# Blender v2.93.0 OBJ File: 'fast.blend'
-# www.blender.org
-o LargeTower_Cylinder.002
+o tower-light
 v 0.309421 0.640408 -0.425882
 v -0.000000 0.640408 -0.526419
 v 0.500654 0.640408 -0.162672
@@ -393,7 +391,7 @@ vn 0.7210 0.4535 0.5239
 vn -0.5620 -0.7193 -0.4084
 vn 0.5620 -0.7193 -0.4083
 vn -0.2147 -0.7193 -0.6607
-usemtl LightRock.001
+usemtl lightRock
 s off
 f 5//1 15//1 40//1 38//1
 f 3//2 1//2 11//2 13//2

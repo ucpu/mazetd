@@ -11,8 +11,8 @@ scheme = model
 normals = false
 tangents = false
 scale = 0.15
-material = mana.cpm
-sprite.obj;mana
+material = magic.cpm
+sprite.obj;magic
 
 []
 scheme = model
@@ -44,7 +44,7 @@ target = 2dArray
 srgb = true
 downscale = 4
 fire/$$.png
-mana/$$.png
+magic/$$.png
 poison/$$.png
 physical/$$.png
 water/$$.png

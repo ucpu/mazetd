@@ -9,83 +9,73 @@ wall.obj
 scheme = model
 uvs = false
 tangents = false
-scale = 0.8
-cheap.obj?Black_Black
-cheap.obj?SmallSquareTower_Cube.041_LightRock
-
-[]
-scheme = model
-uvs = false
-tangents = false
-scale = 0.58
-fast.obj
+scale = 0.5
+tower-light.obj
 
 []
 scheme = model
 uvs = false
 tangents = false
 scale = 0.7
-splash.obj?Black.001_Black.001
-splash.obj?DarkRock_DarkRock
-splash.obj?LargeSquareTowerBricks_Cube.031_LightRock.001
-
-[]
-scheme = model
-uvs = false
-tangents = false
-scale = 0.8
-sniper.obj?Black_Black
-sniper.obj?DarkRock_DarkRock
-sniper.obj?Tower_Cylinder.004_LightRock
+tower-medium.obj?black
+tower-medium.obj?darkRock
+tower-medium.obj?lightRock
 
 []
 scheme = model
 uvs = false
 tangents = false
 scale = 0.7
-mage.obj?Black.001_Black.001
-mage.obj?Celing.001_Celing.001
-mage.obj?DarkRock.001_DarkRock.001
-mage.obj?PointyTower_Cylinder_LightRock.001
+tower-heavy.obj?black
+tower-heavy.obj?ceiling
+tower-heavy.obj?darkRock
+tower-heavy.obj?lightRock
 
 []
 scheme = model
 uvs = false
 tangents = false
 scale = 0.65
-pedestal.obj?stone
-pedestal.obj?metal
-pedestal.obj?spikes
+augment-pedestal.obj?stone
+augment-pedestal.obj?metal
+augment-pedestal.obj?spikes
 
 []
 scheme = model
 tangents = false
 scale = 0.65
 material = augment-fire.cpm
-augment.obj;fire
+augment-plane.obj;fire
+
+[]
+scheme = model
+tangents = false
+scale = 0.65
+material = augment-magic.cpm
+augment-plane.obj;magic
 
 []
 scheme = model
 tangents = false
 scale = 0.65
 material = augment-water.cpm
-augment.obj;water
+augment-plane.obj;water
 
 []
 scheme = model
 tangents = false
 scale = 0.65
 material = augment-poison.cpm
-augment.obj;poison
+augment-plane.obj;poison
 
 []
 scheme = model
 uvs = false
 tangents = false
 scale = 0.85
-mana-capacitor.obj?metal_metal
-mana-capacitor.obj?stone_stone
-mana-capacitor.obj?water_water
+mana-capacitor.obj?metal
+mana-capacitor.obj?stone
+mana-capacitor.obj?water
 
 []
 scheme = model
@@ -102,22 +92,6 @@ mana-relay_normal.png
 scheme = model
 uvs = false
 tangents = false
-material = trap-haste.cpm
-scale = 0.6
-trap.obj;haste
-
-[]
-scheme = model
-uvs = false
-tangents = false
-material = trap-slow.cpm
-scale = 0.6
-trap.obj;slow
-
-[]
-scheme = model
-uvs = false
-tangents = false
 scale = 0.8
 trap-spikes.obj?metal
 trap-spikes.obj?wood
@@ -126,57 +100,54 @@ trap-spikes.obj?wood
 scheme = model
 uvs = false
 tangents = false
-berry-tree.obj?stem
-berry-tree.obj?crown
+mana-collector.obj?stem
+mana-collector.obj?crown
 
 []
 scheme = model
 uvs = false
 tangents = false
-material = berry-water.cpm
-berry-tree.obj?berries;water
+material = mana-collector-water.cpm
+mana-collector.obj?berries;water
 
 []
 scheme = model
 uvs = false
 tangents = false
-material = berry-sun.cpm
-berry-tree.obj?berries;sun
+material = mana-collector-sun.cpm
+mana-collector.obj?berries;sun
 
 []
 scheme = model
 uvs = false
 tangents = false
-material = berry-wind.cpm
-berry-tree.obj?berries;wind
+material = mana-collector-wind.cpm
+mana-collector.obj?berries;wind
 
 []
 scheme = model
 uvs = false
 tangents = false
-material = berry-snow.cpm
-berry-tree.obj?berries;snow
+material = mana-collector-snow.cpm
+mana-collector.obj?berries;snow
 
 []
 scheme = object
-cheap.object
-fast.object
-splash.object
-sniper.object
-mage.object
-wall.object
 augment-fire.object
+augment-magic.object
 augment-poison.object
 augment-water.object
 mana-capacitor.object
+mana-collector-snow.object
+mana-collector-sun.object
+mana-collector-water.object
+mana-collector-wind.object
 mana-relay.object
-trap-haste.object
-trap-slow.object
+tower-heavy.object
+tower-light.object
+tower-medium.object
 trap-spikes.object
-collector-water.object
-collector-sun.object
-collector-wind.object
-collector-snow.object
+wall.object
 
 []
 scheme = pack

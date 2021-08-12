@@ -1,0 +1,9 @@
+[base]
+emission = 1
+
+[textures]
+albedo = ../particles/magic/$$.png
+
+[flags]
+noLighting
+noShadowCast

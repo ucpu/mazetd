@@ -1,6 +1,4 @@
-# Blender v2.93.0 OBJ File: ''
-# www.blender.org
-o towerSquare
+o wall
 v 0.500000 0.003568 -0.499998
 v 0.500000 0.283568 -0.499998
 v 0.500000 0.283568 0.500002
