@@ -153,8 +153,8 @@ namespace
 			constexpr TargetingData targetingData[] = {
 				{ "Front", TargetingEnum::Front, HashString("mazetd/buildings/targeting-front.object") },
 				{ "Back", TargetingEnum::Back, HashString("mazetd/buildings/targeting-back.object") },
-				{ "Strongest", TargetingEnum::Strongest, HashString("mazetd/buildings/targeting-dtrongest.object") },
-				{ "Weakest", TargetingEnum::Weakest, HashString("mazetd/buildings/targeting-eeakest.object") },
+				{ "Strongest", TargetingEnum::Strongest, HashString("mazetd/buildings/targeting-strongest.object") },
+				{ "Weakest", TargetingEnum::Weakest, HashString("mazetd/buildings/targeting-weakest.object") },
 				{ "Closest", TargetingEnum::Closest, HashString("mazetd/buildings/targeting-closest.object") },
 				{ "Farthest", TargetingEnum::Farthest, HashString("mazetd/buildings/targeting-farthest.object") },
 			};

@@ -14,6 +14,12 @@ mana-collector-sun.object
 mana-collector-water.object
 mana-collector-wind.object
 mana-relay.object
+targeting-back.object
+targeting-closest.object
+targeting-farthest.object
+targeting-front.object
+targeting-strongest.object
+targeting-weakest.object
 tower-heavy.object
 tower-light.object
 tower-medium.object

@@ -1,0 +1,9 @@
+[base]
+emission = 1
+
+[textures]
+albedo = targeting-front.png
+
+[flags]
+noLighting
+noShadowCast

@@ -140,6 +140,61 @@ mana-relay_normal.png
 
 []
 scheme = model
+tangents = false
+scale = 0.65
+material = targeting-back.cpm
+targeting-plane.obj;back
+
+[]
+scheme = model
+tangents = false
+scale = 0.65
+material = targeting-closest.cpm
+targeting-plane.obj;closest
+
+[]
+scheme = model
+tangents = false
+scale = 0.65
+material = targeting-farthest.cpm
+targeting-plane.obj;farthest
+
+[]
+scheme = model
+tangents = false
+scale = 0.65
+material = targeting-front.cpm
+targeting-plane.obj;front
+
+[]
+scheme = model
+tangents = false
+scale = 0.65
+material = targeting-strongest.cpm
+targeting-plane.obj;strongest
+
+[]
+scheme = model
+tangents = false
+scale = 0.65
+material = targeting-weakest.cpm
+targeting-plane.obj;weakest
+
+[]
+scheme = texture
+srgb = true
+wrapX = clampToEdge
+wrapY = clampToEdge
+wrapZ = clampToEdge
+targeting-back.png
+targeting-closest.png
+targeting-farthest.png
+targeting-front.png
+targeting-strongest.png
+targeting-weakest.png
+
+[]
+scheme = model
 uvs = false
 tangents = false
 scale = 0.8
@@ -198,6 +253,12 @@ mana-collector-sun.object
 mana-collector-water.object
 mana-collector-wind.object
 mana-relay.object
+targeting-back.object
+targeting-closest.object
+targeting-farthest.object
+targeting-front.object
+targeting-strongest.object
+targeting-weakest.object
 tower-heavy.object
 tower-light.object
 tower-medium.object
