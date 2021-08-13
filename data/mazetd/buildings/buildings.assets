@@ -72,6 +72,56 @@ augment-plane.obj;poison
 scheme = model
 uvs = false
 tangents = false
+scale = 0.35
+material = bonus-statue.cpm
+bonus-damage.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
+trianglesOnly = true
+scale = 0.35
+material = bonus-statue.cpm
+bonus-firingRange.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.35
+material = bonus-statue.cpm
+bonus-firingRate.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.35
+material = bonus-statue.cpm
+bonus-manaDiscount.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
+trianglesOnly = true
+scale = 0.35
+material = bonus-statue.cpm
+bonus-splashRadius.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.35
+material = bonus-pedestal.cpm
+bonus-pedestal.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
 scale = 0.85
 mana-capacitor.obj?metal
 mana-capacitor.obj?stone
@@ -137,6 +187,11 @@ augment-fire.object
 augment-magic.object
 augment-poison.object
 augment-water.object
+bonus-damage.object
+bonus-firingRange.object
+bonus-firingRate.object
+bonus-manaDiscount.object
+bonus-splashRadius.object
 mana-capacitor.object
 mana-collector-snow.object
 mana-collector-sun.object

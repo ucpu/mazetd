@@ -3,6 +3,11 @@ augment-fire.object
 augment-magic.object
 augment-poison.object
 augment-water.object
+bonus-damage.object
+bonus-firingRange.object
+bonus-firingRate.object
+bonus-manaDiscount.object
+bonus-splashRadius.object
 mana-capacitor.object
 mana-collector-snow.object
 mana-collector-sun.object

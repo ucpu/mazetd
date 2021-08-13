@@ -52,7 +52,7 @@ namespace
 		case DamageTypeEnum::Fire: return HashString("mazetd/particles/sprite.obj;fire");
 		case DamageTypeEnum::Water: return HashString("mazetd/particles/sprite.obj;water");
 		case DamageTypeEnum::Poison: return HashString("mazetd/particles/sprite.obj;poison");
-		case DamageTypeEnum::Magic: return HashString("mazetd/particles/sprite.obj;mana");
+		case DamageTypeEnum::Magic: return HashString("mazetd/particles/sprite.obj;magic");
 		default: return HashString("cage/model/fake.obj");
 		}
 	}
