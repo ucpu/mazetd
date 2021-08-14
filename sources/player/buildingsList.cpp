@@ -136,7 +136,7 @@ namespace
 			{
 				Entity *e = generate(2, it.name);
 				e->value<BuildingComponent>();
-				e->value<PivotComponent>().elevation = 2;
+				e->value<PivotComponent>().elevation = 1.55;
 				e->value<CostComponent>().cost = 300;
 				e->value<ModBonusComponent>().type = it.bonus;
 				e->value<GuiModelComponent>().model = it.model;
@@ -163,7 +163,7 @@ namespace
 			{
 				Entity *e = generate(3, it.name);
 				e->value<BuildingComponent>();
-				e->value<PivotComponent>().elevation = 1.5;
+				e->value<PivotComponent>().elevation = 1.6;
 				e->value<CostComponent>().cost = 250;
 				e->value<ModTargetingComponent>().targeting = it.targeting;
 				e->value<GuiModelComponent>().model = it.model;
@@ -188,7 +188,7 @@ namespace
 			{
 				Entity *e = generate(4, it.name);
 				e->value<BuildingComponent>();
-				e->value<PivotComponent>().elevation = 1.5;
+				e->value<PivotComponent>().elevation = 1.4;
 				e->value<CostComponent>().cost = 500;
 				e->value<ModElementComponent>().element = it.element;
 				e->value<GuiModelComponent>().model = it.model;

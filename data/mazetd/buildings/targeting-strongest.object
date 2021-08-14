@@ -1,5 +1,4 @@
 []
-augment-pedestal.obj?stone
-augment-pedestal.obj?metal
-augment-pedestal.obj?spikes
+targeting-pedestal.obj?black
+targeting-pedestal.obj?lightRock
 targeting-plane.obj;strongest

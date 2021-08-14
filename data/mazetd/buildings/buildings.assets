@@ -198,6 +198,14 @@ scheme = model
 uvs = false
 tangents = false
 scale = 0.8
+targeting-pedestal.obj?black
+targeting-pedestal.obj?lightRock
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.8
 trap-spikes.obj?metal
 trap-spikes.obj?wood
 
