@@ -1,6 +1,7 @@
 #include <cage-core/entitiesVisitor.h>
 #include <cage-core/spatialStructure.h>
 #include <cage-core/geometry.h>
+#include <cage-core/enumerate.h>
 #include <cage-engine/engine.h>
 
 #include "../game.h"
@@ -42,8 +43,10 @@ namespace
 		Entity *e = nullptr;
 		MonsterComponent *mc = nullptr;
 		vec3 p;
-		real sorting;
 	};
+
+	template<TargetingEnum Targeting>
+	struct MonsterPicker;
 
 	struct AttacksSolver : public TowerData
 	{
@@ -150,11 +153,7 @@ namespace
 			filterMonsters();
 		}
 
-		void pickTargetMonster()
-		{
-			monsters.resize(1);
-			// todo
-		}
+		void pickTargetMonster();
 
 		bool consumeMana()
 		{
@@ -246,6 +245,82 @@ namespace
 			}, gameEntities(), false);
 		}
 	};
+
+	template<TargetingEnum Targeting>
+	struct MonsterPicker
+	{
+		AttacksSolver *data = nullptr;
+
+		MonsterPicker(AttacksSolver *data) : data(data)
+		{
+			CAGE_ASSERT(data->targetingType == Targeting);
+		}
+
+		real value(Monster &mo)
+		{
+			switch (Targeting)
+			{
+			case TargetingEnum::Back: return -numeric_cast<sint32>(mo.mc->timeToArrive);
+			case TargetingEnum::Closest: return distanceSquared(mo.p, data->mp);
+			case TargetingEnum::Farthest: return -distanceSquared(mo.p, data->mp);
+			case TargetingEnum::Front: return mo.mc->timeToArrive;
+			case TargetingEnum::Strongest: return -mo.mc->life;
+			case TargetingEnum::Weakest: return mo.mc->life;
+			default: { CAGE_THROW_CRITICAL(NotImplemented, "invalid targeting"); } break;
+			}
+		}
+
+		void run()
+		{
+			uint32 bi = 0;
+			real bv = value(data->monsters[0]);
+			for (const auto &it : enumerate(data->monsters))
+			{
+				real v = value(*it);
+				if (v < bv)
+				{
+					bi = it.index;
+					bv = v;
+				}
+			}
+			data->monsters[0] = data->monsters[bi];
+			data->monsters.resize(1);
+		}
+	};
+
+	template<>
+	struct MonsterPicker<TargetingEnum::Random>
+	{
+		AttacksSolver *data = nullptr;
+
+		MonsterPicker(AttacksSolver *data) : data(data)
+		{
+			CAGE_ASSERT(data->targetingType == TargetingEnum::Random);
+		}
+
+		void run()
+		{
+			data->monsters[0] = data->monsters[randomRange(uintPtr(), data->monsters.size())];
+			data->monsters.resize(1);
+		}
+	};
+
+	void AttacksSolver::pickTargetMonster()
+	{
+		CAGE_ASSERT(monsters.size() > 0);
+		switch (targetingType)
+		{
+		case TargetingEnum::Back: { MonsterPicker<TargetingEnum::Back>(this).run(); } break;
+		case TargetingEnum::Closest: { MonsterPicker<TargetingEnum::Closest>(this).run(); } break;
+		case TargetingEnum::Farthest: { MonsterPicker<TargetingEnum::Farthest>(this).run(); } break;
+		case TargetingEnum::Front: { MonsterPicker<TargetingEnum::Front>(this).run(); } break;
+		case TargetingEnum::Random: { MonsterPicker<TargetingEnum::Random>(this).run(); } break;
+		case TargetingEnum::Strongest: { MonsterPicker<TargetingEnum::Strongest>(this).run(); } break;
+		case TargetingEnum::Weakest: { MonsterPicker<TargetingEnum::Weakest>(this).run(); } break;
+		default: { CAGE_THROW_CRITICAL(NotImplemented, "invalid targeting"); } break;
+		}
+		CAGE_ASSERT(monsters.size() == 1);
+	}
 
 	void gameUpdate()
 	{
