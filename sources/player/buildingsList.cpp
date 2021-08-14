@@ -70,6 +70,7 @@ namespace
 				e->value<CostComponent>().cost = 30;
 				DamageComponent &d = e->value<DamageComponent>();
 				d.damage = 3;
+				d.overTime = 6;
 				d.firingPeriod = 6;
 				d.firingRange = 0.5;
 				d.splashRadius = 0.25;
@@ -88,7 +89,6 @@ namespace
 				DamageComponent &d = e->value<DamageComponent>();
 				d.damage = 10;
 				d.baseManaCost = 12;
-				d.baseManaCapacity = 120;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-light.object");
 			}
 
@@ -96,11 +96,10 @@ namespace
 				Entity *e = generate(1, "Medium");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.6;
-				e->value<CostComponent>().cost = 1500;
+				e->value<CostComponent>().cost = 2000;
 				DamageComponent &d = e->value<DamageComponent>();
 				d.damage = 100;
 				d.baseManaCost = 100;
-				d.baseManaCapacity = 1000;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-medium.object");
 			}
 
@@ -108,11 +107,10 @@ namespace
 				Entity *e = generate(1, "Heavy");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.8;
-				e->value<CostComponent>().cost = 20000;
+				e->value<CostComponent>().cost = 40000;
 				DamageComponent &d = e->value<DamageComponent>();
 				d.damage = 1000;
 				d.baseManaCost = 800;
-				d.baseManaCapacity = 8000;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-heavy.object");
 			}
 
@@ -129,6 +127,7 @@ namespace
 				{ "Firing Rate", BonusTypeEnum::FiringRate, HashString("mazetd/buildings/bonus-firingRate.object") },
 				{ "Firing Range", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
 				{ "Splash Radius", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
+				{ "Intense Dot", BonusTypeEnum::IntenseDot, HashString("mazetd/buildings/bonus-intenseDot.object") },
 				{ "Mana Discount", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
 			};
 

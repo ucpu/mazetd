@@ -6,6 +6,7 @@ augment-water.object
 bonus-damage.object
 bonus-firingRange.object
 bonus-firingRate.object
+bonus-intenseDot.object
 bonus-manaDiscount.object
 bonus-splashRadius.object
 mana-capacitor.object

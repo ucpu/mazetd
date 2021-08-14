@@ -112,13 +112,18 @@ namespace
 		void applyBonus()
 		{
 			if (elementNeighbor)
+			{
+				overTime = numeric_cast<uint32>(cage::sqrt(damage) * 20);
 				manaCost = baseManaCost;
+				damage *= 3; // cost of original damage + cost of mana + cost of DOT
+			}
 			switch (bonusType)
 			{
-			case BonusTypeEnum::Damage: damage *= 3; manaCost *= 2; break;
-			case BonusTypeEnum::FiringRate: firingPeriod /= 3; manaCost = manaCost * 2 / 3; break;
-			case BonusTypeEnum::FiringRange: firingRange += 5; manaCost *= 2; break;
-			case BonusTypeEnum::SplashRadius: splashRadius += 3; manaCost *= 2; break;
+			case BonusTypeEnum::Damage: damage *= 2; manaCost *= 2; break;
+			case BonusTypeEnum::FiringRate: firingPeriod /= 2; break;
+			case BonusTypeEnum::FiringRange: firingRange += 4; break;
+			case BonusTypeEnum::SplashRadius: splashRadius += 2; manaCost *= 3; break;
+			case BonusTypeEnum::IntenseDot: overTime /= 5; break;
 			case BonusTypeEnum::ManaDiscount: manaCost /= 2; break;
 			}
 		}
@@ -161,7 +166,7 @@ namespace
 			{
 				me->add(compManaRecv);
 				ManaStorageComponent &mn = me->value<ManaStorageComponent>(compManaStor);
-				mn.capacity = baseManaCapacity;
+				mn.capacity = baseManaCost * 10;
 				if (mn.mana < manaCost)
 					return false;
 				mn.mana -= manaCost;
@@ -199,12 +204,11 @@ namespace
 		void damageMonsters()
 		{
 			CAGE_ASSERT(damageType < DamageTypeEnum::Total);
-			const uint32 dur = damageType == DamageTypeEnum::Physical ? 0 : 30;
 			for (const auto &it : monsters)
 			{
 				auto &dot = it.mc->dots[(uint32)damageType];
 				dot.damage += damage;
-				dot.duration += dur;
+				dot.duration += overTime;
 			}
 		}
 

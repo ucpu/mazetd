@@ -8,7 +8,7 @@
 
 bool MonsterComponent::affected(DamageTypeEnum dmg) const
 {
-	return dots[(uint32)dmg].duration > 0;
+	return dots[(uint32)dmg].damage > 0;
 }
 
 uint32 bitCount(uint32 v)
@@ -88,16 +88,14 @@ namespace
 		{
 			dots[a].damage = 0;
 			dots[b].damage = 0;
-			dots[a].duration = min(dots[a].duration, 30u);
-			dots[b].duration = min(dots[b].duration, 30u);
+			dots[a].duration = 30; // leave trail so that the elements are eliminated even short time later
+			dots[b].duration = 30;
 		}
 	}
 
 	template<DamageTypeEnum Type>
 	void applyDot(MonsterComponent &mo, const vec3 &mpp)
 	{
-		constexpr DamageTypeEnum strengthen = Type == DamageTypeEnum::Physical ? DamageTypeEnum::Poison : DamageTypeEnum::Magic;
-		
 		auto &dot = mo.dots[(uint32)Type];
 		uint32 dmg = dot.damage;
 		if (dot.duration > 1)
@@ -107,7 +105,8 @@ namespace
 		if (dmg == 0)
 			return;
 
-		const bool super = mo.dots[(uint32)strengthen].damage > 0;
+		constexpr DamageTypeEnum strengthen = Type == DamageTypeEnum::Physical ? DamageTypeEnum::Poison : DamageTypeEnum::Magic;
+		const bool super = mo.affected(strengthen);
 		mo.life -= super ? dmg * 3 : dmg;
 		dot.damage -= dmg;
 

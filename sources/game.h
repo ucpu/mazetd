@@ -51,6 +51,7 @@ enum class BonusTypeEnum
 	FiringRate,
 	FiringRange,
 	SplashRadius,
+	IntenseDot,
 	ManaDiscount,
 };
 
@@ -205,11 +206,11 @@ struct AttackComponent
 struct DamageComponent
 {
 	uint32 damage = 0;
+	uint32 overTime = 0;
 	uint32 firingPeriod = 30;
 	real firingRange = 5;
 	real splashRadius = 0;
 	uint32 baseManaCost = 12;
-	uint32 baseManaCapacity = 100;
 	MonsterClassFlags invalidClasses = MonsterClassFlags::None;
 	bool acceptMods = true;
 };

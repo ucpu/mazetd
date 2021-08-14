@@ -99,6 +99,14 @@ uvs = false
 tangents = false
 scale = 0.35
 material = bonus-statue.cpm
+bonus-intenseDot.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
+scale = 0.35
+material = bonus-statue.cpm
 bonus-manaDiscount.obj
 
 []
@@ -253,6 +261,7 @@ augment-water.object
 bonus-damage.object
 bonus-firingRange.object
 bonus-firingRate.object
+bonus-intenseDot.object
 bonus-manaDiscount.object
 bonus-splashRadius.object
 mana-capacitor.object
