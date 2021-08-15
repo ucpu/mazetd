@@ -102,7 +102,7 @@ namespace
 			}
 			{
 				MarchingCubesCreateConfig cfg;
-				cfg.box = Aabb(vec3(-80, -15, -80), vec3(80, 15, 80));
+				cfg.box = Aabb(vec3(-70, -15, -70), vec3(70, 15, 70));
 				cfg.clip = true;
 #ifdef CAGE_DEBUG
 				cfg.resolution = ivec3(cfg.box.size() * 0.5);

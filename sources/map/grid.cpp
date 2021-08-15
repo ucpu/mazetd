@@ -135,8 +135,8 @@ uint32 Grid::neighborDistance(uint32 a, uint32 b) const
 Holder<Grid> newGrid(Holder<Procedural> procedural)
 {
 	Holder<Grid> g = systemMemory().createHolder<Grid>();
-	g->resolution = ivec2(201);
-	g->gridOffset = ivec2(100);
+	g->resolution = ivec2(141);
+	g->gridOffset = ivec2(70);
 	const uint32 total = g->resolution[0] * g->resolution[1];
 	{
 		PointerRangeHolder<const sint16> vec;
