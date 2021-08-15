@@ -203,10 +203,10 @@ namespace
 				uint32 model = 0;
 			};
 			constexpr ManaData manaData[] = {
-				{ "Waterwheel Collector", ManaCollectorTypeEnum::Water, 20, HashString("mazetd/buildings/mana-collector-water.object") },
-				{ "Sunbloom Collector", ManaCollectorTypeEnum::Sun, 10, HashString("mazetd/buildings/mana-collector-sun.object") },
-				{ "Windmill Collector", ManaCollectorTypeEnum::Wind, 10, HashString("mazetd/buildings/mana-collector-wind.object") },
-				{ "Snowmelt Collector", ManaCollectorTypeEnum::Snow, 20, HashString("mazetd/buildings/mana-collector-snow.object") },
+				{ "Waterwheel Collector", ManaCollectorTypeEnum::Water, 10, HashString("mazetd/buildings/mana-collector-water.object") },
+				{ "Sunbloom Collector", ManaCollectorTypeEnum::Sun, 5, HashString("mazetd/buildings/mana-collector-sun.object") },
+				{ "Windmill Collector", ManaCollectorTypeEnum::Wind, 5, HashString("mazetd/buildings/mana-collector-wind.object") },
+				{ "Snowmelt Collector", ManaCollectorTypeEnum::Snow, 10, HashString("mazetd/buildings/mana-collector-snow.object") },
 			};
 
 			for (const auto &it : manaData)

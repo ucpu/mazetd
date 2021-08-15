@@ -67,7 +67,7 @@ namespace
 		playerCursorPosition = vec3::Nan();
 		playerCursorTile = m;
 		playerHealth = 100;
-		playerMoney = 500;
+		playerMoney = 1000;
 		playerBuildingSelection = nullptr;
 	}
 

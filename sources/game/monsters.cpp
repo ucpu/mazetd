@@ -31,8 +31,9 @@ namespace
 			SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
 			const uint32 moveDur = mv.timeEnd - mv.timeStart;
 			const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
-			const real moveSpeed = dist / moveDur;
-			a.speed = speed * moveSpeed / mo.speed;
+			const real moveSpeed = dist / (moveDur + 1);
+			a.speed = 30 * speed * moveSpeed / mo.speed;
+			CAGE_ASSERT(a.speed.valid() && a.speed.finite());
 		}, gameEntities(), false);
 	}
 

@@ -253,6 +253,12 @@ namespace
 			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
+
+	template<class T>
+	T curve(T first, T last, uint32 waveIndex)
+	{
+		return interpolate(first, last, pow(real(waveIndex) / 100, 3));
+	}
 }
 
 void SpawningGroup::spawnOne()
@@ -267,7 +273,7 @@ void SpawningGroup::spawnOne()
 	MonsterComponent &mo = e->value<MonsterComponent>();
 	(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)*this;
 	mo.visitedWaypointsBits = 1u << spawnPointIndex;
-	mo.timeToArrive = gameTime + numeric_cast<uint32>(stor(globalWaypoints->find(position, mo.visitedWaypointsBits).distance) / mo.speed);
+	mo.timeToArrive = gameTime + numeric_cast<uint32>(30 * stor(globalWaypoints->find(position, mo.visitedWaypointsBits).distance) / mo.speed);
 
 	MovementComponent &mv = e->value<MovementComponent>();
 	mv.tileStart = mv.tileEnd = position;
@@ -312,15 +318,16 @@ void SpawningGroup::generate()
 	const MonsterSpawningProperties &proto = monsterSpawningProperties[waveIndex % monsterVarietes];
 	(MonsterSpawningProperties &)*this = proto;
 
-	if (waveIndex < monsterVarietes * 2)
+	if (waveIndex < monsterVarietes)
 		immunities = DamageTypeFlags::None;
 
-	life += waveIndex * 15 + numeric_cast<uint32>(sqr(waveIndex / 5));
-	speed += waveIndex * 0.00002;
+	spawnPointsBits = waveIndex < monsterVarietes * 2 ? shortestSpawnPointBits() : allSpawnPointsBits();
+	spawnCount = curve<uint32>(30, 10, waveIndex);
 
-	spawnPointsBits = waveIndex < monsterVarietes ? shortestSpawnPointBits() : allSpawnPointsBits();
-	spawnCount += waveIndex / 10; // total 64 600 monsters (total 969 000 $) at 1000th wave
-	spawnPeriod = numeric_cast<uint32>(1 / proto.speed);
+	money = curve<uint32>(1000, 50'000, waveIndex) / spawnCount;
+	damage = curve<uint32>(30, 200, waveIndex) / spawnCount;
+	life = numeric_cast<sint32>(curve<uint64>(1000, 10'000'000, waveIndex) * life / 1000 / spawnCount);
+	speed *= curve<real>(2, 10, waveIndex);
 
 	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();

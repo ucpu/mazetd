@@ -168,7 +168,7 @@ void updateSpawningMonsterPropertiesScreen()
 		txt.value = stringizer() + SpawningGroup::waveIndex + ": " + mo.name;
 	}
 
-	if (mo.monsterClass != MonsterClassFlags::Regular)
+	if (mo.monsterClass != MonsterClassFlags::None)
 	{ // monster class
 		Entity *e = ents->createUnique();
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
@@ -183,7 +183,6 @@ void updateSpawningMonsterPropertiesScreen()
 			StringLiteral name;
 		};
 		constexpr const Pair pairs[] = {
-			Pair{ MonsterClassFlags::Regular, "Regular" },
 			Pair{ MonsterClassFlags::Flyer, "Flyer" },
 			Pair{ MonsterClassFlags::Boss, "Boss" },
 		};
@@ -245,7 +244,7 @@ void updateSpawningMonsterPropertiesScreen()
 		pp.order = index++;
 		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = stringizer() + "Speed: " + (mo.speed * 20);
+		txt.value = stringizer() + "Speed: " + mo.speed;
 	}
 }
 

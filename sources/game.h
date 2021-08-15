@@ -30,9 +30,8 @@ enum class DamageTypeFlags
 enum class MonsterClassFlags
 {
 	None = 0,
-	Regular = 1u << 0,
-	Flyer = 1u << 1,
-	Boss = 1u << 2,
+	Flyer = 1u << 0,
+	Boss = 1u << 1,
 };
 
 enum class ManaCollectorTypeEnum
@@ -77,12 +76,12 @@ namespace cage
 struct MonsterBaseProperties
 {
 	StringLiteral name;
-	uint32 money = 15;
-	uint32 damage = 1;
-	sint32 life = 50;
-	real speed = 0.05;
+	uint32 money = 0;
+	uint32 damage = 0;
+	sint32 life = 1000;
+	real speed = 1;
 	DamageTypeFlags immunities = DamageTypeFlags::None;
-	MonsterClassFlags monsterClass = MonsterClassFlags::Regular;
+	MonsterClassFlags monsterClass = MonsterClassFlags::None;
 };
 
 struct MonsterSpawningProperties : public MonsterBaseProperties
@@ -94,9 +93,9 @@ struct MonsterSpawningProperties : public MonsterBaseProperties
 struct SpawningGroup : public MonsterSpawningProperties
 {
 	uint32 spawnPointsBits = m;
-	uint32 spawnCount = 15;
+	uint32 spawnCount = 0;
 	uint32 spawnSimultaneously = 1;
-	uint32 spawnPeriod = 0;
+	uint32 spawnPeriod = 15;
 	uint32 spawnDelay = 0;
 	bool checkingMonstersCounts = true;
 
