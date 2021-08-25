@@ -33,7 +33,7 @@ namespace
 		entitiesVisitor([&](const PositionComponent &p, const MonsterComponent &) {
 			if (paths->distances[p.tile] == m)
 				blocked = true; // disconnected monster
-			}, gameEntities(), false);
+		}, gameEntities(), false);
 		return blocked;
 	}
 
@@ -64,6 +64,9 @@ namespace
 
 	void placeStructure()
 	{
+		if (!playerBuildingSelection)
+			return;
+
 		if (playerBuildingSelection->has<TrapComponent>())
 		{
 			if (!canPlaceTrap())
@@ -137,7 +140,7 @@ namespace
 					playerMoney += 8 * e->value<CostComponent>().cost / 10;
 					e->destroy();
 				}
-				}, gameEntities(), true);
+			}, gameEntities(), true);
 		}
 
 		if (any(flags & TileFlags::Building))
@@ -151,7 +154,7 @@ namespace
 					playerMoney += 8 * e->value<CostComponent>().cost / 10;
 					e->destroy();
 				}
-				}, gameEntities(), true);
+			}, gameEntities(), true);
 		}
 
 		destroyShortestPathVisualizationMarks();
