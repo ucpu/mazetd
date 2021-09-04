@@ -19,7 +19,7 @@ void setScreenGameOver()
 	{
 		Entity *e = ents->create(1);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0, 1);
+		sc.alignment = Vec2(0, 1);
 	}
 
 	{
@@ -36,7 +36,7 @@ void setScreenGameOver()
 	{
 		Entity *e = ents->create(3);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0.45, 0.05);
+		sc.alignment = Vec2(0.45, 0.05);
 		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 		ll.vertical = true;
 	}
@@ -58,6 +58,6 @@ void setScreenGameOver()
 		parent.order = 1;
 		GuiLabelComponent &label = e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = stringizer() + "Waves: " + SpawningGroup::waveIndex;
+		txt.value = Stringizer() + "Waves: " + SpawningGroup::waveIndex;
 	}
 }

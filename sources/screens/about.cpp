@@ -17,7 +17,7 @@ void setScreenAbout()
 	{
 		Entity *e = ents->create(1);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0, 1);
+		sc.alignment = Vec2(0, 1);
 	}
 
 	{
@@ -34,7 +34,7 @@ void setScreenAbout()
 	{
 		Entity *e = ents->create(4);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0.5, 0.2);
+		sc.alignment = Vec2(0.5, 0.2);
 	}
 
 	{

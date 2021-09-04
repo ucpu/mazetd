@@ -16,11 +16,11 @@ namespace
 	{
 		entitiesVisitor([](Entity *e, MovementComponent &mv, EngineComponent &ec) {
 			TransformComponent &t = ec.entity->value<TransformComponent>();
-			const real f = mv.timeEnd > mv.timeStart ? saturate(real(gameTime - mv.timeStart) / (mv.timeEnd - mv.timeStart)) : 0;
-			const vec3 a = globalGrid->center(mv.tileStart);
-			const vec3 b = globalGrid->center(mv.tileEnd);
+			const Real f = mv.timeEnd > mv.timeStart ? saturate(Real(gameTime - mv.timeStart) / (mv.timeEnd - mv.timeStart)) : 0;
+			const Vec3 a = globalGrid->center(mv.tileStart);
+			const Vec3 b = globalGrid->center(mv.tileEnd);
 			t.position = interpolate(a, b, f);
-			t.orientation = quat(b - a, vec3(0, 1, 0));
+			t.orientation = Quat(b - a, Vec3(0, 1, 0));
 		}, gameEntities(), false);
 	}
 

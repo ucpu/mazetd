@@ -8,14 +8,14 @@ namespace
 	{
 		Entity *e = engineEntities()->createAnonymous();
 		TransformComponent &t = e->value<TransformComponent>();
-		t.orientation = quat(degs(-50), randomAngle(), degs());
+		t.orientation = Quat(Degs(-50), randomAngle(), Degs());
 		LightComponent &l = e->value<LightComponent>();
 		l.lightType = LightTypeEnum::Directional;
-		l.color = vec3(1);
+		l.color = Vec3(1);
 		l.intensity = 1.5;
 		ShadowmapComponent &s = e->value<ShadowmapComponent>();
 		s.resolution = 4096;
-		s.worldSize = vec3(80);
+		s.worldSize = Vec3(80);
 	}
 
 	struct Callbacks

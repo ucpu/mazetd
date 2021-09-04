@@ -22,13 +22,13 @@ namespace
 		{
 			Maker *maker = nullptr;
 			
-			void makeMaterial(const ivec2 &xy, const ivec3 &ids, const vec3 &weights)
+			void makeMaterial(const Vec2i &xy, const Vec3i &ids, const Vec3 &weights)
 			{
-				const vec3 pos3 = mesh->positionAt(ids, weights);
+				const Vec3 pos3 = mesh->positionAt(ids, weights);
 				const uint32 index = maker->grid->index(pos3);
 				const TileFlags flags = index == m ? TileFlags::Invalid : maker->grid->flags[index];
-				vec3 color;
-				real roughness;
+				Vec3 color;
+				Real roughness;
 				maker->procedural->material(pos3, flags, color, roughness);
 				albedo->set(xy, color);
 				material->set(xy, roughness);
@@ -51,10 +51,10 @@ namespace
 			chunk.maker = this;
 			chunk.mesh = msh.share();
 			chunk.albedo = newImage();
-			chunk.albedo->initialize(ivec2(resolution), 3);
+			chunk.albedo->initialize(Vec2i(resolution), 3);
 			chunk.albedo->colorConfig.gammaSpace = GammaSpaceEnum::Gamma;
 			chunk.material = newImage();
-			chunk.material->initialize(ivec2(resolution), 1);
+			chunk.material->initialize(Vec2i(resolution), 1);
 			chunk.material->colorConfig.gammaSpace = GammaSpaceEnum::None;
 			chunk.material->colorConfig.alphaMode = AlphaModeEnum::None;
 			chunk.material->colorConfig.alphaChannelIndex = m;
@@ -77,17 +77,17 @@ namespace
 			chunksUploadQueue.push(std::move(chunk));
 		}
 
-		real sdf(const vec3 &pos)
+		Real sdf(const Vec3 &pos)
 		{
-			real d = procedural->sdf(pos);
+			Real d = procedural->sdf(pos);
 			const uint32 i = grid->index(pos);
 			if (i != m)
 			{
 				const TileFlags f = grid->flags[i];
 				if (any(f & TileFlags::Invalid) && none(f & TileFlags::Water))
 				{
-					const real e = saturate(find(pos[1], -7.5, -6.5));
-					const real o = any(f & TileFlags::Border) ? 1 : 1.5;
+					const Real e = saturate(find(pos[1], -7.5, -6.5));
+					const Real o = any(f & TileFlags::Border) ? 1 : 1.5;
 					d += o * e;
 				}
 			}
@@ -102,15 +102,15 @@ namespace
 			}
 			{
 				MarchingCubesCreateConfig cfg;
-				cfg.box = Aabb(vec3(-70, -15, -70), vec3(70, 15, 70));
+				cfg.box = Aabb(Vec3(-70, -15, -70), Vec3(70, 15, 70));
 				cfg.clip = true;
 #ifdef CAGE_DEBUG
-				cfg.resolution = ivec3(cfg.box.size() * 0.5);
+				cfg.resolution = Vec3i(cfg.box.size() * 0.5);
 #else
-				cfg.resolution = ivec3(cfg.box.size() * 2.5);
+				cfg.resolution = Vec3i(cfg.box.size() * 2.5);
 #endif // CAGE_DEBUG
 				Holder<MarchingCubes> mc = newMarchingCubes(cfg);
-				mc->updateByPosition(Delegate<real(const vec3 &)>().bind<Maker, &Maker::sdf>(this));
+				mc->updateByPosition(Delegate<Real(const Vec3 &)>().bind<Maker, &Maker::sdf>(this));
 				msh = mc->makeMesh();
 			}
 			meshDiscardDisconnected(+msh);
@@ -124,13 +124,13 @@ namespace
 #endif // CAGE_DEBUG
 				meshSimplify(+msh, cfg);
 			}
-			CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "mesh faces: " + msh->facesCount());
+			CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "mesh faces: " + msh->facesCount());
 			{
 				MeshChunkingConfig cfg;
 				cfg.maxSurfaceArea = 300;
 				meshes = meshChunking(+msh, cfg);
 			}
-			CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "mesh chunks: " + meshes.size());
+			CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "mesh chunks: " + meshes.size());
 			tasksRunBlocking<const Holder<Mesh>>("make chunk", Delegate<void(const Holder<Mesh> &)>().bind<Maker, &Maker::makeChunk>(this), *meshes, -10);
 		}
 	};

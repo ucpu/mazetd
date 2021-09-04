@@ -32,7 +32,7 @@ namespace
 			return;
 		const auto &wp = globalWaypoints->waypoints[waypointIndex % globalWaypoints->waypoints.size()];
 		uint32 prev = m;
-		const real colorIndexScale = 1 / real(wp->fullPath.size());
+		const Real colorIndexScale = 1 / Real(wp->fullPath.size());
 		for (const auto it : enumerate(wp->fullPath))
 		{
 			if (prev != m)
@@ -40,13 +40,13 @@ namespace
 				Entity *e = engineEntities()->createAnonymous();
 				e->value<PathMarkComponent>();
 				TransformComponent &t = e->value<TransformComponent>();
-				const vec3 a = globalGrid->center(prev);
-				const vec3 b = globalGrid->center(*it);
+				const Vec3 a = globalGrid->center(prev);
+				const Vec3 b = globalGrid->center(*it);
 				t.position = interpolate(a, b, 0.5);
-				t.orientation = quat(b - a, vec3(0, 1, 0));
+				t.orientation = Quat(b - a, Vec3(0, 1, 0));
 				RenderComponent &r = e->value<RenderComponent>();
 				r.object = HashString("mazetd/misc/pathMark.obj");
-				r.color = colorValueToHeatmapRgb(real(it.index) * colorIndexScale);
+				r.color = colorValueToHeatmapRgb(Real(it.index) * colorIndexScale);
 				std::swap(r.color[1], r.color[2]);
 			}
 			prev = *it;

@@ -42,8 +42,8 @@ namespace
 			if (stor.mana + col.collectAmount > stor.capacity)
 				return;
 
-			const ivec2 mp2 = globalGrid->position(pos.tile);
-			const vec3 mp3 = globalGrid->center(pos.tile);
+			const Vec2i mp2 = globalGrid->position(pos.tile);
+			const Vec3 mp3 = globalGrid->center(pos.tile);
 			const sint32 xa = mp2[0] - col.range.value - 0.5;
 			const sint32 xb = mp2[0] + col.range.value + 0.5;
 			const sint32 ya = mp2[1] - col.range.value - 0.5;
@@ -52,7 +52,7 @@ namespace
 			{
 				for (sint32 x = xa; x <= xb; x++)
 				{
-					const uint32 t = globalGrid->index(ivec2(x, y));
+					const uint32 t = globalGrid->index(Vec2i(x, y));
 					if (t == m)
 						continue;
 					TileFlags &f = globalGrid->flags[t];
@@ -60,7 +60,7 @@ namespace
 						continue;
 					if (none(f & requiredFlags(col.type)))
 						continue;
-					const vec3 p = globalGrid->center(t);
+					const Vec3 p = globalGrid->center(t);
 					if (distanceSquared(mp3, p) > sqr(col.range))
 						continue;
 
@@ -70,7 +70,7 @@ namespace
 					{
 						EffectConfig cfg;
 						cfg.pos1 = p;
-						cfg.pos2 = mp3 + vec3(0, e->value<PivotComponent>().elevation, 0);
+						cfg.pos2 = mp3 + Vec3(0, e->value<PivotComponent>().elevation, 0);
 						cfg.type = DamageTypeEnum::Magic;
 						renderEffect(cfg);
 					}

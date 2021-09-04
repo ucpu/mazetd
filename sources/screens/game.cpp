@@ -26,19 +26,19 @@ namespace
 		{ // path tiles
 			Entity *e = ents->get(312);
 			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = stringizer() + globalWaypoints->minFullDistance;
+			txt.value = Stringizer() + globalWaypoints->minFullDistance;
 		}
 
 		{ // health
 			Entity *e = ents->get(314);
 			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = stringizer() + playerHealth;
+			txt.value = Stringizer() + playerHealth;
 		}
 
 		{ // dollars
 			Entity *e = ents->get(316);
 			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = stringizer() + playerMoney;
+			txt.value = Stringizer() + playerMoney;
 		}
 	}
 
@@ -74,7 +74,7 @@ namespace
 				pp.order = index++;
 				GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 				GuiTextComponent &txt = e->value<GuiTextComponent>();
-				txt.value = stringizer() + "Mana: " + g->value<ManaStorageComponent>().mana + " / " + g->value<ManaStorageComponent>().capacity;
+				txt.value = Stringizer() + "Mana: " + g->value<ManaStorageComponent>().mana + " / " + g->value<ManaStorageComponent>().capacity;
 			}
 
 			if (g->has<MonsterComponent>())
@@ -86,7 +86,7 @@ namespace
 					pp.order = index++;
 					GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 					GuiTextComponent &txt = e->value<GuiTextComponent>();
-					txt.value = stringizer() + "Life: " + g->value<MonsterComponent>().life;
+					txt.value = Stringizer() + "Life: " + g->value<MonsterComponent>().life;
 				}
 				{ // waypoints
 					Entity *e = ents->createUnique();
@@ -95,7 +95,7 @@ namespace
 					pp.order = index++;
 					GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 					GuiTextComponent &txt = e->value<GuiTextComponent>();
-					txt.value = stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
+					txt.value = Stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
 				}
 			}
 		}, gameEntities(), false);
@@ -129,7 +129,7 @@ namespace
 				pp.order = index++;
 				GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 				GuiTextComponent &txt = e->value<GuiTextComponent>();
-				txt.value = string(p.name);
+				txt.value = String(p.name);
 			}
 		}
 	}
@@ -165,7 +165,7 @@ void updateSpawningMonsterPropertiesScreen()
 		pp.order = index++;
 		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = stringizer() + SpawningGroup::waveIndex + ": " + mo.name;
+		txt.value = Stringizer() + SpawningGroup::waveIndex + ": " + mo.name;
 	}
 
 	if (mo.monsterClass != MonsterClassFlags::None)
@@ -188,7 +188,7 @@ void updateSpawningMonsterPropertiesScreen()
 		};
 		for (const auto &it : pairs)
 			if (any(mo.monsterClass & it.flag))
-				txt.value += stringizer() + " " + string(it.name);
+				txt.value += Stringizer() + " " + String(it.name);
 	}
 
 	if (mo.immunities != DamageTypeFlags::None)
@@ -214,7 +214,7 @@ void updateSpawningMonsterPropertiesScreen()
 		};
 		for (const auto &it : pairs)
 			if (any(mo.immunities & it.flag))
-				txt.value += stringizer() + " " + string(it.name);
+				txt.value += Stringizer() + " " + String(it.name);
 	}
 
 	{ // amount
@@ -224,7 +224,7 @@ void updateSpawningMonsterPropertiesScreen()
 		pp.order = index++;
 		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = stringizer() + "Amount: " + (mo.spawnCount * mo.spawnSimultaneously);
+		txt.value = Stringizer() + "Amount: " + (mo.spawnCount * mo.spawnSimultaneously);
 	}
 
 	{ // life
@@ -234,7 +234,7 @@ void updateSpawningMonsterPropertiesScreen()
 		pp.order = index++;
 		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = stringizer() + "Life: " + mo.life;
+		txt.value = Stringizer() + "Life: " + mo.life;
 	}
 
 	{ // speed
@@ -244,7 +244,7 @@ void updateSpawningMonsterPropertiesScreen()
 		pp.order = index++;
 		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = stringizer() + "Speed: " + mo.speed;
+		txt.value = Stringizer() + "Speed: " + mo.speed;
 	}
 }
 
@@ -263,7 +263,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(200);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0, 1);
+		sc.alignment = Vec2(0, 1);
 	}
 
 	{
@@ -283,7 +283,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(300);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0.5, 0);
+		sc.alignment = Vec2(0.5, 0);
 	}
 
 	{
@@ -397,7 +397,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(400);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(1, 0.5);
+		sc.alignment = Vec2(1, 0.5);
 	}
 
 	{
@@ -415,7 +415,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(500);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0, 0);
+		sc.alignment = Vec2(0, 0);
 	}
 
 	{

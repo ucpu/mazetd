@@ -6,36 +6,36 @@
 
 namespace
 {
-	ivec2 lastMousePos;
-	vec2 camCenter;
-	real camDist = 50;
-	rads camYaw = degs(45);
-	transform camTrans;
+	Vec2i lastMousePos;
+	Vec2 camCenter;
+	Real camDist = 50;
+	Rads camYaw = Degs(45);
+	Transform camTrans;
 
 	void updateCamera()
 	{
-		real elev = 0;
+		Real elev = 0;
 		if (globalGrid)
 		{
 			const uint32 index = globalGrid->index(camCenter);
 			if (index != m)
 				elev = globalGrid->center(index)[1];
 		}
-		const real cd = saturate((camDist - 10) / (70 - 10));
-		const rads pitch = interpolate(degs(-75), degs(-55), smoothstep(cd));
-		camTrans.orientation = quat(pitch, camYaw, degs());
-		camTrans.position = vec3(camCenter[0], elev, camCenter[1]) + camTrans.orientation * vec3(0, 0, camDist);
+		const Real cd = saturate((camDist - 10) / (70 - 10));
+		const Rads pitch = interpolate(Degs(-75), Degs(-55), smoothstep(cd));
+		camTrans.orientation = Quat(pitch, camYaw, Degs());
+		camTrans.position = Vec3(camCenter[0], elev, camCenter[1]) + camTrans.orientation * Vec3(0, 0, camDist);
 	}
 
-	ivec2 centerMouse()
+	Vec2i centerMouse()
 	{
-		const ivec2 cntr = engineWindow()->resolution() / 2;
-		const ivec2 pos = engineWindow()->mousePosition();
+		const Vec2i cntr = engineWindow()->resolution() / 2;
+		const Vec2i pos = engineWindow()->mousePosition();
 		engineWindow()->mousePosition(cntr);
 		return pos - cntr;
 	}
 
-	bool mousePress(MouseButtonsFlags button, ModifiersFlags mods, const ivec2 &pos)
+	bool mousePress(MouseButtonsFlags button, ModifiersFlags mods, const Vec2i &pos)
 	{
 		if (button != MouseButtonsFlags::Right)
 			return false;
@@ -54,23 +54,23 @@ namespace
 		playerPanning = false;
 	}
 
-	bool mouseRelease(MouseButtonsFlags button, ModifiersFlags, const ivec2 &)
+	bool mouseRelease(MouseButtonsFlags button, ModifiersFlags, const Vec2i &)
 	{
 		if (button == MouseButtonsFlags::Right)
 			stop();
 		return false;
 	}
 
-	bool mouseMove(MouseButtonsFlags, ModifiersFlags, const ivec2 &)
+	bool mouseMove(MouseButtonsFlags, ModifiersFlags, const Vec2i &)
 	{
 		if (!playerPanning)
 			return false;
 		if (engineWindow()->isFocused())
 		{
-			const ivec2 mv2 = centerMouse();
-			const vec3 mv3 = quat(degs(), camYaw, degs()) * vec3(mv2[0], 0, mv2[1]);
-			const real speed = pow(camDist, 0.85) / engineWindow()->contentScaling() * 0.005;
-			camCenter += vec2(mv3[0], mv3[2]) * speed;
+			const Vec2i mv2 = centerMouse();
+			const Vec3 mv3 = Quat(Degs(), camYaw, Degs()) * Vec3(mv2[0], 0, mv2[1]);
+			const Real speed = pow(camDist, 0.85) / engineWindow()->contentScaling() * 0.005;
+			camCenter += Vec2(mv3[0], mv3[2]) * speed;
 			updateCamera();
 			return true;
 		}
@@ -78,20 +78,20 @@ namespace
 		return false;
 	}
 
-	bool mouseWheel(sint32 wheel, ModifiersFlags mods, const ivec2 &)
+	bool mouseWheel(sint32 wheel, ModifiersFlags mods, const Vec2i &)
 	{
 		switch (mods)
 		{
 		case ModifiersFlags::None:
 		{
-			camDist *= powE(real(wheel) * -0.2);
+			camDist *= powE(Real(wheel) * -0.2);
 			camDist = clamp(camDist, 5, 70);
 			updateCamera();
 			return true;
 		}
 		case ModifiersFlags::Ctrl:
 		{
-			camYaw += degs(wheel) * 5;
+			camYaw += Degs(wheel) * 5;
 			updateCamera();
 			return true;
 		}
@@ -121,7 +121,7 @@ namespace
 	{
 		if (engineWindow()->isFocused())
 		{
-			vec2 mv2;
+			Vec2 mv2;
 			if (engineWindow()->keyboardKey(87)) // w
 				mv2[1] -= 1;
 			if (engineWindow()->keyboardKey(83)) // s
@@ -130,22 +130,22 @@ namespace
 				mv2[0] -= 1;
 			if (engineWindow()->keyboardKey(68)) // d
 				mv2[0] += 1;
-			if (mv2 != vec2())
+			if (mv2 != Vec2())
 			{
 				mv2 = normalize(mv2);
-				const vec3 mv3 = quat(degs(), camYaw, degs()) * vec3(mv2[0], 0, mv2[1]);
-				const real speed = pow(camDist, 0.85) * 0.05;
-				camCenter += vec2(mv3[0], mv3[2]) * speed;
+				const Vec3 mv3 = Quat(Degs(), camYaw, Degs()) * Vec3(mv2[0], 0, mv2[1]);
+				const Real speed = pow(camDist, 0.85) * 0.05;
+				camCenter += Vec2(mv3[0], mv3[2]) * speed;
 				updateCamera();
 			}
-			real yaw;
+			Real yaw;
 			if (engineWindow()->keyboardKey(81)) // q
 				yaw += 1;
 			if (engineWindow()->keyboardKey(69)) // e
 				yaw -= 1;
 			if (yaw != 0)
 			{
-				camYaw += degs(yaw) * 2;
+				camYaw += Degs(yaw) * 2;
 				updateCamera();
 			}
 		}
@@ -164,9 +164,9 @@ namespace
 		CameraComponent &c = e->value<CameraComponent>();
 		c.near = 0.3;
 		c.far = 300;
-		c.ambientColor = vec3(1);
+		c.ambientColor = Vec3(1);
 		c.ambientIntensity = 0.3;
-		c.ambientDirectionalColor = vec3(1);
+		c.ambientDirectionalColor = Vec3(1);
 		c.ambientDirectionalIntensity = 0.4;
 	}
 

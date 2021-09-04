@@ -161,7 +161,7 @@ namespace
 		spatialUpdateStructures();
 	}
 
-	bool mouseEvent(MouseButtonsFlags buttons, ModifiersFlags mods, const ivec2 &)
+	bool mouseEvent(MouseButtonsFlags buttons, ModifiersFlags mods, const Vec2i &)
 	{
 		if (!gameRunning || playerCursorTile == m || mods != ModifiersFlags::None)
 			return false;

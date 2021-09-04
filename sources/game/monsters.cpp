@@ -30,8 +30,8 @@ namespace
 				return;
 			SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>(aniComp);
 			const uint32 moveDur = mv.timeEnd - mv.timeStart;
-			const real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
-			const real moveSpeed = dist / (moveDur + 1);
+			const Real dist = stor(globalGrid->neighborDistance(mv.tileStart, mv.tileEnd));
+			const Real moveSpeed = dist / (moveDur + 1);
 			a.speed = 30 * speed * moveSpeed / mo.speed;
 			CAGE_ASSERT(a.speed.valid() && a.speed.finite());
 		}, gameEntities(), false);
@@ -95,7 +95,7 @@ namespace
 	}
 
 	template<DamageTypeEnum Type>
-	void applyDot(MonsterComponent &mo, const vec3 &mpp)
+	void applyDot(MonsterComponent &mo, const Vec3 &mpp)
 	{
 		auto &dot = mo.dots[(uint32)Type];
 		uint32 dmg = dot.damage;
@@ -116,23 +116,23 @@ namespace
 		const uint32 cnt = dot.duration > 0 ? 1 : 3;
 		for (uint32 i = 0; i < cnt; i++)
 		{
-			vec3 d = randomDirection3();
+			Vec3 d = randomDirection3();
 			cfg.pos2 = cfg.pos1 + d * (super ? 0.5 : 0.3);
 			cfg.type = Type;
 			renderEffect(cfg);
 		}
 	}
 
-	vec3 monsterPosition(Entity *e)
+	Vec3 monsterPosition(Entity *e)
 	{
-		vec3 p = e->has<MovementComponent>() ? e->value<MovementComponent>().position() : e->value<PositionComponent>().position();
-		return p + vec3(0, e->value<PivotComponent>().elevation, 0);
+		Vec3 p = e->has<MovementComponent>() ? e->value<MovementComponent>().position() : e->value<PositionComponent>().position();
+		return p + Vec3(0, e->value<PivotComponent>().elevation, 0);
 	}
 
 	void damageMonsters()
 	{
 		entitiesVisitor([&](Entity *e, MonsterComponent &mo) {
-			const vec3 mpp = monsterPosition(e);
+			const Vec3 mpp = monsterPosition(e);
 			dotsEliminateOposing<DamageTypeEnum::Fire, DamageTypeEnum::Water>(mo);
 			dotsEliminateOposing<DamageTypeEnum::Poison, DamageTypeEnum::Magic>(mo);
 			applyDot<DamageTypeEnum::Physical>(mo, mpp);

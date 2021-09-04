@@ -257,7 +257,7 @@ namespace
 	template<class T>
 	T curve(T first, T last, uint32 waveIndex)
 	{
-		return interpolate(first, last, pow(real(waveIndex) / 100, 3));
+		return interpolate(first, last, pow(Real(waveIndex) / 100, 3));
 	}
 }
 
@@ -268,7 +268,7 @@ void SpawningGroup::spawnOne()
 	const uint32 spawnPointIndex = bitsPickOneIndex(spawnPointsBits);
 	const uint32 position = globalWaypoints->waypoints[spawnPointIndex]->tile;
 	e->value<PositionComponent>().tile = position;
-	e->value<NameComponent>().name = string(name);
+	e->value<NameComponent>().name = String(name);
 
 	MonsterComponent &mo = e->value<MonsterComponent>();
 	(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)*this;
@@ -327,7 +327,7 @@ void SpawningGroup::generate()
 	money = curve<uint32>(1000, 50'000, waveIndex) / spawnCount;
 	damage = curve<uint32>(30, 200, waveIndex) / spawnCount;
 	life = numeric_cast<sint32>(curve<uint64>(1000, 10'000'000, waveIndex) * life / 1000 / spawnCount);
-	speed *= curve<real>(2, 10, waveIndex);
+	speed *= curve<Real>(2, 10, waveIndex);
 
 	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();

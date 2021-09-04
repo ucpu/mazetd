@@ -8,7 +8,7 @@ namespace
 {
 	struct RenderEffectComponent
 	{
-		vec3 move;
+		Vec3 move;
 		uint64 timeToDie = 0;
 	};
 
@@ -24,7 +24,7 @@ namespace
 		TransformComponent &ct = cam->value<TransformComponent>();
 		entitiesVisitor([&](Entity *e, TransformComponent &tr, const RenderEffectComponent &re) {
 			tr.position += re.move;
-			tr.orientation = quat(tr.position - ct.position, ct.orientation * vec3(0, 1, 0));
+			tr.orientation = Quat(tr.position - ct.position, ct.orientation * Vec3(0, 1, 0));
 			if (time > re.timeToDie)
 				e->destroy();
 		}, engineEntities(), true);
@@ -63,8 +63,8 @@ void renderEffect(const EffectConfig &config)
 	if (config.type >= DamageTypeEnum::Total)
 		return;
 	const uint64 step = controlThread().updatePeriod();
-	const real dist = distance(config.pos1, config.pos2);
-	const vec3 dir = normalize(config.pos2 - config.pos1);
+	const Real dist = distance(config.pos1, config.pos2);
+	const Vec3 dir = normalize(config.pos2 - config.pos1);
 	const uint32 n = max(uint32(dist.value), 1u);
 	Entity *cam = engineEntities()->get(1);
 	TransformComponent &ct = cam->value<TransformComponent>();
@@ -74,10 +74,10 @@ void renderEffect(const EffectConfig &config)
 		RenderEffectComponent &re = e->value<RenderEffectComponent>();
 		const uint64 dur = randomRange(0.05, 0.15) * 1e6;
 		re.timeToDie = engineControlTime() + dur;
-		re.move = dir * (step / (real)dur);
+		re.move = dir * (step / (Real)dur);
 		TransformComponent &tr = e->value<TransformComponent>();
 		tr.position = config.pos1 + dir * (i + 0.2);
-		tr.orientation = quat(tr.position - ct.position, ct.orientation * vec3(0, 1, 0));
+		tr.orientation = Quat(tr.position - ct.position, ct.orientation * Vec3(0, 1, 0));
 		RenderComponent &r = e->value<RenderComponent>();
 		r.object = renderName(config);
 		TextureAnimationComponent &ta = e->value<TextureAnimationComponent>();

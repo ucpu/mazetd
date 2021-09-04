@@ -52,9 +52,9 @@ void Directions::update()
 		if (visited[id])
 			continue;
 		visited[id] = true;
-		const ivec2 mp = grid->position(id);
+		const Vec2i mp = grid->position(id);
 		const uint32 md = distances[id];
-		for (const ivec2 off : { ivec2(-1, 0), ivec2(1, 0), ivec2(0, -1), ivec2(0, 1) })
+		for (const Vec2i off : { Vec2i(-1, 0), Vec2i(1, 0), Vec2i(0, -1), Vec2i(0, 1) })
 		{
 			const uint32 ni = grid->index(mp + off);
 			if (ni == m)

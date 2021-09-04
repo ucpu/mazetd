@@ -10,11 +10,11 @@ namespace
 	sint16 maxSlope(const Grid *g, uint32 idx)
 	{
 		const sint16 me = g->elevations[idx];
-		const ivec2 mp = g->position(idx);
+		const Vec2i mp = g->position(idx);
 		sint16 r = 0;
-		for (const ivec2 off : { ivec2(-1, 0), ivec2(1, 0), ivec2(0, -1), ivec2(0, 1) })
+		for (const Vec2i off : { Vec2i(-1, 0), Vec2i(1, 0), Vec2i(0, -1), Vec2i(0, 1) })
 		{
-			const ivec2 p = mp + off;
+			const Vec2i p = mp + off;
 			const uint32 i = g->index(p);
 			if (i == m)
 				continue;
@@ -48,8 +48,8 @@ namespace
 			{
 				const uint32 i = stack.back();
 				stack.pop_back();
-				const ivec2 mp = g->position(i);
-				for (const ivec2 off : { ivec2(-1, 0), ivec2(1, 0), ivec2(0, -1), ivec2(0, 1) })
+				const Vec2i mp = g->position(i);
+				for (const Vec2i off : { Vec2i(-1, 0), Vec2i(1, 0), Vec2i(0, -1), Vec2i(0, 1) })
 				{
 					const uint32 j = g->index(mp + off);
 					if (j == m)
@@ -80,10 +80,10 @@ namespace
 		const uint32 w = g->resolution[0];
 		for (auto it : enumerate(g->flags))
 		{
-			const ivec2 mp = g->position(it.index);
+			const Vec2i mp = g->position(it.index);
 			if (none(g->flags[it.index] & TileFlags::Invalid))
 				continue;
-			for (const ivec2 off : { ivec2(-1, 0), ivec2(1, 0), ivec2(0, -1), ivec2(0, 1) })
+			for (const Vec2i off : { Vec2i(-1, 0), Vec2i(1, 0), Vec2i(0, -1), Vec2i(0, 1) })
 			{
 				const uint32 j = g->index(mp + off);
 				if (j == m)
@@ -95,35 +95,35 @@ namespace
 	}
 }
 
-uint32 Grid::index(ivec2 pos) const
+uint32 Grid::index(Vec2i pos) const
 {
-	const ivec2 a = pos + gridOffset;
+	const Vec2i a = pos + gridOffset;
 	if (a[0] < 0 || a[0] >= resolution[0] || a[1] < 0 || a[1] >= resolution[1])
 		return m;
 	return a[1] * resolution[0] + a[0];
 }
 
-uint32 Grid::index(vec2 pos) const
+uint32 Grid::index(Vec2 pos) const
 {
-	return index(ivec2(pos + 200.5) - 200); // 200 is used for rounding towards negative infinity instead of zero
+	return index(Vec2i(pos + 200.5) - 200); 
 }
 
-uint32 Grid::index(vec3 pos) const
+uint32 Grid::index(Vec3 pos) const
 {
-	return index(vec2(pos[0], pos[2]));
+	return index(Vec2(pos[0], pos[2]));
 }
 
-ivec2 Grid::position(uint32 idx) const
+Vec2i Grid::position(uint32 idx) const
 {
 	const uint32 y = idx / resolution[0];
 	const uint32 x = idx % resolution[0];
-	return ivec2(x, y) - gridOffset;
+	return Vec2i(x, y) - gridOffset;
 }
 
-vec3 Grid::center(uint32 idx) const
+Vec3 Grid::center(uint32 idx) const
 {
-	const ivec2 p = position(idx);
-	return vec3(p[0], stor(elevations[idx]), p[1]);
+	const Vec2i p = position(idx);
+	return Vec3(p[0], stor(elevations[idx]), p[1]);
 }
 
 uint32 Grid::neighborDistance(uint32 a, uint32 b) const
@@ -135,14 +135,14 @@ uint32 Grid::neighborDistance(uint32 a, uint32 b) const
 Holder<Grid> newGrid(Holder<Procedural> procedural)
 {
 	Holder<Grid> g = systemMemory().createHolder<Grid>();
-	g->resolution = ivec2(141);
-	g->gridOffset = ivec2(70);
+	g->resolution = Vec2i(141);
+	g->gridOffset = Vec2i(70);
 	const uint32 total = g->resolution[0] * g->resolution[1];
 	{
 		PointerRangeHolder<const sint16> vec;
 		vec.resize(total);
 		for (uint32 i = 0; i < total; i++)
-			vec[i] = rtos16(clamp(procedural->elevation(vec2(g->position(i))), -100, 100));
+			vec[i] = rtos16(clamp(procedural->elevation(Vec2(g->position(i))), -100, 100));
 		g->elevations = vec;
 	}
 	{
@@ -164,7 +164,7 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 				vec[i] |= TileFlags::Snow;
 			if (maxSlope(+g, i) > slopeThreshold)
 				vec[i] = TileFlags::Invalid;
-			if (lengthSquared(vec2(g->position(i))) > sqr(55))
+			if (lengthSquared(Vec2(g->position(i))) > sqr(55))
 				vec[i] = TileFlags::Invalid;
 		}
 		g->flags = vec;
@@ -175,7 +175,7 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 		uint32 valid = 0;
 		for (TileFlags f : g->flags)
 			valid += none(f & TileFlags::Invalid);
-		CAGE_LOG(SeverityEnum::Info, "mapgen", stringizer() + "valid tiles: " + valid);
+		CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "valid tiles: " + valid);
 	}
 	return g;
 }
@@ -197,36 +197,36 @@ namespace
 			Grid grid;
 			uint16 elevations[10 * 5] = {};
 			grid.elevations = makeElevations();
-			grid.gridOffset = ivec2(4, 2);
-			grid.resolution = ivec2(10, 5);
+			grid.gridOffset = Vec2i(4, 2);
+			grid.resolution = Vec2i(10, 5);
 
-			CAGE_ASSERT(grid.index(ivec2()) == 24);
-			CAGE_ASSERT(grid.index(ivec2(-4, -2)) == 0);
-			CAGE_ASSERT(grid.index(ivec2(5, -2)) == 9);
-			CAGE_ASSERT(grid.index(ivec2(-4, 2)) == 40);
-			CAGE_ASSERT(grid.index(ivec2(5, 2)) == 49);
-			CAGE_ASSERT(grid.index(ivec2(-10, 0)) == m);
-			CAGE_ASSERT(grid.index(ivec2(0, 100)) == m);
-			CAGE_ASSERT(grid.index(vec2()) == 24);
+			CAGE_ASSERT(grid.index(Vec2i()) == 24);
+			CAGE_ASSERT(grid.index(Vec2i(-4, -2)) == 0);
+			CAGE_ASSERT(grid.index(Vec2i(5, -2)) == 9);
+			CAGE_ASSERT(grid.index(Vec2i(-4, 2)) == 40);
+			CAGE_ASSERT(grid.index(Vec2i(5, 2)) == 49);
+			CAGE_ASSERT(grid.index(Vec2i(-10, 0)) == m);
+			CAGE_ASSERT(grid.index(Vec2i(0, 100)) == m);
+			CAGE_ASSERT(grid.index(Vec2()) == 24);
 
-			CAGE_ASSERT(grid.index(vec2(-0.45, 0)) == 24);
-			CAGE_ASSERT(grid.index(vec2(+0.45, 0)) == 24);
-			CAGE_ASSERT(grid.index(vec2(0, -0.45)) == 24);
-			CAGE_ASSERT(grid.index(vec2(0, +0.45)) == 24);
-			CAGE_ASSERT(grid.index(vec2(4.9, 1.9)) == 49);
-			CAGE_ASSERT(grid.index(vec2(5.1, 1.9)) == 49);
-			CAGE_ASSERT(grid.index(vec2(4.9, 2.1)) == 49);
-			CAGE_ASSERT(grid.index(vec2(5.1, 2.1)) == 49);
+			CAGE_ASSERT(grid.index(Vec2(-0.45, 0)) == 24);
+			CAGE_ASSERT(grid.index(Vec2(+0.45, 0)) == 24);
+			CAGE_ASSERT(grid.index(Vec2(0, -0.45)) == 24);
+			CAGE_ASSERT(grid.index(Vec2(0, +0.45)) == 24);
+			CAGE_ASSERT(grid.index(Vec2(4.9, 1.9)) == 49);
+			CAGE_ASSERT(grid.index(Vec2(5.1, 1.9)) == 49);
+			CAGE_ASSERT(grid.index(Vec2(4.9, 2.1)) == 49);
+			CAGE_ASSERT(grid.index(Vec2(5.1, 2.1)) == 49);
 
-			CAGE_ASSERT(grid.position(24) == ivec2());
-			CAGE_ASSERT(grid.position(0) == ivec2(-4, -2));
-			CAGE_ASSERT(grid.position(9) == ivec2(5, -2));
-			CAGE_ASSERT(grid.position(40) == ivec2(-4, 2));
-			CAGE_ASSERT(grid.position(49) == ivec2(5, 2));
+			CAGE_ASSERT(grid.position(24) == Vec2i());
+			CAGE_ASSERT(grid.position(0) == Vec2i(-4, -2));
+			CAGE_ASSERT(grid.position(9) == Vec2i(5, -2));
+			CAGE_ASSERT(grid.position(40) == Vec2i(-4, 2));
+			CAGE_ASSERT(grid.position(49) == Vec2i(5, 2));
 
-			CAGE_ASSERT(grid.center(0) == vec3(-4, 0, -2));
-			CAGE_ASSERT(grid.center(24) == vec3());
-			CAGE_ASSERT(grid.center(49) == vec3(5, 0, 2));
+			CAGE_ASSERT(grid.center(0) == Vec3(-4, 0, -2));
+			CAGE_ASSERT(grid.center(24) == Vec3());
+			CAGE_ASSERT(grid.center(49) == Vec3(5, 0, 2));
 
 			CAGE_ASSERT(grid.index(grid.position(13)) == 13);
 			CAGE_ASSERT(grid.index(grid.position(42)) == 42);

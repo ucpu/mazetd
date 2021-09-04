@@ -33,7 +33,7 @@ namespace
 				GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 				ll.vertical = true;
 				GuiTextComponent &txt = e->value<GuiTextComponent>();
-				txt.value = string(name);
+				txt.value = String(name);
 			}
 		}
 
@@ -45,11 +45,11 @@ namespace
 			pp.order = index;
 			GuiButtonComponent &but = e->value<GuiButtonComponent>();
 			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = string(name);
+			txt.value = String(name);
 			GuiTextFormatComponent &format = e->value<GuiTextFormatComponent>();
 			GuiEventComponent &evt = e->value<GuiEventComponent>();
 			evt.event.bind<&buildingSelectionClick>();
-			e->value<NameComponent>().name = string(name);
+			e->value<NameComponent>().name = String(name);
 			return e;
 		}
 

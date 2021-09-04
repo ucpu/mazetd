@@ -79,7 +79,7 @@ struct MonsterBaseProperties
 	uint32 money = 0;
 	uint32 damage = 0;
 	sint32 life = 1000;
-	real speed = 1;
+	Real speed = 1;
 	DamageTypeFlags immunities = DamageTypeFlags::None;
 	MonsterClassFlags monsterClass = MonsterClassFlags::None;
 };
@@ -121,14 +121,14 @@ struct GuiModelComponent
 
 struct NameComponent
 {
-	string name;
+	String name;
 };
 
 struct PositionComponent
 {
 	uint32 tile = m;
 
-	vec3 position() const;
+	Vec3 position() const;
 };
 
 struct MovementComponent
@@ -138,7 +138,7 @@ struct MovementComponent
 	uint32 timeStart = m;
 	uint32 timeEnd = 0;
 
-	vec3 position() const;
+	Vec3 position() const;
 };
 
 struct MonsterComponent : public MonsterBaseProperties
@@ -167,7 +167,7 @@ struct TrapComponent
 
 struct PivotComponent
 {
-	real elevation = 0.5;
+	Real elevation = 0.5;
 };
 
 struct CostComponent
@@ -184,7 +184,7 @@ struct ManaStorageComponent
 struct ManaDistributorComponent
 {
 	uint32 transferLimit = 100;
-	real range = 5;
+	Real range = 5;
 };
 
 struct ManaReceiverComponent
@@ -193,7 +193,7 @@ struct ManaReceiverComponent
 struct ManaCollectorComponent
 {
 	ManaCollectorTypeEnum type = ManaCollectorTypeEnum::None;
-	real range = 7;
+	Real range = 7;
 	uint32 collectAmount = 1;
 };
 
@@ -207,8 +207,8 @@ struct DamageComponent
 	uint32 damage = 0;
 	uint32 overTime = 0;
 	uint32 firingPeriod = 30;
-	real firingRange = 5;
-	real splashRadius = 0;
+	Real firingRange = 5;
+	Real splashRadius = 0;
 	uint32 baseManaCost = 12;
 	MonsterClassFlags invalidClasses = MonsterClassFlags::None;
 	bool acceptMods = true;
@@ -242,7 +242,7 @@ extern uint32 gameTime;
 extern uint32 gameSpeed;
 extern bool gameRunning;
 
-extern vec3 playerCursorPosition;
+extern Vec3 playerCursorPosition;
 extern uint32 playerCursorTile;
 extern sint32 playerHealth;
 extern sint32 playerMoney;
@@ -253,8 +253,8 @@ extern SpawningGroup spawningGroup;
 
 struct EffectConfig
 {
-	vec3 pos1 = vec3::Nan();
-	vec3 pos2 = vec3::Nan();
+	Vec3 pos1 = Vec3::Nan();
+	Vec3 pos2 = Vec3::Nan();
 	DamageTypeEnum type = DamageTypeEnum::Total;
 };
 

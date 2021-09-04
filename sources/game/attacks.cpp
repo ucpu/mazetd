@@ -14,17 +14,17 @@ namespace
 {
 	struct Neighbor
 	{
-		vec3 np;
-		vec3 npp;
-		real dist2;
+		Vec3 np;
+		Vec3 npp;
+		Real dist2;
 		Entity *e = nullptr;
 	};
 
 	struct TowerData : public DamageComponent
 	{
 		Entity *me = nullptr;
-		vec3 mp; // my position
-		vec3 mpp; // my position with pivot
+		Vec3 mp; 
+		Vec3 mpp; 
 
 		BonusTypeEnum bonusType = BonusTypeEnum::None;
 		const Neighbor *bonusNeighbor = nullptr;
@@ -42,7 +42,7 @@ namespace
 	{
 		Entity *e = nullptr;
 		MonsterComponent *mc = nullptr;
-		vec3 p;
+		Vec3 p;
 	};
 
 	template<TargetingEnum Targeting>
@@ -75,7 +75,7 @@ namespace
 				Neighbor n;
 				n.e = gameEntities()->get(nn);
 				n.np = globalGrid->center(n.e->value<PositionComponent>().tile);
-				n.npp = n.np + vec3(0, n.e->value<PivotComponent>().elevation, 0);
+				n.npp = n.np + Vec3(0, n.e->value<PivotComponent>().elevation, 0);
 				n.dist2 = distanceSquared(n.np, mp);
 				neighbors.push_back(n);
 			}
@@ -197,7 +197,7 @@ namespace
 				renderEffect(cfg);
 			}
 			cfg.pos1 = mpp;
-			cfg.pos2 = monsters[0].p + vec3(0, monsters[0].e->value<PivotComponent>(compPivot).elevation, 0);
+			cfg.pos2 = monsters[0].p + Vec3(0, monsters[0].e->value<PivotComponent>(compPivot).elevation, 0);
 			renderEffect(cfg);
 		}
 
@@ -225,7 +225,7 @@ namespace
 				*(DamageComponent *)this = e->value<DamageComponent>(compDamage);
 				me = e;
 				mp = pos.position();
-				mpp = mp + vec3(0, e->value<PivotComponent>(compPivot).elevation, 0);
+				mpp = mp + Vec3(0, e->value<PivotComponent>(compPivot).elevation, 0);
 
 				if (acceptMods)
 				{
@@ -260,7 +260,7 @@ namespace
 			CAGE_ASSERT(data->targetingType == Targeting);
 		}
 
-		real value(Monster &mo)
+		Real value(Monster &mo)
 		{
 			switch (Targeting)
 			{
@@ -277,10 +277,10 @@ namespace
 		void run()
 		{
 			uint32 bi = 0;
-			real bv = value(data->monsters[0]);
+			Real bv = value(data->monsters[0]);
 			for (const auto &it : enumerate(data->monsters))
 			{
-				real v = value(*it);
+				Real v = value(*it);
 				if (v < bv)
 				{
 					bi = it.index;

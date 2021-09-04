@@ -8,7 +8,7 @@ namespace
 {
 	struct ProceduralImpl : public Procedural
 	{
-		vec2 elevationOffset = randomChance2() * 1000;
+		Vec2 elevationOffset = randomChance2() * 1000;
 
 		Holder<NoiseFunction> elevationNoise = []() {
 			NoiseFunctionCreateConfig cfg;
@@ -55,78 +55,78 @@ namespace
 			return newNoiseFunction(cfg);
 		}();
 
-		real elevation(const vec2 &pos) override
+		Real elevation(const Vec2 &pos) override
 		{
-			const real base = -sqr(max(length(pos) - 40, 0) * 0.2);
-			const real noise = elevationNoise->evaluate(pos + elevationOffset) * 10;
+			const Real base = -sqr(max(length(pos) - 40, 0) * 0.2);
+			const Real noise = elevationNoise->evaluate(pos + elevationOffset) * 10;
 			return max(base + noise, -8.5);
 		}
 
-		real slope(const vec2 &pos, real off)
+		Real slope(const Vec2 &pos, Real off)
 		{
-			const real a = elevation(pos + vec2(-off, 0)) - elevation(pos + vec2(+off, 0));
-			const real b = elevation(pos + vec2(0, -off)) - elevation(pos + vec2(0, +off));
+			const Real a = elevation(pos + Vec2(-off, 0)) - elevation(pos + Vec2(+off, 0));
+			const Real b = elevation(pos + Vec2(0, -off)) - elevation(pos + Vec2(0, +off));
 			return max(abs(a), abs(b)) / off;
 		}
 
-		void material(const vec3 &pos3, TileFlags flags, vec3 &albedo, real &roughness) override
+		void material(const Vec3 &pos3, TileFlags flags, Vec3 &albedo, Real &roughness) override
 		{
-			const vec2 pos2 = vec2(pos3[0], pos3[2]);
-			const real elev = pos3[1];
+			const Vec2 pos2 = Vec2(pos3[0], pos3[2]);
+			const Real elev = pos3[1];
 			{
-				const real noise = waterNoise->evaluate(pos3) * 0.07;
-				albedo = colorHsvToRgb(vec3(0.644 + noise, 0.52, 0.75));
+				const Real noise = waterNoise->evaluate(pos3) * 0.07;
+				albedo = colorHsvToRgb(Vec3(0.644 + noise, 0.52, 0.75));
 				roughness = roughnessNoise->evaluate(pos3) * 0.1 + 0.2;
 			}
 			{
-				const real noise = grassNoise->evaluate(pos3) * 0.1;
-				const vec3 grass = colorHsvToRgb(vec3(0.266, 0.6, 0.87 + noise));
-				const real factor = saturate(find(elev, -7.2, -6.8));
+				const Real noise = grassNoise->evaluate(pos3) * 0.1;
+				const Vec3 grass = colorHsvToRgb(Vec3(0.266, 0.6, 0.87 + noise));
+				const Real factor = saturate(find(elev, -7.2, -6.8));
 				albedo = interpolate(albedo, grass, factor);
-				const real r = roughnessNoise->evaluate(pos3 + 156) * 0.2 + 0.45;
+				const Real r = roughnessNoise->evaluate(pos3 + 156) * 0.2 + 0.45;
 				roughness = interpolate(roughness, r, factor);
 			}
 			{
-				const real noise = dirtNoise->evaluate(pos3) * 0.2;
-				const vec3 dirt = colorHsvToRgb(vec3(0.144, 0.45 + noise, 0.8));
-				const real factor = saturate(find(elev, 0.8, 1.2));
+				const Real noise = dirtNoise->evaluate(pos3) * 0.2;
+				const Vec3 dirt = colorHsvToRgb(Vec3(0.144, 0.45 + noise, 0.8));
+				const Real factor = saturate(find(elev, 0.8, 1.2));
 				albedo = interpolate(albedo, dirt, factor);
-				const real r = roughnessNoise->evaluate(pos3 - 564) * 0.3 + 0.6;
+				const Real r = roughnessNoise->evaluate(pos3 - 564) * 0.3 + 0.6;
 				roughness = interpolate(roughness, r, factor);
 			}
 			{
-				const vec3 snow = vec3(randomChance() * 0.1 + 0.9);
-				const real factor = saturate(find(elev, 5.8, 6.2));
+				const Vec3 snow = Vec3(randomChance() * 0.1 + 0.9);
+				const Real factor = saturate(find(elev, 5.8, 6.2));
 				albedo = interpolate(albedo, snow, factor);
-				const real r = randomChance() * 0.3 + 0.7;
+				const Real r = randomChance() * 0.3 + 0.7;
 				roughness = interpolate(roughness, r, factor);
 			}
 			{
-				const ivec2 tile = ivec2((pos2 + 1000) * 15) % 15;
+				const Vec2i tile = Vec2i((pos2 + 1000) * 15) % 15;
 				if (tile[0] == 7 || tile[1] == 7)
 				{
-					constexpr real factor = 0.3;
-					albedo = interpolate(albedo, vec3(0.5), factor);
+					constexpr Real factor = 0.3;
+					albedo = interpolate(albedo, Vec3(0.5), factor);
 					roughness = interpolate(roughness, 1, factor);
 				}
 			}
 			if (any(flags & TileFlags::Invalid))
 			{
-				constexpr real factor = 0.2;
-				albedo = interpolate(albedo, vec3(), factor);
+				constexpr Real factor = 0.2;
+				albedo = interpolate(albedo, Vec3(), factor);
 				roughness = interpolate(roughness, 1, factor);
 			}
 			if (any(flags & TileFlags::Waypoint))
 			{
-				constexpr real factor = 0.5;
-				albedo = interpolate(albedo, vec3(1, 0, 1), factor);
+				constexpr Real factor = 0.5;
+				albedo = interpolate(albedo, Vec3(1, 0, 1), factor);
 				roughness = interpolate(roughness, 1, factor);
 			}
 		}
 
-		real sdf(const vec3 &pos) override
+		Real sdf(const Vec3 &pos) override
 		{
-			return elevation(vec2(pos[0], pos[2])) - pos[1];
+			return elevation(Vec2(pos[0], pos[2])) - pos[1];
 		}
 	};
 }

@@ -14,23 +14,23 @@ namespace
 
 	void engineUpdate()
 	{
-		const ivec2 res = engineWindow()->resolution();
+		const Vec2i res = engineWindow()->resolution();
 		if (gameRunning && globalGrid && !playerPanning && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
 		{
-			const ivec2 cur = engineWindow()->mousePosition();
+			const Vec2i cur = engineWindow()->mousePosition();
 			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
 			TransformComponent &t = c->value<TransformComponent>();
 			CameraComponent &a = c->value<CameraComponent>();
-			const mat4 view = mat4(inverse(t));
-			const mat4 proj = perspectiveProjection(a.camera.perspectiveFov, real(res[0]) / real(res[1]), a.near, a.far);
-			const mat4 inv = inverse(proj * view);
-			const vec2 cp = (vec2(cur) / vec2(res) * 2 - 1) * vec2(1, -1);
-			const vec4 pn = inv * vec4(cp, -1, 1);
-			const vec4 pf = inv * vec4(cp, 1, 1);
-			const vec3 near = vec3(pn) / pn[3];
-			const vec3 far = vec3(pf) / pf[3];
+			const Mat4 view = Mat4(inverse(t));
+			const Mat4 proj = perspectiveProjection(a.camera.perspectiveFov, Real(res[0]) / Real(res[1]), a.near, a.far);
+			const Mat4 inv = inverse(proj * view);
+			const Vec2 cp = (Vec2(cur) / Vec2(res) * 2 - 1) * Vec2(1, -1);
+			const Vec4 pn = inv * Vec4(cp, -1, 1);
+			const Vec4 pf = inv * Vec4(cp, 1, 1);
+			const Vec3 near = Vec3(pn) / pn[3];
+			const Vec3 far = Vec3(pf) / pf[3];
 			const Line line = makeSegment(near, far);
-			playerCursorPosition = intersection(line, +globalCollider, transform());
+			playerCursorPosition = intersection(line, +globalCollider, Transform());
 			if (playerCursorPosition.valid())
 			{
 				playerCursorTile = globalGrid->index(playerCursorPosition);

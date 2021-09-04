@@ -13,8 +13,8 @@ namespace
 {
 	struct PotentialComponent
 	{
-		real potential;
-		real modified;
+		Real potential;
+		Real modified;
 	};
 
 	void engineInit()
@@ -46,7 +46,7 @@ namespace
 				if (stor.mana == 0)
 					return;
 
-				const vec3 mp = globalGrid->center(pos.tile);
+				const Vec3 mp = globalGrid->center(pos.tile);
 				buildingsQuery->intersection(Sphere(mp, distr.range));
 				std::vector<Sorting> recvs;
 				recvs.reserve(buildingsQuery->result().size());
@@ -82,8 +82,8 @@ namespace
 
 				{
 					EffectConfig cfg;
-					cfg.pos1 = mp + vec3(0, e->value<PivotComponent>(pivotComp).elevation, 0);
-					cfg.pos2 = globalGrid->center(r.e->value<PositionComponent>(posComp).tile) + vec3(0, r.e->value<PivotComponent>(pivotComp).elevation, 0);
+					cfg.pos1 = mp + Vec3(0, e->value<PivotComponent>(pivotComp).elevation, 0);
+					cfg.pos2 = globalGrid->center(r.e->value<PositionComponent>(posComp).tile) + Vec3(0, r.e->value<PivotComponent>(pivotComp).elevation, 0);
 					cfg.type = DamageTypeEnum::Magic;
 					renderEffect(cfg);
 				}
@@ -93,7 +93,7 @@ namespace
 			entitiesVisitor([&](Entity *e, const ManaStorageComponent &stor) {
 				PotentialComponent &pot = e->value<PotentialComponent>(potenComp);
 				if (e->has(recvComp))
-					pot.modified = real(stor.mana) / stor.capacity;
+					pot.modified = Real(stor.mana) / stor.capacity;
 				else
 					pot.modified = 1;
 				pot.potential = pot.modified;
@@ -104,7 +104,7 @@ namespace
 			// spread potentials
 			entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, PotentialComponent &pot) {
 				uint32 cnt = 5;
-				real sum = pot.potential * cnt;
+				Real sum = pot.potential * cnt;
 				buildingsQuery->intersection(Sphere(globalGrid->center(pos.tile), distr.range));
 				for (uint32 n : buildingsQuery->result())
 				{
@@ -113,7 +113,7 @@ namespace
 					Entity *r = gameEntities()->get(n);
 					if (!r->has(recvComp))
 						continue;
-					const real pt = r->value<PotentialComponent>(potenComp).potential;
+					const Real pt = r->value<PotentialComponent>(potenComp).potential;
 					if (pt > pot.potential && !r->has(distrComp))
 						continue;
 					sum += pt;

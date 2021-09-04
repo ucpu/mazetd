@@ -7,8 +7,8 @@ namespace
 {
 	struct GhostComponent
 	{
-		quat rot;
-		vec3 mov;
+		Quat rot;
+		Vec3 mov;
 	};
 
 	void engineInit()
@@ -48,13 +48,13 @@ void createMonsterGhost(Entity *ge)
 	Entity *ee = engineEntities()->createAnonymous();
 	TransformComponent &tr = ee->value<TransformComponent>();
 	tr = f->value<TransformComponent>();
-	tr.orientation = interpolate(quat(), randomDirectionQuat(), 0.1) * tr.orientation;
+	tr.orientation = interpolate(Quat(), randomDirectionQuat(), 0.1) * tr.orientation;
 	SkeletalAnimationComponent &sk = ee->value<SkeletalAnimationComponent>();
 	sk = f->value<SkeletalAnimationComponent>();
 	RenderComponent &re = ee->value<RenderComponent>();
 	re = f->value<RenderComponent>();
 	re.opacity = 0.5;
 	GhostComponent &gh = ee->value<GhostComponent>();
-	gh.rot = interpolate(quat(), randomDirectionQuat(), 0.01);
-	gh.mov = (vec3(0, 5, 0) + randomDirection3()) * 0.01;
+	gh.rot = interpolate(Quat(), randomDirectionQuat(), 0.01);
+	gh.mov = (Vec3(0, 5, 0) + randomDirection3()) * 0.01;
 }

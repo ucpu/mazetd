@@ -32,7 +32,7 @@ void setScreenMainmenu()
 	{
 		Entity *e = ents->create(1);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0.45, 0.05);
+		sc.alignment = Vec2(0.45, 0.05);
 	}
 
 	{
@@ -42,7 +42,7 @@ void setScreenMainmenu()
 		GuiLabelComponent &label = e->value<GuiLabelComponent>();
 		GuiTextFormatComponent &tf = e->value<GuiTextFormatComponent>();
 		tf.size = 50;
-		tf.color = vec3(203, 238, 239) / 255; // #cBEEEF
+		tf.color = Vec3(203, 238, 239) / 255; 
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "aMAZEing Tower Defense";
 	}
@@ -50,7 +50,7 @@ void setScreenMainmenu()
 	{
 		Entity *e = ents->create(3);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = vec2(0.8, 0.666);
+		sc.alignment = Vec2(0.8, 0.666);
 	}
 
 	{

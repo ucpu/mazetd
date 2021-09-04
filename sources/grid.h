@@ -25,17 +25,17 @@ namespace cage
 
 struct Grid : private Immovable
 {
-	ivec2 gridOffset;
-	ivec2 resolution;
+	Vec2i gridOffset;
+	Vec2i resolution;
 
-	Holder<PointerRange<const sint16>> elevations; // 8.8 fixed point real number format
+	Holder<PointerRange<const sint16>> elevations; 
 	Holder<PointerRange<TileFlags>> flags;
 
-	uint32 index(ivec2 pos) const;
-	uint32 index(vec2 pos) const;
-	uint32 index(vec3 pos) const;
-	ivec2 position(uint32 idx) const;
-	vec3 center(uint32 idx) const;
+	uint32 index(Vec2i pos) const;
+	uint32 index(Vec2 pos) const;
+	uint32 index(Vec3 pos) const;
+	Vec2i position(uint32 idx) const;
+	Vec3 center(uint32 idx) const;
 	uint32 neighborDistance(uint32 a, uint32 b) const; // 24.8 format
 };
 
