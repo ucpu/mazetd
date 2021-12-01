@@ -1,5 +1,5 @@
-#include <cage-engine/engine.h>
-
+#include <cage-engine/scene.h>
+#include <cage-simple/engine.h>
 #include "../game.h"
 
 namespace

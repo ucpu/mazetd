@@ -12,7 +12,7 @@ namespace
 void setScreenAbout()
 {
 	cleanGui();
-	EntityManager *ents = engineGui()->entities();
+	EntityManager *ents = engineGuiEntities();
 
 	{
 		Entity *e = ents->create(1);
@@ -66,7 +66,7 @@ void setScreenAbout()
 	uint32 idx = 0;
 	for (const auto &it : lines)
 	{
-		Entity *e = engineGui()->entities()->createUnique();
+		Entity *e = engineGuiEntities()->createUnique();
 		GuiParentComponent &parent = e->value<GuiParentComponent>();
 		parent.parent = 5;
 		parent.order = idx;

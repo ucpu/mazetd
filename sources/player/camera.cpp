@@ -1,5 +1,6 @@
-#include <cage-engine/engine.h>
+#include <cage-engine/scene.h>
 #include <cage-engine/window.h>
+#include <cage-simple/engine.h>
 
 #include "../grid.h"
 #include "../game.h"
@@ -35,12 +36,12 @@ namespace
 		return pos - cntr;
 	}
 
-	bool mousePress(MouseButtonsFlags button, ModifiersFlags mods, const Vec2i &pos)
+	bool mousePress(InputMouse in)
 	{
-		if (button != MouseButtonsFlags::Right)
+		if (in.buttons != MouseButtonsFlags::Right)
 			return false;
 		engineWindow()->mouseVisible(false);
-		lastMousePos = pos;
+		lastMousePos = in.position;
 		centerMouse();
 		playerPanning = true;
 		return true;
@@ -54,14 +55,14 @@ namespace
 		playerPanning = false;
 	}
 
-	bool mouseRelease(MouseButtonsFlags button, ModifiersFlags, const Vec2i &)
+	bool mouseRelease(InputMouse in)
 	{
-		if (button == MouseButtonsFlags::Right)
+		if (in.buttons == MouseButtonsFlags::Right)
 			stop();
 		return false;
 	}
 
-	bool mouseMove(MouseButtonsFlags, ModifiersFlags, const Vec2i &)
+	bool mouseMove(InputMouse)
 	{
 		if (!playerPanning)
 			return false;
@@ -78,20 +79,20 @@ namespace
 		return false;
 	}
 
-	bool mouseWheel(sint32 wheel, ModifiersFlags mods, const Vec2i &)
+	bool mouseWheel(InputMouseWheel in)
 	{
-		switch (mods)
+		switch (in.mods)
 		{
 		case ModifiersFlags::None:
 		{
-			camDist *= powE(Real(wheel) * -0.2);
+			camDist *= powE(Real(in.wheel) * -0.2);
 			camDist = clamp(camDist, 5, 70);
 			updateCamera();
 			return true;
 		}
 		case ModifiersFlags::Ctrl:
 		{
-			camYaw += Degs(wheel) * 5;
+			camYaw += Degs(in.wheel) * 5;
 			updateCamera();
 			return true;
 		}
@@ -99,22 +100,30 @@ namespace
 		return false;
 	}
 
-	bool focusLose()
+	bool focusLose(InputWindow)
 	{
 		stop();
 		return false;
 	}
 
-	WindowEventListeners listeners;
+	InputListener<InputClassEnum::MousePress, InputMouse, bool> mousePressListener;
+	InputListener<InputClassEnum::MouseRelease, InputMouse, bool> mouseReleaseListener;
+	InputListener<InputClassEnum::MouseMove, InputMouse, bool> mouseMoveListener;
+	InputListener<InputClassEnum::MouseWheel, InputMouseWheel, bool> mouseWheelListener;
+	InputListener<InputClassEnum::FocusLose, InputWindow, bool> focusloseListener;
 
 	void engineInit()
 	{
-		listeners.attachAll(engineWindow(), 100);
-		listeners.mousePress.bind<&mousePress>();
-		listeners.mouseRelease.bind<&mouseRelease>();
-		listeners.mouseMove.bind<&mouseMove>();
-		listeners.mouseWheel.bind<&mouseWheel>();
-		listeners.focusLose.bind<&focusLose>();
+		mousePressListener.attach(engineWindow()->events, 100);
+		mousePressListener.bind<&mousePress>();
+		mouseReleaseListener.attach(engineWindow()->events, 101);
+		mouseReleaseListener.bind<&mouseRelease>();
+		mouseMoveListener.attach(engineWindow()->events, 102);
+		mouseMoveListener.bind<&mouseMove>();
+		mouseWheelListener.attach(engineWindow()->events, 103);
+		mouseWheelListener.bind<&mouseWheel>();
+		focusloseListener.attach(engineWindow()->events, 104);
+		focusloseListener.bind<&focusLose>();
 	}
 
 	void engineUpdate()

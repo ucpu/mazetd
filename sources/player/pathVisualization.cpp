@@ -1,8 +1,9 @@
 #include <cage-core/hashString.h>
 #include <cage-core/enumerate.h>
 #include <cage-core/color.h>
-#include <cage-engine/engine.h>
+#include <cage-engine/scene.h>
 #include <cage-engine/window.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 #include "../grid.h"
@@ -12,7 +13,7 @@ namespace
 	uint64 timeToDestroy;
 	uint32 waypointIndex;
 
-	WindowEventListeners listeners;
+	InputListener<InputClassEnum::KeyRepeat, InputKey, bool> keyRepeatListener;
 
 	struct PathMarkComponent
 	{};
@@ -54,9 +55,9 @@ namespace
 		waypointIndex++;
 	}
 
-	bool keyRepeat(uint32 key, ModifiersFlags)
+	bool keyRepeat(InputKey in)
 	{
-		if (key != 32) // spacebar
+		if (in.key != 32) // spacebar
 			return false;
 		placeMarks();
 		return true;
@@ -66,8 +67,8 @@ namespace
 	{
 		engineEntities()->defineComponent(PathMarkComponent());
 
-		listeners.attachAll(engineWindow(), 200);
-		listeners.keyRepeat.bind<&keyRepeat>();
+		keyRepeatListener.attach(engineWindow()->events, 200);
+		keyRepeatListener.bind<&keyRepeat>();
 	}
 
 	void engineUpdate()

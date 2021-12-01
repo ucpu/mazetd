@@ -1,5 +1,4 @@
-#include <cage-engine/engine.h>
-#include <cage-engine/gui.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 #include "../grid.h"
@@ -52,8 +51,8 @@ namespace
 
 	void engineInit()
 	{
-		registerEntityComponents(engineGui()->entities());
-		engineGui()->entities()->defineComponent(GuiModelComponent());
+		registerEntityComponents(engineGuiEntities());
+		engineGuiEntities()->defineComponent(GuiModelComponent());
 		eventGameReset().dispatch();
 	}
 

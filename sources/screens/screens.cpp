@@ -1,4 +1,5 @@
 #include <cage-core/entitiesVisitor.h>
+#include <cage-engine/guiManager.h>
 
 #include "screens.h"
 
@@ -6,8 +7,8 @@
 
 void cleanGui()
 {
-	Gui *gui = engineGui();
-	gui->skipAllEventsUntilNextUpdate();
+	GuiManager *gui = engineGuiManager();
+	gui->invalidateInputs();
 	eventGuiClean().dispatch();
 	eventGuiClean().detach();
 	gui->focus(0);
@@ -24,7 +25,7 @@ void removeGuiEntitiesWithParent(uint32 parent)
 			ents.push_back(e->name());
 			e->destroy();
 		}
-	}, engineGui()->entities(), true);
+	}, engineGuiEntities(), true);
 	for (uint32 n : ents)
 		removeGuiEntitiesWithParent(n);
 }

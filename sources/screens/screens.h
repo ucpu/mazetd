@@ -1,7 +1,7 @@
 #include <cage-core/events.h>
 #include <cage-core/entities.h>
-#include <cage-engine/gui.h>
-#include <cage-engine/engine.h>
+#include <cage-engine/guiComponents.h>
+#include <cage-simple/engine.h>
 
 using namespace cage;
 

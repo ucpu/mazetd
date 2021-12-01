@@ -1,6 +1,7 @@
 #include <cage-core/entitiesVisitor.h>
 #include <cage-core/hashString.h>
-#include <cage-engine/engine.h>
+#include <cage-engine/scene.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 #include "../grid.h"

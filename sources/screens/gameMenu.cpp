@@ -22,7 +22,7 @@ namespace
 void setScreenGameMenu()
 {
 	cleanGui();
-	EntityManager *ents = engineGui()->entities();
+	EntityManager *ents = engineGuiEntities();
 
 	{
 		Entity *e = ents->create(1);

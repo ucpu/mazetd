@@ -1,6 +1,6 @@
 #include <cage-core/hashString.h>
 #include <cage-core/enumerate.h>
-#include <cage-engine/engine.h>
+#include <cage-engine/scene.h>
 
 #include "../game.h"
 #include "../grid.h"

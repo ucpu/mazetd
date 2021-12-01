@@ -1,15 +1,16 @@
 #include <cage-core/scheduler.h>
-#include <cage-engine/engine.h>
+#include <cage-engine/scene.h>
 #include <cage-engine/window.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 #include "../grid.h"
 
 namespace
 {
-	bool keyPress(uint32 key, ModifiersFlags)
+	bool keyPress(InputKey in)
 	{
-		switch (key)
+		switch (in.key)
 		{
 		case 334: // numeric plus
 		case 266: // page up
@@ -31,13 +32,13 @@ namespace
 		eventGameUpdate().dispatch();
 	}
 
-	WindowEventListeners listeners;
+	InputListener<InputClassEnum::KeyPress, InputKey, bool> keyPressListener;
 	Holder<Schedule> gameUpdateSchedule;
 
 	void engineInit()
 	{
-		listeners.attachAll(engineWindow(), 110);
-		listeners.keyPress.bind<&keyPress>();
+		keyPressListener.attach(engineWindow()->events, 110);
+		keyPressListener.bind<&keyPress>();
 
 		ScheduleCreateConfig cfg;
 		cfg.name = "game update";

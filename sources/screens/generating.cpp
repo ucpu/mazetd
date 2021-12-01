@@ -25,7 +25,7 @@ namespace
 void setScreenGenerating()
 {
 	cleanGui();
-	EntityManager *ents = engineGui()->entities();
+	EntityManager *ents = engineGuiEntities();
 	guiCleanListener.attach(eventGuiClean());
 	guiCleanListener.bind<&guiClean>();
 	engineUpdateListener.attach(controlThread().update);

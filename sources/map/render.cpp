@@ -1,11 +1,13 @@
 #include <cage-core/assetManager.h>
 #include <cage-core/serialization.h>
 #include <cage-core/entities.h>
-#include <cage-engine/engine.h>
+#include <cage-core/meshMaterial.h>
 #include <cage-engine/assetStructs.h>
 #include <cage-engine/opengl.h>
 #include <cage-engine/model.h>
 #include <cage-engine/texture.h>
+#include <cage-engine/scene.h>
+#include <cage-simple/engine.h>
 
 #include "generate.h"
 
@@ -95,7 +97,7 @@ namespace
 
 		{
 			Holder<Model> model = newModel();
-			ModelHeader::MaterialData mat;
+			MeshMaterial mat;
 			model->importMesh(+up.mesh, bufferView(mat));
 			model->setTextureName(0, re.albedo);
 			model->setTextureName(1, re.material);

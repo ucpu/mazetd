@@ -4,7 +4,7 @@
 #include <cage-core/mesh.h>
 #include <cage-core/image.h>
 #include <cage-core/collider.h>
-#include <cage-engine/engine.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 #include "generate.h"

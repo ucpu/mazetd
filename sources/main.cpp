@@ -1,23 +1,20 @@
 #include <cage-core/hashString.h>
 #include <cage-core/assetManager.h>
 #include <cage-core/logger.h>
-#include <cage-engine/engine.h>
 #include <cage-engine/window.h>
-#include <cage-engine/engineStatistics.h>
-#include <cage-engine/fullscreenSwitcher.h>
 #include <cage-engine/highPerformanceGpuHint.h>
+#include <cage-simple/engine.h>
+#include <cage-simple/statisticsGui.h>
+#include <cage-simple/fullscreenSwitcher.h>
 
 using namespace cage;
 
 namespace
 {
-	bool windowClose()
+	void windowClose(InputWindow)
 	{
 		engineStop();
-		return true;
 	}
-
-	WindowEventListeners listeners;
 }
 
 int main(int argc, const char *args[])
@@ -31,16 +28,17 @@ int main(int argc, const char *args[])
 		engineInitialize(EngineCreateConfig());
 		controlThread().updatePeriod(1000000 / 30);
 
-		listeners.attachAll(engineWindow(), 1000);
-		listeners.windowClose.bind<&windowClose>();
+		InputListener<InputClassEnum::WindowClose, InputWindow> closeListener;
+		closeListener.attach(engineWindow()->events);
+		closeListener.bind<&windowClose>();
 
 		engineWindow()->title("MazeTD");
 		engineAssets()->add(HashString("mazetd/mazetd.pack"));
 
 		{
 			Holder<FullscreenSwitcher> fullscreen = newFullscreenSwitcher({});
-			Holder<EngineStatistics> engineStatistics = newEngineStatistics();
-			engineStatistics->statisticsScope = EngineStatisticsScopeEnum::None;
+			Holder<StatisticsGui> engineStatistics = newStatisticsGui();
+			engineStatistics->statisticsScope = StatisticsGuiScopeEnum::None;
 
 			engineStart();
 		}

@@ -21,7 +21,7 @@ namespace
 
 	void updateTopBar()
 	{
-		EntityManager *ents = engineGui()->entities();
+		EntityManager *ents = engineGuiEntities();
 
 		{ // path tiles
 			Entity *e = ents->get(312);
@@ -49,7 +49,7 @@ namespace
 		if (playerCursorTile == m)
 			return;
 
-		EntityManager *ents = engineGui()->entities();
+		EntityManager *ents = engineGuiEntities();
 		sint32 index = 0;
 
 		entitiesVisitor([&](Entity *g, const PositionComponent &po, const NameComponent &nm) {
@@ -155,7 +155,7 @@ void updateSpawningMonsterPropertiesScreen()
 	if (!mo.name)
 		return;
 
-	EntityManager *ents = engineGui()->entities();
+	EntityManager *ents = engineGuiEntities();
 	sint32 index = 0;
 
 	{ // name
@@ -251,7 +251,7 @@ void updateSpawningMonsterPropertiesScreen()
 void setScreenGame()
 {
 	cleanGui();
-	EntityManager *ents = engineGui()->entities();
+	EntityManager *ents = engineGuiEntities();
 	guiCleanListener.attach(eventGuiClean());
 	guiCleanListener.bind<&guiClean>();
 	engineUpdateListener.attach(controlThread().update);

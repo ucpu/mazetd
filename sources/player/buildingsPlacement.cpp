@@ -1,8 +1,9 @@
 #include <cage-core/hashString.h>
 #include <cage-core/entitiesVisitor.h>
 #include <cage-core/pointerRangeHolder.h>
-#include <cage-engine/engine.h>
+#include <cage-engine/scene.h>
 #include <cage-engine/window.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 #include "../grid.h"
@@ -12,7 +13,8 @@ void spatialUpdateStructures();
 
 namespace
 {
-	WindowEventListeners listeners;
+	InputListener<InputClassEnum::MousePress, InputMouse, bool> mousePressListener;
+	InputListener<InputClassEnum::MouseMove, InputMouse, bool> mouseMoveListener;
 
 	bool placingBuildingBlocksMonsters()
 	{
@@ -161,11 +163,11 @@ namespace
 		spatialUpdateStructures();
 	}
 
-	bool mouseEvent(MouseButtonsFlags buttons, ModifiersFlags mods, const Vec2i &)
+	bool mouseEvent(InputMouse in)
 	{
-		if (!gameRunning || playerCursorTile == m || mods != ModifiersFlags::None)
+		if (!gameRunning || playerCursorTile == m || in.mods != ModifiersFlags::None)
 			return false;
-		switch (buttons)
+		switch (in.buttons)
 		{
 		case MouseButtonsFlags::Left:
 			placeStructure();
@@ -179,9 +181,10 @@ namespace
 
 	void engineInit()
 	{
-		listeners.attachAll(engineWindow());
-		listeners.mousePress.bind<&mouseEvent>();
-		listeners.mouseMove.bind<&mouseEvent>();
+		mousePressListener.attach(engineWindow()->events);
+		mousePressListener.bind<&mouseEvent>();
+		mouseMoveListener.attach(engineWindow()->events);
+		mouseMoveListener.bind<&mouseEvent>();
 	}
 
 	struct Callbacks

@@ -1,6 +1,7 @@
 #include <cage-core/hashString.h>
-#include <cage-engine/engine.h>
-#include <cage-engine/gui.h>
+#include <cage-engine/guiComponents.h>
+#include <cage-engine/guiManager.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 
@@ -8,14 +9,14 @@ namespace
 {
 	bool buildingSelectionClick(uint32 i)
 	{
-		playerBuildingSelection = engineGui()->entities()->get(i);
-		engineGui()->focus(0); // defocus to allow using keyboard shortcuts
+		playerBuildingSelection = engineGuiEntities()->get(i);
+		engineGuiManager()->focus(0); // defocus to allow using keyboard shortcuts
 		return true;
 	}
 
 	struct BuildingsGenerator
 	{
-		EntityManager *ents = engineGui()->entities();
+		EntityManager *ents = engineGuiEntities();
 		uint32 index = 1000;
 
 		static constexpr StringLiteral categoryNames[] = { "Basic", "Towers", "Bonuses", "Targeting", "Elements", "Mana" };

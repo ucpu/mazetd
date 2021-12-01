@@ -1,5 +1,4 @@
 #include <cage-core/entitiesVisitor.h>
-#include <cage-engine/engine.h>
 
 #include "../game.h"
 #include "../grid.h"

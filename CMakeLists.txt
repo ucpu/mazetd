@@ -10,7 +10,7 @@ add_subdirectory(externals/cage)
 
 file(GLOB_RECURSE mazetd-sources "sources/*")
 add_executable(mazetd ${mazetd-sources})
-target_link_libraries(mazetd cage-engine)
+target_link_libraries(mazetd cage-simple)
 cage_ide_category(mazetd mazetd)
 cage_ide_sort_files(mazetd)
 cage_ide_working_dir_in_place(mazetd)

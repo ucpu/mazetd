@@ -2,8 +2,9 @@
 #include <cage-core/geometry.h>
 #include <cage-core/collider.h>
 #include <cage-core/hashString.h>
-#include <cage-engine/engine.h>
 #include <cage-engine/window.h>
+#include <cage-engine/scene.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 #include "../grid.h"
