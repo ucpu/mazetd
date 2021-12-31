@@ -268,7 +268,7 @@ void SpawningGroup::spawnOne()
 	const uint32 spawnPointIndex = bitsPickOneIndex(spawnPointsBits);
 	const uint32 position = globalWaypoints->waypoints[spawnPointIndex]->tile;
 	e->value<PositionComponent>().tile = position;
-	e->value<NameComponent>().name = String(name);
+	e->value<NameComponent>().name = name;
 
 	MonsterComponent &mo = e->value<MonsterComponent>();
 	(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)*this;

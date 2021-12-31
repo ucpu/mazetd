@@ -25,20 +25,17 @@ namespace
 
 		{ // path tiles
 			Entity *e = ents->get(312);
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = Stringizer() + globalWaypoints->minFullDistance;
+			e->value<GuiTextComponent>().value = Stringizer() + globalWaypoints->minFullDistance;
 		}
 
 		{ // health
 			Entity *e = ents->get(314);
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = Stringizer() + playerHealth;
+			e->value<GuiTextComponent>().value = Stringizer() + playerHealth;
 		}
 
 		{ // dollars
 			Entity *e = ents->get(316);
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = Stringizer() + playerMoney;
+			e->value<GuiTextComponent>().value = Stringizer() + playerMoney;
 		}
 	}
 
@@ -61,9 +58,8 @@ namespace
 				GuiParentComponent &pp = e->value<GuiParentComponent>();
 				pp.parent = 201;
 				pp.order = index++;
-				GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-				GuiTextComponent &txt = e->value<GuiTextComponent>();
-				txt.value = nm.name;
+				e->value<GuiLabelComponent>();
+				e->value<GuiTextComponent>().value = String(nm.name);
 			}
 
 			if (g->has<ManaStorageComponent>())
@@ -72,9 +68,8 @@ namespace
 				GuiParentComponent &pp = e->value<GuiParentComponent>();
 				pp.parent = 201;
 				pp.order = index++;
-				GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-				GuiTextComponent &txt = e->value<GuiTextComponent>();
-				txt.value = Stringizer() + "Mana: " + g->value<ManaStorageComponent>().mana + " / " + g->value<ManaStorageComponent>().capacity;
+				e->value<GuiLabelComponent>();
+				e->value<GuiTextComponent>().value = Stringizer() + "Mana: " + g->value<ManaStorageComponent>().mana + " / " + g->value<ManaStorageComponent>().capacity;
 			}
 
 			if (g->has<MonsterComponent>())
@@ -84,21 +79,19 @@ namespace
 					GuiParentComponent &pp = e->value<GuiParentComponent>();
 					pp.parent = 201;
 					pp.order = index++;
-					GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-					GuiTextComponent &txt = e->value<GuiTextComponent>();
-					txt.value = Stringizer() + "Life: " + g->value<MonsterComponent>().life;
+					e->value<GuiLabelComponent>();
+					e->value<GuiTextComponent>().value = Stringizer() + "Life: " + g->value<MonsterComponent>().life;
 				}
 				{ // waypoints
 					Entity *e = ents->createUnique();
 					GuiParentComponent &pp = e->value<GuiParentComponent>();
 					pp.parent = 201;
 					pp.order = index++;
-					GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-					GuiTextComponent &txt = e->value<GuiTextComponent>();
-					txt.value = Stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
+					e->value<GuiLabelComponent>();
+					e->value<GuiTextComponent>().value = Stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
 				}
 			}
-		}, gameEntities(), false);
+			}, gameEntities(), false);
 
 		{
 			struct Pair
@@ -127,9 +120,8 @@ namespace
 				GuiParentComponent &pp = e->value<GuiParentComponent>();
 				pp.parent = 201;
 				pp.order = index++;
-				GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-				GuiTextComponent &txt = e->value<GuiTextComponent>();
-				txt.value = String(p.name);
+				e->value<GuiLabelComponent>();
+				e->value<GuiTextComponent>().value = String(p.name);
 			}
 		}
 	}
@@ -144,6 +136,101 @@ namespace
 	{
 		engineUpdateListener.detach();
 		gameRunning = false;
+	}
+}
+
+void updateSelectedBuildingScreen()
+{
+	removeGuiEntitiesWithParent(601);
+
+	Entity *sb = playerBuildingSelection;
+	if (!sb)
+		return;
+
+	EntityManager *ents = engineGuiEntities();
+	sint32 index = 0;
+
+	{ // name
+		CAGE_ASSERT(sb->has<NameComponent>());
+		Entity *e = ents->createUnique();
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 601;
+		pp.order = index++;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + sb->value<NameComponent>().name;
+	}
+
+	{ // description
+		CAGE_ASSERT(sb->has<DescriptionComponent>());
+		Entity *e = ents->createUnique();
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 601;
+		pp.order = index++;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = String(sb->value<DescriptionComponent>().description);
+	}
+
+	{ // cost
+		CAGE_ASSERT(sb->has<CostComponent>());
+		Entity *e = ents->createUnique();
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 601;
+		pp.order = index++;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + "Cost: " + sb->value<CostComponent>().cost;
+	}
+
+	// damage
+	if (sb->has<DamageComponent>())
+	{
+		{ // damage
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = 601;
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + "Base damage: " + sb->value<DamageComponent>().damage;
+		}
+		{ // baseManaCost
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = 601;
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + "Base mana cost: " + sb->value<DamageComponent>().baseManaCost;
+		}
+	}
+
+	// mana storage
+	if (sb->has<ManaStorageComponent>())
+	{
+		Entity *e = ents->createUnique();
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 601;
+		pp.order = index++;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + "Mana capacity: " + sb->value<ManaStorageComponent>().capacity;
+	}
+
+	// mana distributor
+	if (sb->has<ManaDistributorComponent>())
+	{
+		{ // transfer limit
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = 601;
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + "Mana transfer rate: " + sb->value<ManaDistributorComponent>().transferLimit;
+		}
+		{ // transfer range
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = 601;
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + "Mana transfer range: " + sb->value<ManaDistributorComponent>().range;
+		}
 	}
 }
 
@@ -163,9 +250,8 @@ void updateSpawningMonsterPropertiesScreen()
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = Stringizer() + SpawningGroup::waveIndex + ": " + mo.name;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + SpawningGroup::waveIndex + ": " + mo.name;
 	}
 
 	if (mo.monsterClass != MonsterClassFlags::None)
@@ -174,7 +260,7 @@ void updateSpawningMonsterPropertiesScreen()
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Class:";
 		struct Pair
@@ -197,7 +283,7 @@ void updateSpawningMonsterPropertiesScreen()
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
+		e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
 		txt.value = "Immunities:";
 		struct Pair
@@ -222,9 +308,8 @@ void updateSpawningMonsterPropertiesScreen()
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = Stringizer() + "Amount: " + (mo.spawnCount * mo.spawnSimultaneously);
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + "Amount: " + (mo.spawnCount * mo.spawnSimultaneously);
 	}
 
 	{ // life
@@ -232,9 +317,8 @@ void updateSpawningMonsterPropertiesScreen()
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = Stringizer() + "Life: " + mo.life;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + "Life: " + mo.life;
 	}
 
 	{ // speed
@@ -242,9 +326,17 @@ void updateSpawningMonsterPropertiesScreen()
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
-		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = Stringizer() + "Speed: " + mo.speed;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + "Speed: " + mo.speed;
+	}
+
+	{ // money
+		Entity *e = ents->createUnique();
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 501;
+		pp.order = index++;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + "Reward: " + mo.money;
 	}
 }
 
@@ -274,8 +366,7 @@ void setScreenGame()
 		sp.collapsed = false;
 		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 		ll.vertical = true;
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Cursor";
+		e->value<GuiTextComponent>().value = "Cursor";
 	}
 
 	// top bar
@@ -330,8 +421,7 @@ void setScreenGame()
 		pp.parent = 302;
 		pp.order = 2;
 		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "path";
+		e->value<GuiTextComponent>().value = "path";
 	}
 
 	{
@@ -359,8 +449,7 @@ void setScreenGame()
 		pp.parent = 303;
 		pp.order = 2;
 		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "health";
+		e->value<GuiTextComponent>().value = "health";
 	}
 
 	{
@@ -388,8 +477,7 @@ void setScreenGame()
 		pp.parent = 304;
 		pp.order = 2;
 		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "dollars";
+		e->value<GuiTextComponent>().value = "dollars";
 	}
 
 	// buildings menu
@@ -397,7 +485,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(400);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(1, 0.5);
+		sc.alignment = Vec2(1, 0);
 	}
 
 	{
@@ -409,6 +497,27 @@ void setScreenGame()
 	}
 
 	generateBuildingsList();
+
+	// building properties
+
+	{
+		Entity *e = ents->create(600);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
+		sc.alignment = Vec2(1, 1);
+	}
+
+	{
+		Entity *e = ents->create(601);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 600;
+		GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
+		sp.collapsed = false;
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
+		ll.vertical = true;
+		e->value<GuiTextComponent>().value = "Building";
+	}
+
+	updateSelectedBuildingScreen();
 
 	// monster properties
 
@@ -426,8 +535,7 @@ void setScreenGame()
 		sp.collapsed = false;
 		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
 		ll.vertical = true;
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Spawning";
+		e->value<GuiTextComponent>().value = "Spawning";
 	}
 
 	updateSpawningMonsterPropertiesScreen();

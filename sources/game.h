@@ -121,7 +121,12 @@ struct GuiModelComponent
 
 struct NameComponent
 {
-	String name;
+	StringLiteral name;
+};
+
+struct DescriptionComponent
+{
+	StringLiteral description;
 };
 
 struct PositionComponent

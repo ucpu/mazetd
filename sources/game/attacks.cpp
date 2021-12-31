@@ -23,8 +23,8 @@ namespace
 	struct TowerData : public DamageComponent
 	{
 		Entity *me = nullptr;
-		Vec3 mp; 
-		Vec3 mpp; 
+		Vec3 mp;
+		Vec3 mpp;
 
 		BonusTypeEnum bonusType = BonusTypeEnum::None;
 		const Neighbor *bonusNeighbor = nullptr;
@@ -81,7 +81,7 @@ namespace
 			}
 			std::sort(neighbors.begin(), neighbors.end(), [](const Neighbor &a, const Neighbor &b) {
 				return a.dist2 < b.dist2;
-			});
+				});
 		}
 
 		const Neighbor *closestNeighbor(EntityComponent *comp)
@@ -113,7 +113,9 @@ namespace
 		{
 			if (elementNeighbor)
 			{
+				CAGE_ASSERT(overTime == 0);
 				overTime = numeric_cast<uint32>(cage::sqrt(damage) * 20);
+				CAGE_ASSERT(manaCost == 0);
 				manaCost = baseManaCost;
 				damage *= 3; // cost of original damage + cost of mana + cost of DOT
 			}
@@ -246,7 +248,7 @@ namespace
 				damageMonsters();
 
 				atc.firingDelay += firingPeriod;
-			}, gameEntities(), false);
+				}, gameEntities(), false);
 		}
 	};
 

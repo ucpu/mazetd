@@ -23,6 +23,7 @@ namespace
 	void registerEntityComponents(EntityManager *man)
 	{
 		man->defineComponent(NameComponent());
+		man->defineComponent(DescriptionComponent());
 		man->defineComponent(BuildingComponent());
 		man->defineComponent(TrapComponent());
 		man->defineComponent(PivotComponent());
