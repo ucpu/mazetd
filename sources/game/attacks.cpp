@@ -248,7 +248,7 @@ namespace
 				damageMonsters();
 
 				atc.firingDelay += firingPeriod;
-				}, gameEntities(), false);
+			}, gameEntities(), false);
 		}
 	};
 

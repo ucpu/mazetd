@@ -21,7 +21,7 @@ namespace
 		struct ChunkMaterial : public ChunkUpload
 		{
 			Maker *maker = nullptr;
-			
+
 			void makeMaterial(const Vec2i &xy, const Vec3i &ids, const Vec3 &weights)
 			{
 				const Vec3 pos3 = mesh->positionAt(ids, weights);

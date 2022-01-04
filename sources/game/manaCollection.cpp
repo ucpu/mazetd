@@ -8,7 +8,7 @@ namespace
 	void placeNewMana()
 	{
 		const uint32 totalTiles = globalGrid->resolution[0] * globalGrid->resolution[1];
-		uint32 placing = 10;
+		uint32 placing = 10; // populates up to 300 tiles per second -> up to 3000 mana per second
 		for (uint32 attempt = 0; attempt < 100; attempt++)
 		{
 			const uint32 tile = randomRange(0u, totalTiles);

@@ -76,10 +76,10 @@ namespace cage
 struct MonsterBaseProperties
 {
 	StringLiteral name;
+	sint64 life = 1000;
 	uint32 money = 0;
 	uint32 damage = 0;
-	sint32 life = 1000;
-	Real speed = 1;
+	Real speed = 1; // tiles per second
 	DamageTypeFlags immunities = DamageTypeFlags::None;
 	MonsterClassFlags monsterClass = MonsterClassFlags::None;
 };
@@ -188,7 +188,7 @@ struct ManaStorageComponent
 
 struct ManaDistributorComponent
 {
-	uint32 transferLimit = 100;
+	uint32 transferLimit = 100; // 5 times per second
 	Real range = 5;
 };
 

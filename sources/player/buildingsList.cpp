@@ -74,16 +74,16 @@ namespace
 				e->value<TrapComponent>();
 				e->value<CostComponent>().cost = 20;
 				DamageComponent &d = e->value<DamageComponent>();
-				d.damage = 10;
+				d.damage = 2;
 				d.overTime = 6;
-				d.firingPeriod = 6;
-				d.firingRange = 0.5;
-				d.splashRadius = 0.25;
+				d.firingPeriod = 6; // 6 shots per second
+				d.firingRange = 0.6;
 				d.invalidClasses = MonsterClassFlags::Flyer;
 				d.acceptMods = false;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/trap-spikes.object");
 				e->value<DescriptionComponent>().description = "Placed in monsters way, damages monsters walking over it.\nCannot attack flying monsters.\nCannot use any bonuses, targeting, or elements.";
-				// damage per dollar: 0.5
+				// dps: 10
+				// dps per dollar: 0.5
 			}
 
 			// towers
@@ -94,12 +94,35 @@ namespace
 				e->value<PivotComponent>().elevation = 2.1;
 				e->value<CostComponent>().cost = 50;
 				DamageComponent &d = e->value<DamageComponent>();
-				d.damage = 10;
-				d.baseManaCost = 2;
+				d.firingPeriod = 60; // 0.5 shots per second
+				d.damage = 25;
+				d.baseManaCost = 25;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-light.object");
-				e->value<DescriptionComponent>().description = "Cheapest tower with medium damage per dollar ratio but worst mana efficiency.";
-				// damage per dollar: 0.2
-				// damage per mana: 5
+				e->value<DescriptionComponent>().description = "Cheapest tower.";
+				// dps: 12.5
+				// dps per dollar: 0.25
+				// damage per mana: 1
+				// mana per second: 12.5
+			}
+
+			{
+				Entity *e = generate(1, "Spiritual");
+				e->value<BuildingComponent>();
+				e->value<PivotComponent>().elevation = 2.8;
+				e->value<CostComponent>().cost = 500;
+				DamageComponent &d = e->value<DamageComponent>();
+				d.damage = 100;
+				d.baseManaCost = 10;
+				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-heavy.object");
+				e->value<DescriptionComponent>().description = "Tower with best mana efficiency.";
+				// dps: 100
+				// dps per dollar: 0.2
+				// damage per mana: 10
+				// mana per second: 10
+
+				// balance estimation:
+				// 20 towers, 5 mana relays, 2 capacitors, 1 collector, 2 elements, 2 bonuses
+				// 12'000 dps, 14'000 money, 200 mana per second
 			}
 
 			{
@@ -108,26 +131,19 @@ namespace
 				e->value<PivotComponent>().elevation = 2.6;
 				e->value<CostComponent>().cost = 1000;
 				DamageComponent &d = e->value<DamageComponent>();
-				d.damage = 300;
-				d.baseManaCost = 30;
-				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-medium.object");
-				e->value<DescriptionComponent>().description = "Tower with best damage per dollar ratio and average mana efficiency.";
-				// damage per dollar: 0.3
-				// damage per mana: 10
-			}
-
-			{
-				Entity *e = generate(1, "Spiritual");
-				e->value<BuildingComponent>();
-				e->value<PivotComponent>().elevation = 2.8;
-				e->value<CostComponent>().cost = 1500;
-				DamageComponent &d = e->value<DamageComponent>();
+				d.firingPeriod = 15; // 2 shots per second
 				d.damage = 150;
-				d.baseManaCost = 10;
-				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-heavy.object");
-				e->value<DescriptionComponent>().description = "Tower with best mana efficiency but worst damage per dollar ratio.";
-				// damage per dollar: 0.1
-				// damage per mana: 15
+				d.baseManaCost = 50;
+				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-medium.object");
+				e->value<DescriptionComponent>().description = "Tower with best DPS per dollar.";
+				// dps: 300
+				// dps per dollar: 0.3
+				// damage per mana: 3
+				// mana per second: 100
+
+				// balance estimation:
+				// 20 towers, 2 bonus
+				// 12'000 dps, 21'000 money
 			}
 
 			// bonuses
@@ -142,8 +158,8 @@ namespace
 			static constexpr BonusData bonusData[] = {
 				{ "Damage", "Affected towers have doubled damage and mana cost.", BonusTypeEnum::Damage, HashString("mazetd/buildings/bonus-damage.object")},
 				{ "Firing Rate", "Affected towers have doubled rate of fire.", BonusTypeEnum::FiringRate, HashString("mazetd/buildings/bonus-firingRate.object") },
-				{ "Firing Range", "Affected towers have increased range of fire.", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
-				{ "Splash Radius", "Affected towers have increased splash radius, possibly hitting multiple monsters simultaneously. Mana cost is tripled.", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
+				{ "Firing Range", "Affected towers have range of fire increased by 4 tiles.", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
+				{ "Splash Radius", "Affected towers have splash radius increased by 2 tiles. Mana cost is tripled.", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
 				{ "Intense Utility", "Affected tower's damage over time is applied 5 times faster.", BonusTypeEnum::IntenseDot, HashString("mazetd/buildings/bonus-intenseDot.object") },
 				{ "Mana Allowance", "Affected towers have halved mana cost.", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
 			};
@@ -182,7 +198,7 @@ namespace
 				Entity *e = generate(3, it.name);
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.6;
-				e->value<CostComponent>().cost = 500;
+				e->value<CostComponent>().cost = 200;
 				e->value<ModTargetingComponent>().targeting = it.targeting;
 				e->value<GuiModelComponent>().model = it.model;
 				e->value<DescriptionComponent>().description = it.description;
@@ -193,14 +209,15 @@ namespace
 			struct ElementsData
 			{
 				StringLiteral name;
+				StringLiteral description;
 				DamageTypeEnum element = DamageTypeEnum::Total;
 				uint32 model = 0;
 			};
 			static constexpr ElementsData elementsData[] = {
-				{ "Fire", DamageTypeEnum::Fire, HashString("mazetd/buildings/augment-fire.object") },
-				{ "Water", DamageTypeEnum::Water, HashString("mazetd/buildings/augment-water.object") },
-				{ "Poison", DamageTypeEnum::Poison, HashString("mazetd/buildings/augment-poison.object") },
-				{ "Magic", DamageTypeEnum::Magic, HashString("mazetd/buildings/augment-magic.object") },
+				{ "Fire", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to fire, which hastens monsters movement.\nFire is nullified by water.\nThe towers require mana to be able to fire.", DamageTypeEnum::Fire, HashString("mazetd/buildings/augment-fire.object") },
+				{ "Water", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to water, which slows down the monsters.\nWater is nullified by fire.\nThe towers require mana to be able to fire.", DamageTypeEnum::Water, HashString("mazetd/buildings/augment-water.object") },
+				{ "Poison", "Affected tower's damage is tripled and applied over time.\nThe damage poisons the monsters.\nPoisoned monsters take triple damage from physical attacks.\nPoison is nullified by magic.\nThe towers require mana to be able to fire.", DamageTypeEnum::Poison, HashString("mazetd/buildings/augment-poison.object") },
+				{ "Magic", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to magic.\nMonsters affected by magic take triple damage from non-physical attacks.\nMagic is dispelled by poison.\nThe towers require mana to be able to fire.", DamageTypeEnum::Magic, HashString("mazetd/buildings/augment-magic.object") },
 			};
 
 			for (const auto &it : elementsData)
@@ -211,7 +228,7 @@ namespace
 				e->value<CostComponent>().cost = 500;
 				e->value<ModElementComponent>().element = it.element;
 				e->value<GuiModelComponent>().model = it.model;
-				e->value<DescriptionComponent>().description = "Affected tower's damage is tripled and applied over time.\nThe towers require mana to be able to fire.";
+				e->value<DescriptionComponent>().description = it.description;
 			}
 
 			// mana
@@ -225,10 +242,10 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr ManaData manaData[] = {
-				{ "Waterwheel Collector", "Collects mana from surrounding water tiles.\nHas double rate as Sunbloom.", ManaCollectorTypeEnum::Water, 10, HashString("mazetd/buildings/mana-collector-water.object")},
-				{ "Sunbloom Collector", "Collects mana from surrounding grass tiles.", ManaCollectorTypeEnum::Sun, 5, HashString("mazetd/buildings/mana-collector-sun.object") },
-				{ "Windmill Collector", "Collects mana from surrounding dirt tiles.", ManaCollectorTypeEnum::Wind, 5, HashString("mazetd/buildings/mana-collector-wind.object") },
-				{ "Snowmelt Collector", "Collects mana from surrounding snow tiles.\nHas double rate as Sunbloom.", ManaCollectorTypeEnum::Snow, 10, HashString("mazetd/buildings/mana-collector-snow.object") },
+				{ "Waterwheel Collector", "Collects mana from surrounding water tiles.", ManaCollectorTypeEnum::Water, 15, HashString("mazetd/buildings/mana-collector-water.object")},
+				{ "Sunbloom Collector", "Collects mana from surrounding grass tiles.", ManaCollectorTypeEnum::Sun, 10, HashString("mazetd/buildings/mana-collector-sun.object") },
+				{ "Windmill Collector", "Collects mana from surrounding dirt tiles.", ManaCollectorTypeEnum::Wind, 10, HashString("mazetd/buildings/mana-collector-wind.object") },
+				{ "Snowmelt Collector", "Collects mana from surrounding snow tiles.", ManaCollectorTypeEnum::Snow, 15, HashString("mazetd/buildings/mana-collector-snow.object") },
 			};
 
 			for (const auto &it : manaData)
@@ -249,7 +266,7 @@ namespace
 				Entity *e = generate(5, "Mana Relay");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.5;
-				e->value<CostComponent>().cost = 250;
+				e->value<CostComponent>().cost = 100;
 				e->value<ManaStorageComponent>();
 				e->value<ManaReceiverComponent>();
 				e->value<ManaDistributorComponent>().range = 10;

@@ -191,6 +191,14 @@ void updateSelectedBuildingScreen()
 			e->value<GuiLabelComponent>();
 			e->value<GuiTextComponent>().value = Stringizer() + "Base damage: " + sb->value<DamageComponent>().damage;
 		}
+		{ // dps
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = 601;
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + "Base damage per second: " + (30.f * sb->value<DamageComponent>().damage / sb->value<DamageComponent>().firingPeriod);
+		}
 		{ // baseManaCost
 			Entity *e = ents->createUnique();
 			GuiParentComponent &pp = e->value<GuiParentComponent>();
@@ -199,6 +207,17 @@ void updateSelectedBuildingScreen()
 			e->value<GuiLabelComponent>();
 			e->value<GuiTextComponent>().value = Stringizer() + "Base mana cost: " + sb->value<DamageComponent>().baseManaCost;
 		}
+	}
+
+	// mana collector
+	if (sb->has<ManaCollectorComponent>())
+	{
+		Entity *e = ents->createUnique();
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 601;
+		pp.order = index++;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + "Harvested mana multiplier: " + sb->value<ManaCollectorComponent>().collectAmount;
 	}
 
 	// mana storage
