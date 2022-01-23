@@ -121,8 +121,8 @@ namespace
 				// mana per second: 10
 
 				// balance estimation:
-				// 20 towers, 5 mana relays, 2 capacitors, 1 collector, 2 elements, 2 bonuses
-				// 12'000 dps, 14'000 money, 200 mana per second
+				// 20 towers, 5 mana relays, 2 capacitors, 3 collector, 2 elements, 2 bonuses
+				// 12'000 dps, 15'000 money, 200 mana per second
 			}
 
 			{
@@ -142,7 +142,7 @@ namespace
 				// mana per second: 100
 
 				// balance estimation:
-				// 20 towers, 2 bonus
+				// 20 towers, 2 bonuses
 				// 12'000 dps, 21'000 money
 			}
 
