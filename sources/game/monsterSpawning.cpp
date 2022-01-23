@@ -279,6 +279,13 @@ void SpawningGroup::spawnOne()
 	SkeletalAnimationComponent &a = f->value<SkeletalAnimationComponent>();
 	a.name = animationName;
 	a.offset = randomRange(0.f, 1e6f);
+
+	if (bossIndex-- == 0)
+	{
+		mo.monsterClass |= MonsterClassFlags::Boss;
+		mo.life *= 2;
+		f->value<TransformComponent>().scale = 1.5;
+	}
 }
 
 void SpawningGroup::process()
@@ -329,6 +336,7 @@ void SpawningGroup::generate()
 		immunities = DamageTypeFlags::None;
 	spawnPointsBits = shortestSpawnPointBits();
 	spawnCount = interpolate(30, 20, normWave);
+	bossIndex = randomRange(0u, spawnCount);
 	money = interpolate(500, 3'000, normWave) / spawnCount; // total of 80'000 for 45 waves
 	damage = interpolate(3, 10, normWave);
 	speed = interpolate(2, 10, pow(normWave, 2)) * speed; // 5 minutes for 3000 tiles; estimated 2 hours for 45 waves

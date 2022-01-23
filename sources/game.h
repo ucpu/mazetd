@@ -97,6 +97,7 @@ struct SpawningGroup : public MonsterSpawningProperties
 	uint32 spawnSimultaneously = 1;
 	uint32 spawnPeriod = 15;
 	uint32 spawnDelay = 0;
+	sint32 bossIndex = m;
 	bool checkingMonstersCounts = true;
 
 	static inline uint32 waveIndex = 0;
