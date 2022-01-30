@@ -7,27 +7,24 @@ namespace
 {
 	void placeNewMana()
 	{
-		// populates up to 60 tiles per second -> up to 600 mana per second
+		// populates up to 30 tiles per second -> up to 300 mana per second
 		const uint32 totalTiles = globalGrid->resolution[0] * globalGrid->resolution[1];
-		for (uint32 placed = 0; placed < 2; placed++)
+		uint32 occupied = 0;
+		while (true)
 		{
-			uint32 occupied = 0;
-			while (true)
+			const uint32 tile = randomRange(0u, totalTiles);
+			TileFlags &f = globalGrid->flags[tile];
+			if (any(f & TileFlags::Invalid))
+				continue;
+			if (any(f & TileFlags::Mana))
 			{
-				const uint32 tile = randomRange(0u, totalTiles);
-				TileFlags &f = globalGrid->flags[tile];
-				if (any(f & TileFlags::Invalid))
+				if (++occupied == 3) // several attempts -> player needs to cover only portion of the map to collect most of the mana
+					break;
+				else
 					continue;
-				if (any(f & TileFlags::Mana))
-				{
-					if (++occupied == 3) // several attempts -> player needs to cover only portion of the map to collect most of the mana
-						break;
-					else
-						continue;
-				}
-				f |= TileFlags::Mana;
-				break;
 			}
+			f |= TileFlags::Mana;
+			break;
 		}
 	}
 

@@ -122,7 +122,7 @@ namespace
 
 				// balance estimation:
 				// 20 towers, 5 mana relays, 2 capacitors, 3 collector, 2 elements, 2 bonuses
-				// 12'000 dps, 15'000 money, 200 mana per second
+				// 12'000 dps (24'000 dps when combining element+magic), 15'000 money, 200 mana per second
 			}
 
 			{
@@ -143,7 +143,7 @@ namespace
 
 				// balance estimation:
 				// 20 towers, 2 bonuses
-				// 12'000 dps, 21'000 money
+				// 12'000 dps (24'000 dps when combining physical+poison), 21'000 money
 			}
 
 			// bonuses

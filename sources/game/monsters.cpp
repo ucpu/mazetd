@@ -109,7 +109,7 @@ namespace
 
 		constexpr DamageTypeEnum strengthen = Type == DamageTypeEnum::Physical ? DamageTypeEnum::Poison : DamageTypeEnum::Magic;
 		const bool super = mo.affected(strengthen);
-		mo.life -= super ? dmg * 3 : dmg;
+		mo.life -= super ? dmg * 2 : dmg;
 		dot.damage -= dmg;
 
 		EffectConfig cfg;
@@ -117,7 +117,7 @@ namespace
 		const uint32 cnt = dot.duration > 0 ? 1 : 3;
 		for (uint32 i = 0; i < cnt; i++)
 		{
-			Vec3 d = randomDirection3();
+			const Vec3 d = randomDirection3();
 			cfg.pos2 = cfg.pos1 + d * (super ? 0.5 : 0.3);
 			cfg.type = Type;
 			renderEffect(cfg);

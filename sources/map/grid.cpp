@@ -135,8 +135,8 @@ uint32 Grid::neighborDistance(uint32 a, uint32 b) const
 Holder<Grid> newGrid(Holder<Procedural> procedural)
 {
 	Holder<Grid> g = systemMemory().createHolder<Grid>();
-	g->resolution = Vec2i(141);
-	g->gridOffset = Vec2i(70);
+	g->resolution = Vec2i(101);
+	g->gridOffset = Vec2i(50);
 	const uint32 total = g->resolution[0] * g->resolution[1];
 	{
 		PointerRangeHolder<const sint16> vec;
@@ -164,7 +164,7 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 				vec[i] |= TileFlags::Snow;
 			if (maxSlope(+g, i) > slopeThreshold)
 				vec[i] = TileFlags::Invalid;
-			if (lengthSquared(Vec2(g->position(i))) > sqr(55))
+			if (lengthSquared(Vec2(g->position(i))) > sqr(45))
 				vec[i] = TileFlags::Invalid;
 		}
 		g->flags = vec;

@@ -314,15 +314,16 @@ void SpawningGroup::process()
 void SpawningGroup::generate()
 {
 	// assumed balance estimation:
-	// map has 5000 playable tiles
-	// maximum shortest path is 3750 tiles long (75 % of playable tiles)
+	// map has 3000 playable tiles
+	// maximum shortest path is 2250 tiles long (75 % of playable tiles)
 	// naive build has 0.25 dps per dollar (using inefficient towers)
 	// simple build has 0.5 dps per dollar (using efficient towers but no mana)
 	// intermediate build has 1 dps per dollar (using mana but not combining elements)
-	// optimized build has 3 dps per dollar (using mana and efficiently combining elements)
-	// collecting maximum 600 mana per second
-	// maximum 108'000 dps using mana in optimized build
-	// maximum 120'000 dps (using 80'000 money)
+	// optimized build has 2 dps per dollar (using mana and efficiently combining elements)
+	// collecting maximum 300 mana per second
+	// estimated 50'000 dps using elements+magic in optimized build costing 30'000 money
+	// estimated 50'000 dps using physical in optimized build costing 42'000 money
+	// 2000 walls costing 10'000 money
 
 	const uint32 monsterVarietes = numeric_cast<uint32>(monsterSpawningProperties.size());
 	const uint32 totalWaves = monsterVarietes * 3;
@@ -335,12 +336,12 @@ void SpawningGroup::generate()
 	if (waveIndex < monsterVarietes)
 		immunities = DamageTypeFlags::None;
 	spawnPointsBits = shortestSpawnPointBits();
-	spawnCount = interpolate(30, 20, normWave);
+	spawnCount = interpolate(30, 25, normWave);
 	bossIndex = randomRange(0u, spawnCount);
-	money = interpolate(500, 3'000, normWave) / spawnCount; // total of 80'000 for 45 waves
+	money = interpolate(500, 5'000, normWave) / spawnCount; // total of 100'000 for 45 waves
 	damage = interpolate(3, 10, normWave);
-	speed = interpolate(2, 10, pow(normWave, 2)) * speed; // 5 minutes for 3000 tiles; estimated 2 hours for 45 waves
-	life = interpolate((sint64)1'000, (sint64)10'000'000, pow(waveIndex / Real(totalWaves - 1), 3)) * life / 1000 / spawnCount;
+	speed = interpolate(2, 5, normWave) * speed; // 5 minutes for 1500 tiles
+	life = interpolate((sint64)1'000, (sint64)1'000'000, pow(waveIndex / Real(totalWaves - 1), 1.5)) * life / 1000 / spawnCount;
 
 	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();

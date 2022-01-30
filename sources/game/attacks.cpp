@@ -81,7 +81,7 @@ namespace
 			}
 			std::sort(neighbors.begin(), neighbors.end(), [](const Neighbor &a, const Neighbor &b) {
 				return a.dist2 < b.dist2;
-				});
+			});
 		}
 
 		const Neighbor *closestNeighbor(EntityComponent *comp)

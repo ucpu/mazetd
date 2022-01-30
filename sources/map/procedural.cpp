@@ -57,7 +57,7 @@ namespace
 
 		Real elevation(const Vec2 &pos) override
 		{
-			const Real base = -sqr(max(length(pos) - 40, 0) * 0.2);
+			const Real base = -sqr(max(length(pos) - 30, 0) * 0.2);
 			const Real noise = elevationNoise->evaluate(pos + elevationOffset) * 10;
 			return max(base + noise, -8.5);
 		}
