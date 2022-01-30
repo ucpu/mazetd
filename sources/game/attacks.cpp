@@ -126,13 +126,12 @@ namespace
 			case BonusTypeEnum::FiringRange: firingRange += 4; break;
 			case BonusTypeEnum::SplashRadius: splashRadius += 2; manaCost *= 3; break;
 			case BonusTypeEnum::IntenseDot: overTime /= 5; break;
-			case BonusTypeEnum::ManaDiscount: manaCost /= 2; break;
+			case BonusTypeEnum::ManaDiscount: manaCost /= 3; break;
 			}
 		}
 
 		void filterMonsters()
 		{
-			const DamageTypeFlags dmgFlags = DamageTypeFlags(1u << (uint32)damageType);
 			monsters.clear();
 			for (uint32 n : monstersQuery->result())
 			{
@@ -140,8 +139,6 @@ namespace
 				mo.e = gameEntities()->get(n);
 				mo.p = mo.e->has(compMovement) ? mo.e->value<MovementComponent>(compMovement).position() : mo.e->value<PositionComponent>(compPosition).position();
 				mo.mc = &mo.e->value<MonsterComponent>();
-				if (none(dmgFlags & ~mo.mc->immunities))
-					continue;
 				if (any(invalidClasses & mo.mc->monsterClass))
 					continue;
 				monsters.push_back(mo);

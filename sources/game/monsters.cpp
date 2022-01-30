@@ -98,6 +98,11 @@ namespace
 	template<DamageTypeEnum Type>
 	void applyDot(MonsterComponent &mo, const Vec3 &mpp)
 	{
+		constexpr DamageTypeEnum strengthen = Type == DamageTypeEnum::Physical ? DamageTypeEnum::Poison : DamageTypeEnum::Magic;
+		constexpr DamageTypeFlags dmgFlags = DamageTypeFlags(1u << (uint32)Type);
+		const bool super = mo.affected(strengthen);
+		const bool immune = any(dmgFlags & mo.immunities);
+
 		auto &dot = mo.dots[(uint32)Type];
 		uint32 dmg = dot.damage;
 		if (dot.duration > 1)
@@ -107,10 +112,12 @@ namespace
 		if (dmg == 0)
 			return;
 
-		constexpr DamageTypeEnum strengthen = Type == DamageTypeEnum::Physical ? DamageTypeEnum::Poison : DamageTypeEnum::Magic;
-		const bool super = mo.affected(strengthen);
-		mo.life -= super ? dmg * 2 : dmg;
 		dot.damage -= dmg;
+		if (super)
+			dmg *= 2;
+		if (immune)
+			dmg /= 2;
+		mo.life -= dmg;
 
 		EffectConfig cfg;
 		cfg.pos1 = mpp;

@@ -121,7 +121,7 @@ namespace
 				// mana per second: 10
 
 				// balance estimation:
-				// 20 towers, 5 mana relays, 2 capacitors, 3 collector, 2 elements, 2 bonuses
+				// 20 towers, 5 mana relays, 1 capacitors, 4 collectors, 2 elements, 2 bonuses
 				// 12'000 dps (24'000 dps when combining element+magic), 15'000 money, 200 mana per second
 			}
 
@@ -161,7 +161,7 @@ namespace
 				{ "Firing Range", "Affected towers have range of fire increased by 4 tiles.", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
 				{ "Splash Radius", "Affected towers have splash radius increased by 2 tiles. Mana cost is tripled.", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
 				{ "Intense Utility", "Affected tower's damage over time is applied 5 times faster.", BonusTypeEnum::IntenseDot, HashString("mazetd/buildings/bonus-intenseDot.object") },
-				{ "Mana Allowance", "Affected towers have halved mana cost.", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
+				{ "Mana Allowance", "Affected towers have one third mana cost.", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
 			};
 
 			for (const auto &it : bonusData)
@@ -216,8 +216,8 @@ namespace
 			static constexpr ElementsData elementsData[] = {
 				{ "Fire", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to fire, which hastens monsters movement.\nFire is nullified by water.\nThe towers require mana to be able to fire.", DamageTypeEnum::Fire, HashString("mazetd/buildings/augment-fire.object") },
 				{ "Water", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to water, which slows down the monsters.\nWater is nullified by fire.\nThe towers require mana to be able to fire.", DamageTypeEnum::Water, HashString("mazetd/buildings/augment-water.object") },
-				{ "Poison", "Affected tower's damage is tripled and applied over time.\nThe damage poisons the monsters.\nPoisoned monsters take triple damage from physical attacks.\nPoison is nullified by magic.\nThe towers require mana to be able to fire.", DamageTypeEnum::Poison, HashString("mazetd/buildings/augment-poison.object") },
-				{ "Magic", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to magic.\nMonsters affected by magic take triple damage from non-physical attacks.\nMagic is dispelled by poison.\nThe towers require mana to be able to fire.", DamageTypeEnum::Magic, HashString("mazetd/buildings/augment-magic.object") },
+				{ "Poison", "Affected tower's damage is tripled and applied over time.\nThe damage poisons the monsters.\nPoisoned monsters take double damage from physical attacks.\nPoison is nullified by magic.\nThe towers require mana to be able to fire.", DamageTypeEnum::Poison, HashString("mazetd/buildings/augment-poison.object") },
+				{ "Magic", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to magic.\nMonsters affected by magic take double damage from non-physical attacks.\nMagic is dispelled by poison.\nThe towers require mana to be able to fire.", DamageTypeEnum::Magic, HashString("mazetd/buildings/augment-magic.object") },
 			};
 
 			for (const auto &it : elementsData)
@@ -242,10 +242,10 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr ManaData manaData[] = {
-				{ "Waterwheel Collector", "Collects mana from surrounding water tiles.", ManaCollectorTypeEnum::Water, 15, HashString("mazetd/buildings/mana-collector-water.object")},
-				{ "Sunbloom Collector", "Collects mana from surrounding grass tiles.", ManaCollectorTypeEnum::Sun, 10, HashString("mazetd/buildings/mana-collector-sun.object") },
-				{ "Windmill Collector", "Collects mana from surrounding dirt tiles.", ManaCollectorTypeEnum::Wind, 10, HashString("mazetd/buildings/mana-collector-wind.object") },
-				{ "Snowmelt Collector", "Collects mana from surrounding snow tiles.", ManaCollectorTypeEnum::Snow, 15, HashString("mazetd/buildings/mana-collector-snow.object") },
+				{ "Waterwheel Collector", "Collects mana from surrounding water tiles.", ManaCollectorTypeEnum::Water, 10, HashString("mazetd/buildings/mana-collector-water.object")},
+				{ "Sunbloom Collector", "Collects mana from surrounding grass tiles.", ManaCollectorTypeEnum::Sun, 5, HashString("mazetd/buildings/mana-collector-sun.object") },
+				{ "Windmill Collector", "Collects mana from surrounding dirt tiles.", ManaCollectorTypeEnum::Wind, 5, HashString("mazetd/buildings/mana-collector-wind.object") },
+				{ "Snowmelt Collector", "Collects mana from surrounding snow tiles.", ManaCollectorTypeEnum::Snow, 10, HashString("mazetd/buildings/mana-collector-snow.object") },
 			};
 
 			for (const auto &it : manaData)

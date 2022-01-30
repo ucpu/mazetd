@@ -320,9 +320,9 @@ void SpawningGroup::generate()
 	// simple build has 0.5 dps per dollar (using efficient towers but no mana)
 	// intermediate build has 1 dps per dollar (using mana but not combining elements)
 	// optimized build has 2 dps per dollar (using mana and efficiently combining elements)
-	// collecting maximum 300 mana per second
-	// estimated 50'000 dps using elements+magic in optimized build costing 30'000 money
-	// estimated 50'000 dps using physical in optimized build costing 42'000 money
+	// collecting maximum 150 mana per second
+	// estimated 50'000 dps using elements+magic in optimized build costing 30'000 money (consumes 400 mana per second)
+	// estimated 50'000 dps using physical+poison in optimized build costing 45'000 money
 	// 2000 walls costing 10'000 money
 
 	const uint32 monsterVarietes = numeric_cast<uint32>(monsterSpawningProperties.size());
@@ -341,7 +341,7 @@ void SpawningGroup::generate()
 	money = interpolate(500, 5'000, normWave) / spawnCount; // total of 100'000 for 45 waves
 	damage = interpolate(3, 10, normWave);
 	speed = interpolate(2, 5, normWave) * speed; // 5 minutes for 1500 tiles
-	life = interpolate((sint64)1'000, (sint64)1'000'000, pow(waveIndex / Real(totalWaves - 1), 1.5)) * life / 1000 / spawnCount;
+	life = interpolate((sint64)1'000, (sint64)1'000'000, pow(waveIndex / Real(totalWaves - 1), 1.7)) * life / 1000 / spawnCount;
 
 	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();
