@@ -30,7 +30,7 @@ enum class DamageTypeFlags
 enum class MonsterClassFlags
 {
 	None = 0,
-	Flyer = 1u << 0,
+	Flier = 1u << 0,
 	Boss = 1u << 1,
 };
 
@@ -80,7 +80,7 @@ struct MonsterBaseProperties
 	uint32 money = 0;
 	uint32 damage = 0;
 	Real speed = 1; // tiles per second
-	DamageTypeFlags immunities = DamageTypeFlags::None;
+	DamageTypeFlags resistances = DamageTypeFlags::None;
 	MonsterClassFlags monsterClass = MonsterClassFlags::None;
 };
 

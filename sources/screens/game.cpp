@@ -288,7 +288,7 @@ void updateSpawningMonsterPropertiesScreen()
 			StringLiteral name;
 		};
 		constexpr const Pair pairs[] = {
-			Pair{ MonsterClassFlags::Flyer, "Flyer" },
+			Pair{ MonsterClassFlags::Flier, "Flier" },
 			Pair{ MonsterClassFlags::Boss, "Boss" },
 		};
 		for (const auto &it : pairs)
@@ -296,15 +296,15 @@ void updateSpawningMonsterPropertiesScreen()
 				txt.value += Stringizer() + " " + String(it.name);
 	}
 
-	if (mo.immunities != DamageTypeFlags::None)
-	{ // immunities
+	if (mo.resistances != DamageTypeFlags::None)
+	{ // resistances
 		Entity *e = ents->createUnique();
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
 		e->value<GuiLabelComponent>();
 		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Immunities:";
+		txt.value = "Resistances:";
 		struct Pair
 		{
 			DamageTypeFlags flag = DamageTypeFlags::None;
@@ -318,17 +318,17 @@ void updateSpawningMonsterPropertiesScreen()
 			Pair{ DamageTypeFlags::Magic, "Magic" },
 		};
 		for (const auto &it : pairs)
-			if (any(mo.immunities & it.flag))
+			if (any(mo.resistances & it.flag))
 				txt.value += Stringizer() + " " + String(it.name);
 	}
 
-	{ // amount
+	{ // count
 		Entity *e = ents->createUnique();
 		GuiParentComponent &pp = e->value<GuiParentComponent>();
 		pp.parent = 501;
 		pp.order = index++;
 		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Amount: " + (mo.spawnCount * mo.spawnSimultaneously);
+		e->value<GuiTextComponent>().value = Stringizer() + "Count: " + (mo.spawnCount * mo.spawnSimultaneously);
 	}
 
 	{ // life

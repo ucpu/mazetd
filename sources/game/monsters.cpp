@@ -101,7 +101,7 @@ namespace
 		constexpr DamageTypeEnum strengthen = Type == DamageTypeEnum::Physical ? DamageTypeEnum::Poison : DamageTypeEnum::Magic;
 		constexpr DamageTypeFlags dmgFlags = DamageTypeFlags(1u << (uint32)Type);
 		const bool super = mo.affected(strengthen);
-		const bool immune = any(dmgFlags & mo.immunities);
+		const bool immune = any(dmgFlags & mo.resistances);
 
 		auto &dot = mo.dots[(uint32)Type];
 		uint32 dmg = dot.damage;

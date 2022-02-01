@@ -78,7 +78,7 @@ namespace
 				d.overTime = 6;
 				d.firingPeriod = 6; // 6 shots per second
 				d.firingRange = 0.6;
-				d.invalidClasses = MonsterClassFlags::Flyer;
+				d.invalidClasses = MonsterClassFlags::Flier;
 				d.acceptMods = false;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/trap-spikes.object");
 				e->value<DescriptionComponent>().description = "Placed in monsters way, damages monsters walking over it.\nCannot attack flying monsters.\nCannot use any bonuses, targeting, or elements.";
