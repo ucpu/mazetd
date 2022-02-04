@@ -69,8 +69,8 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Frog.object");
 			msp.animationName = HashString("mazetd/monsters/Frog.glb?Frog_Jump");
 			msp.resistances = DamageTypeFlags::Water;
-			msp.life *= 0.85;
-			msp.speed *= 0.95;
+			msp.life *= 0.9;
+			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -90,7 +90,7 @@ namespace
 			msp.name = "Spider";
 			msp.modelName = HashString("mazetd/monsters/Spider.object");
 			msp.animationName = HashString("mazetd/monsters/Spider.glb?Spider_Walk");
-			msp.life *= 0.9;
+			msp.life *= 1;
 			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -102,8 +102,8 @@ namespace
 			msp.animationName = HashString("mazetd/monsters/Wasp.glb?Wasp_Flying");
 			msp.resistances = DamageTypeFlags::Poison;
 			msp.monsterClass = MonsterClassFlags::Flier;
-			msp.life *= 0.85;
-			msp.speed *= 1.05;
+			msp.life *= 0.9;
+			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -113,8 +113,8 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Stegosaurus.object");
 			msp.animationName = HashString("mazetd/monsters/Stegosaurus.glb?Stegosaurus_Walk");
 			msp.resistances = DamageTypeFlags::Fire;
-			msp.life *= 1.25;
-			msp.speed *= 0.95;
+			msp.life *= 1.1;
+			msp.speed *= 1;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -125,7 +125,7 @@ namespace
 			msp.animationName = HashString("mazetd/monsters/Rat.glb?Rat_Walk");
 			msp.resistances = DamageTypeFlags::Water;
 			msp.life *= 0.9;
-			msp.speed *= 1.1;
+			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -134,8 +134,8 @@ namespace
 			msp.name = "Velociraptor";
 			msp.modelName = HashString("mazetd/monsters/Velociraptor.object");
 			msp.animationName = HashString("mazetd/monsters/Velociraptor.glb?Velociraptor_Walk");
-			msp.life *= 1.25;
-			msp.speed *= 1.25;
+			msp.life *= 1.2;
+			msp.speed *= 1.15;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -145,7 +145,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Slime.object");
 			msp.animationName = HashString("mazetd/monsters/Slime.glb?Slime_Idle");
 			msp.resistances = DamageTypeFlags::Fire | DamageTypeFlags::Magic;
-			msp.life *= 1;
+			msp.life *= 0.8;
 			msp.speed *= 0.8;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -156,7 +156,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Triceratops.object");
 			msp.animationName = HashString("mazetd/monsters/Triceratops.glb?Triceratops_Walk");
 			msp.resistances = DamageTypeFlags::Poison;
-			msp.life *= 1.25;
+			msp.life *= 1.1;
 			msp.speed *= 1;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -168,7 +168,7 @@ namespace
 			msp.animationName = HashString("mazetd/monsters/Bat.glb?Bat_Flying");
 			msp.monsterClass = MonsterClassFlags::Flier;
 			msp.life *= 1;
-			msp.speed *= 0.95;
+			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -178,8 +178,8 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Apatosaurus.object");
 			msp.animationName = HashString("mazetd/monsters/Apatosaurus.glb?Apatosaurus_Walk");
 			msp.resistances = DamageTypeFlags::Physical;
-			msp.life *= 1.5;
-			msp.speed *= 0.8;
+			msp.life *= 1.1;
+			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -189,8 +189,8 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Skeleton.object");
 			msp.animationName = HashString("mazetd/monsters/Skeleton.glb?Skeleton_Running");
 			msp.resistances = DamageTypeFlags::Physical | DamageTypeFlags::Magic;
-			msp.life *= 1.15;
-			msp.speed *= 0.95;
+			msp.life *= 0.8;
+			msp.speed *= 0.8;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -200,8 +200,8 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Parasaurolophus.object");
 			msp.animationName = HashString("mazetd/monsters/Parasaurolophus.glb?Parasaurolophus_Walk");
 			msp.resistances = DamageTypeFlags::Water;
-			msp.life *= 1.25;
-			msp.speed *= 1.1;
+			msp.life *= 1.1;
+			msp.speed *= 1;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -211,8 +211,8 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Trex.object");
 			msp.animationName = HashString("mazetd/monsters/Trex.glb?TRex_Walk");
 			msp.resistances = DamageTypeFlags::Physical;
-			msp.life *= 1.25;
-			msp.speed *= 1.05;
+			msp.life *= 1.1;
+			msp.speed *= 1.1;
 			monsterSpawningProperties.push_back(msp);
 		}
 
@@ -223,8 +223,8 @@ namespace
 			msp.animationName = HashString("mazetd/monsters/Dragon.glb?Dragon_Flying");
 			msp.resistances = DamageTypeFlags::Fire | DamageTypeFlags::Magic;
 			msp.monsterClass = MonsterClassFlags::Flier;
-			msp.life *= 1.5;
-			msp.speed *= 1.15;
+			msp.life *= 1;
+			msp.speed *= 1.2;
 			monsterSpawningProperties.push_back(msp);
 		}
 	}
@@ -320,10 +320,10 @@ void SpawningGroup::generate()
 	// simple build has 0.5 dps per dollar (using efficient towers but no mana)
 	// intermediate build has 1 dps per dollar (using mana but not combining elements)
 	// optimized build has 2 dps per dollar (using mana and efficiently combining elements)
-	// collecting maximum 150 mana per second
+	// collecting maximum 100 mana per second
 	// estimated 50'000 dps using elements+magic in optimized build costing 30'000 money (consumes 400 mana per second)
 	// estimated 50'000 dps using physical+poison in optimized build costing 45'000 money
-	// 2000 walls costing 10'000 money
+	// 1500 walls costing 6'000 money
 
 	const uint32 monsterVarietes = numeric_cast<uint32>(monsterSpawningProperties.size());
 	const uint32 totalWaves = monsterVarietes * 3;
@@ -336,12 +336,12 @@ void SpawningGroup::generate()
 	if (waveIndex < monsterVarietes)
 		resistances = DamageTypeFlags::None;
 	spawnPointsBits = shortestSpawnPointBits();
-	spawnCount = interpolate(30, 25, normWave);
+	spawnCount = interpolate(20, 25, normWave);
 	bossIndex = randomRange(0u, spawnCount);
-	money = interpolate(500, 5'000, normWave) / spawnCount; // total of 100'000 for 45 waves
-	damage = interpolate(3, 10, normWave);
+	money = interpolate(500, 2'500, normWave) / spawnCount; // total of 60'000 for 45 waves (+ some money per time)
+	damage = interpolate(3, 5, normWave);
 	speed = interpolate(2, 5, normWave) * speed; // 5 minutes for 1500 tiles
-	life = interpolate((sint64)1'000, (sint64)1'000'000, pow(waveIndex / Real(totalWaves - 1), 1.7)) * life / 1000 / spawnCount;
+	life = interpolate((sint64)3'000, (sint64)1'500'000, pow(waveIndex / Real(totalWaves - 1), 2)) * life / 1000 / spawnCount;
 
 	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();

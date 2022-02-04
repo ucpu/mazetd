@@ -7,7 +7,10 @@ namespace
 {
 	void placeNewMana()
 	{
-		// populates up to 30 tiles per second -> up to 150 mana per second
+		if ((gameTime % 3) == 0)
+			return;
+
+		// populates up to 20 tiles per second -> up to 100 mana per second
 		const uint32 totalTiles = globalGrid->resolution[0] * globalGrid->resolution[1];
 		uint32 occupied = 0;
 		while (true)

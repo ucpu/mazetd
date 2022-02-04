@@ -64,7 +64,7 @@ namespace
 			{
 				Entity *e = generate(0, "Wall");
 				e->value<BuildingComponent>();
-				e->value<CostComponent>().cost = 5;
+				e->value<CostComponent>().cost = 4;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/wall.object");
 				e->value<DescriptionComponent>().description = "Blocks monsters path, but does not attack.";
 			}
@@ -121,7 +121,7 @@ namespace
 				// mana per second: 10
 
 				// balance estimation:
-				// 20 towers, 5 mana relays, 1 capacitors, 4 collectors, 2 elements, 2 bonuses
+				// 20 towers, 7 mana relays, 2 capacitors, 5 collectors, 2 elements, 2 bonuses
 				// 12'000 dps (24'000 dps when combining element+magic), 15'000 money, 200 mana per second
 			}
 
@@ -198,7 +198,7 @@ namespace
 				Entity *e = generate(3, it.name);
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.6;
-				e->value<CostComponent>().cost = 200;
+				e->value<CostComponent>().cost = 150;
 				e->value<ModTargetingComponent>().targeting = it.targeting;
 				e->value<GuiModelComponent>().model = it.model;
 				e->value<DescriptionComponent>().description = it.description;
@@ -225,7 +225,7 @@ namespace
 				Entity *e = generate(4, it.name);
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.4;
-				e->value<CostComponent>().cost = 500;
+				e->value<CostComponent>().cost = 400;
 				e->value<ModElementComponent>().element = it.element;
 				e->value<GuiModelComponent>().model = it.model;
 				e->value<DescriptionComponent>().description = it.description;
@@ -253,7 +253,7 @@ namespace
 				Entity *e = generate(5, it.name);
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1;
-				e->value<CostComponent>().cost = 500;
+				e->value<CostComponent>().cost = 300;
 				e->value<ManaStorageComponent>();
 				e->value<ManaDistributorComponent>();
 				e->value<ManaCollectorComponent>().type = it.type;

@@ -29,14 +29,14 @@ namespace
 		paths->tile = globalWaypoints->waypoints[0]->tile;
 		paths->update();
 		for (const auto &p : globalWaypoints->waypoints)
-			if (paths->distances[p->tile] == m)
-				return true; // disconnected spawner
-		bool blocked = false;
-		entitiesVisitor([&](const PositionComponent &p, const MonsterComponent &) {
-			if (paths->distances[p.tile] == m)
-				blocked = true; // disconnected monster
-		}, gameEntities(), false);
-		return blocked;
+if (paths->distances[p->tile] == m)
+return true; // disconnected spawner
+bool blocked = false;
+entitiesVisitor([&](const PositionComponent &p, const MonsterComponent &) {
+	if (paths->distances[p.tile] == m)
+		blocked = true; // disconnected monster
+	}, gameEntities(), false);
+return blocked;
 	}
 
 	constexpr TileFlags commonUnbuildable = TileFlags::Invalid | TileFlags::Waypoint | TileFlags::Building | TileFlags::Trap;
@@ -128,6 +128,12 @@ namespace
 		spatialUpdateStructures();
 	}
 
+	uint32 refundValue(Entity *e)
+	{
+		const uint32 c = e->value<CostComponent>().cost;
+		return c < 10 ? c : 8 * c / 10;
+	}
+
 	void clearStructure()
 	{
 		TileFlags &flags = globalGrid->flags[playerCursorTile];
@@ -139,7 +145,7 @@ namespace
 			entitiesVisitor([](Entity *e, const PositionComponent &p, const TrapComponent &) {
 				if (p.tile == playerCursorTile)
 				{
-					playerMoney += 8 * e->value<CostComponent>().cost / 10;
+					playerMoney += refundValue(e);
 					e->destroy();
 				}
 			}, gameEntities(), true);
@@ -153,7 +159,7 @@ namespace
 			entitiesVisitor([](Entity *e, const PositionComponent &p, const BuildingComponent &) {
 				if (p.tile == playerCursorTile)
 				{
-					playerMoney += 8 * e->value<CostComponent>().cost / 10;
+					playerMoney += refundValue(e);
 					e->destroy();
 				}
 			}, gameEntities(), true);

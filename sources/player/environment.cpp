@@ -18,14 +18,23 @@ namespace
 		s.worldSize = Vec3(80);
 	}
 
+	void gameUpdate()
+	{
+		if ((gameTime % 15) == 0)
+			playerMoney += 1;
+	}
+
 	struct Callbacks
 	{
 		EventListener<void()> gameResetListener;
+		EventListener<void()> gameUpdateListener;
 
 		Callbacks()
 		{
 			gameResetListener.attach(eventGameReset());
 			gameResetListener.bind<&gameReset>();
+			gameUpdateListener.attach(eventGameUpdate());
+			gameUpdateListener.bind<&gameUpdate>();
 		}
 	} callbacksInstance;
 }
