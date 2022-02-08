@@ -58,7 +58,6 @@ namespace
 			chunk.material->colorConfig.gammaSpace = GammaSpaceEnum::None;
 			chunk.material->colorConfig.alphaMode = AlphaModeEnum::None;
 			chunk.material->colorConfig.alphaChannelIndex = m;
-			chunk.material->colorConfig.colorChannelsCount = 0;
 			{
 				MeshGenerateTextureConfig cfg;
 				cfg.width = cfg.height = resolution;
