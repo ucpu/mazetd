@@ -64,48 +64,51 @@ namespace
 
 	void graphicsDispatch()
 	{
-		ChunkUpload up;
-		ChunkRender re;
-		if (!chunksUploadQueue.tryPop(up))
-			return;
-
-		if (!up.mesh)
+		while (true)
 		{
+			ChunkUpload up;
+			ChunkRender re;
+			if (!chunksUploadQueue.tryPop(up))
+				return;
+
+			if (!up.mesh)
+			{
+				chunksRenderQueue.push(std::move(re));
+				return;
+			}
+
+			{
+				Holder<Texture> tex = newTexture();
+				tex->importImage(+up.albedo);
+				tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
+				tex->wraps(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+				tex->generateMipmaps();
+				re.albedo = engineAssets()->generateUniqueName();
+				engineAssets()->fabricate<AssetSchemeIndexTexture, Texture>(re.albedo, std::move(tex), "chunkAlbedo");
+			}
+
+			{
+				Holder<Texture> tex = newTexture();
+				tex->importImage(+up.material);
+				tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
+				tex->wraps(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+				tex->generateMipmaps();
+				re.material = engineAssets()->generateUniqueName();
+				engineAssets()->fabricate<AssetSchemeIndexTexture, Texture>(re.material, std::move(tex), "chunkMaterial");
+			}
+
+			{
+				Holder<Model> model = newModel();
+				MeshMaterial mat;
+				model->importMesh(+up.mesh, bufferView(mat));
+				model->setTextureName(0, re.albedo);
+				model->setTextureName(1, re.material);
+				re.model = engineAssets()->generateUniqueName();
+				engineAssets()->fabricate<AssetSchemeIndexModel, Model>(re.model, std::move(model), "chunkModel");
+			}
+
 			chunksRenderQueue.push(std::move(re));
-			return;
 		}
-
-		{
-			Holder<Texture> tex = newTexture();
-			tex->importImage(+up.albedo);
-			tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
-			tex->wraps(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-			tex->generateMipmaps();
-			re.albedo = engineAssets()->generateUniqueName();
-			engineAssets()->fabricate<AssetSchemeIndexTexture, Texture>(re.albedo, std::move(tex), "chunkAlbedo");
-		}
-
-		{
-			Holder<Texture> tex = newTexture();
-			tex->importImage(+up.material);
-			tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
-			tex->wraps(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-			tex->generateMipmaps();
-			re.material = engineAssets()->generateUniqueName();
-			engineAssets()->fabricate<AssetSchemeIndexTexture, Texture>(re.material, std::move(tex), "chunkMaterial");
-		}
-
-		{
-			Holder<Model> model = newModel();
-			MeshMaterial mat;
-			model->importMesh(+up.mesh, bufferView(mat));
-			model->setTextureName(0, re.albedo);
-			model->setTextureName(1, re.material);
-			re.model = engineAssets()->generateUniqueName();
-			engineAssets()->fabricate<AssetSchemeIndexModel, Model>(re.model, std::move(model), "chunkModel");
-		}
-
-		chunksRenderQueue.push(std::move(re));
 	}
 
 	std::vector<ChunkRender> renderingChunks;
@@ -119,22 +122,25 @@ namespace
 
 	void engineUpdate()
 	{
-		ChunkRender re;
-		if (!chunksRenderQueue.tryPop(re))
-			return;
-
-		if (re.model == 0)
+		while (true)
 		{
-			removeAllAssets();
-			return;
+			ChunkRender re;
+			if (!chunksRenderQueue.tryPop(re))
+				return;
+
+			if (re.model == 0)
+			{
+				removeAllAssets();
+				return;
+			}
+
+			Entity *e = engineEntities()->createAnonymous();
+			TransformComponent &t = e->value<TransformComponent>();
+			RenderComponent &r = e->value<RenderComponent>();
+			r.object = re.model;
+
+			renderingChunks.push_back(std::move(re));
 		}
-
-		Entity *e = engineEntities()->createAnonymous();
-		TransformComponent &t = e->value<TransformComponent>();
-		RenderComponent &r = e->value<RenderComponent>();
-		r.object = re.model;
-
-		renderingChunks.push_back(std::move(re));
 	}
 
 	void engineFinish()
