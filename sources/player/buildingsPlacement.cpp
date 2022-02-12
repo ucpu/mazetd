@@ -29,14 +29,14 @@ namespace
 		paths->tile = globalWaypoints->waypoints[0]->tile;
 		paths->update();
 		for (const auto &p : globalWaypoints->waypoints)
-if (paths->distances[p->tile] == m)
-return true; // disconnected spawner
-bool blocked = false;
-entitiesVisitor([&](const PositionComponent &p, const MonsterComponent &) {
-	if (paths->distances[p.tile] == m)
-		blocked = true; // disconnected monster
-	}, gameEntities(), false);
-return blocked;
+			if (paths->distances[p->tile] == m)
+				return true; // disconnected spawner
+		bool blocked = false;
+		entitiesVisitor([&](const PositionComponent &p, const MonsterComponent &) {
+			if (paths->distances[p.tile] == m)
+				blocked = true; // disconnected monster
+		}, gameEntities(), false);
+		return blocked;
 	}
 
 	constexpr TileFlags commonUnbuildable = TileFlags::Invalid | TileFlags::Waypoint | TileFlags::Building | TileFlags::Trap;
