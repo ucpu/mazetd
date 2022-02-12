@@ -1,5 +1,6 @@
 #include <cage-core/entitiesVisitor.h>
 #include <cage-core/spatialStructure.h>
+#include <cage-core/profiling.h>
 
 #include "../game.h"
 #include "../grid.h"
@@ -56,6 +57,8 @@ SpatialQuery *spatialStructures()
 
 void spatialUpdateStructures()
 {
+	ProfilingScope profiling("spatial update structures", "spatial");
+
 	structsData->clear();
 	CAGE_ASSERT(globalGrid);
 

@@ -4,6 +4,7 @@
 #include <cage-core/mesh.h>
 #include <cage-core/image.h>
 #include <cage-core/collider.h>
+#include <cage-core/profiling.h>
 #include <cage-simple/engine.h>
 
 #include "../game.h"
@@ -37,8 +38,11 @@ namespace
 
 		void makeChunk(const Holder<Mesh> &msh)
 		{
+			ProfilingScope profiling("make chunk", "mapgen");
+
 			uint32 resolution = 0;
 			{
+				ProfilingScope profiling("chunk unwrap", "mapgen");
 				MeshUnwrapConfig cfg;
 #ifdef CAGE_DEBUG
 				cfg.texelsPerUnit = 15;
@@ -59,12 +63,14 @@ namespace
 			chunk.material->colorConfig.alphaMode = AlphaModeEnum::None;
 			chunk.material->colorConfig.alphaChannelIndex = m;
 			{
+				ProfilingScope profiling("chunk generate texture", "mapgen");
 				MeshGenerateTextureConfig cfg;
 				cfg.width = cfg.height = resolution;
 				cfg.generator.bind<ChunkMaterial, &ChunkMaterial::makeMaterial>(&chunk);
 				meshGenerateTexture(+msh, cfg);
 			}
 			{
+				ProfilingScope profiling("chunk image dilation", "mapgen");
 #ifdef CAGE_DEBUG
 				constexpr uint32 rounds = 2;
 #else
@@ -95,11 +101,14 @@ namespace
 
 		void makeMeshes()
 		{
+			ProfilingScope profiling("make meshes", "mapgen");
+
 			{ // reset rendering queues and assets
 				ChunkUpload chunk;
 				chunksUploadQueue.push(std::move(chunk));
 			}
 			{
+				ProfilingScope profiling("marching cubes", "mapgen");
 				MarchingCubesCreateConfig cfg;
 				cfg.box = Aabb(Vec3(-70, -15, -70), Vec3(70, 15, 70));
 				cfg.clip = true;
@@ -112,8 +121,12 @@ namespace
 				mc->updateByPosition(Delegate<Real(const Vec3 &)>().bind<Maker, &Maker::sdf>(this));
 				msh = mc->makeMesh();
 			}
-			meshDiscardDisconnected(+msh);
 			{
+				ProfilingScope profiling("discard disconnected", "mapgen");
+				meshDiscardDisconnected(+msh);
+			}
+			{
+				ProfilingScope profiling("mesh simplification", "mapgen");
 				MeshSimplifyConfig cfg;
 				cfg.approximateError = 0.1;
 				cfg.minEdgeLength = 0.1;
@@ -125,42 +138,45 @@ namespace
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "mesh faces: " + msh->facesCount());
 			{
+				ProfilingScope profiling("mesh chunking", "mapgen");
 				MeshChunkingConfig cfg;
 				cfg.maxSurfaceArea = 300;
 				meshes = meshChunking(+msh, cfg);
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "mesh chunks: " + meshes.size());
-			tasksRunBlocking<const Holder<Mesh>>("make chunk", Delegate<void(const Holder<Mesh> &)>().bind<Maker, &Maker::makeChunk>(this), *meshes, -10);
+			tasksRunBlocking<const Holder<Mesh>>("make chunk", Delegate<void(const Holder<Mesh> &)>().bind<Maker, &Maker::makeChunk>(this), *meshes, tasksCurrentPriority());
 		}
 	};
 
-	void mapGenThrEntry()
+	void mapGenTaskEntry(uint32)
 	{
 		CAGE_LOG(SeverityEnum::Info, "mapgen", "generating new map");
-		{
-			CAGE_ASSERT(!globalGrid);
-			Holder<Procedural> procedural = newProcedural();
-			Holder<Grid> grid = newGrid(procedural.share());
-			Holder<Waypoints> paths = newWaypoints(grid.share());
-			Maker maker;
-			maker.procedural = procedural.share();
-			maker.grid = grid.share();
-			maker.makeMeshes();
-			Holder<Collider> collider = newCollider();
-			collider->importMesh(+maker.msh);
-			collider->rebuild();
-			globalCollider = std::move(collider);
-			globalWaypoints = std::move(paths);
-			globalGrid = std::move(grid); // this is last as it is frequently used to detect whether a map is loaded
-		}
+		CAGE_ASSERT(!globalGrid);
+		Holder<Procedural> procedural = newProcedural();
+		Holder<Grid> grid = newGrid(procedural.share());
+		Holder<Waypoints> paths = newWaypoints(grid.share());
+		Maker maker;
+		maker.procedural = procedural.share();
+		maker.grid = grid.share();
+		maker.makeMeshes();
+		Holder<Collider> collider = newCollider();
+		collider->importMesh(+maker.msh);
+		collider->rebuild();
+		globalCollider = std::move(collider);
+		globalWaypoints = std::move(paths);
+		globalGrid = std::move(grid); // this is last as it is frequently used to detect whether a map is loaded
 		CAGE_LOG(SeverityEnum::Info, "mapgen", "map generation done");
 	}
 
-	Holder<Thread> mapGenThread;
+	Holder<AsyncTask> mapGenTask;
 
 	void engineFinish()
 	{
-		mapGenThread.clear();
+		if (mapGenTask)
+		{
+			mapGenTask->wait();
+			mapGenTask.clear();
+		}
 	}
 
 	void gameReset()
@@ -168,7 +184,7 @@ namespace
 		globalGrid.clear();
 		globalWaypoints.clear();
 		globalCollider.clear();
-		mapGenThread = newThread(Delegate<void()>().bind<&mapGenThrEntry>(), "map gen");
+		mapGenTask = tasksRunAsync("map gen task", Delegate<void(uint32)>().bind<&mapGenTaskEntry>());
 	}
 
 	struct Callbacks

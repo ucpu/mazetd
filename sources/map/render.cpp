@@ -2,6 +2,7 @@
 #include <cage-core/serialization.h>
 #include <cage-core/entities.h>
 #include <cage-core/meshMaterial.h>
+#include <cage-core/profiling.h>
 #include <cage-engine/assetStructs.h>
 #include <cage-engine/opengl.h>
 #include <cage-engine/model.h>
@@ -64,7 +65,9 @@ namespace
 
 	void graphicsDispatch()
 	{
-		while (true)
+		ProfilingScope profiling("dispatch chunks", "mapgen");
+
+		for (uint32 iter = 0; iter < 5; iter++)
 		{
 			ChunkUpload up;
 			ChunkRender re;
@@ -78,6 +81,7 @@ namespace
 			}
 
 			{
+				ProfilingScope profiling("dispatch albedo", "mapgen");
 				Holder<Texture> tex = newTexture();
 				tex->importImage(+up.albedo);
 				tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
@@ -88,6 +92,7 @@ namespace
 			}
 
 			{
+				ProfilingScope profiling("dispatch material", "mapgen");
 				Holder<Texture> tex = newTexture();
 				tex->importImage(+up.material);
 				tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
@@ -98,6 +103,7 @@ namespace
 			}
 
 			{
+				ProfilingScope profiling("dispatch model", "mapgen");
 				Holder<Model> model = newModel();
 				MeshMaterial mat;
 				model->importMesh(+up.mesh, bufferView(mat));
@@ -122,7 +128,9 @@ namespace
 
 	void engineUpdate()
 	{
-		while (true)
+		ProfilingScope profiling("update chunks", "mapgen");
+
+		for (uint32 iter = 0; iter < 5; iter++)
 		{
 			ChunkRender re;
 			if (!chunksRenderQueue.tryPop(re))

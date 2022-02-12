@@ -1,4 +1,5 @@
 #include <cage-core/entitiesVisitor.h>
+#include <cage-core/profiling.h>
 #include <cage-engine/scene.h>
 #include <cage-simple/engine.h>
 
@@ -47,6 +48,8 @@ namespace
 
 	void moveMonsters()
 	{
+		ProfilingScope profiling("move monsters", "monsters");
+
 		entitiesVisitor([&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
 			CAGE_ASSERT(po.tile == mv.tileEnd);
 			if (gameTime < mv.timeEnd)
@@ -139,6 +142,8 @@ namespace
 
 	void damageMonsters()
 	{
+		ProfilingScope profiling("damage monsters", "monsters");
+
 		entitiesVisitor([&](Entity *e, MonsterComponent &mo) {
 			const Vec3 mpp = monsterPosition(e);
 			dotsEliminateOposing<DamageTypeEnum::Fire, DamageTypeEnum::Water>(mo);

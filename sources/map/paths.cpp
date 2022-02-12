@@ -1,6 +1,7 @@
 #include <cage-core/tasks.h>
 #include <cage-core/enumerate.h>
 #include <cage-core/pointerRangeHolder.h>
+#include <cage-core/profiling.h>
 
 #include "generate.h"
 
@@ -110,9 +111,11 @@ void Waypoints::update()
 	if (waypoints.empty())
 		return;
 
+	ProfilingScope profiling("update waypoints", "paths");
+
 	CAGE_LOG_DEBUG(SeverityEnum::Info, "paths", "recomputing paths");
-	tasksRunBlocking("paths directions", Delegate<void(uint32)>().bind<Waypoints *, &directionsThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
-	tasksRunBlocking("paths waypoints", Delegate<void(uint32)>().bind<Waypoints *, &waypointThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
+	tasksRunBlocking("paths directions", Delegate<void(uint32)>().bind<Waypoints *, &directionsThreadEntry>(this), numeric_cast<uint32>(waypoints.size()), tasksCurrentPriority());
+	tasksRunBlocking("paths waypoints", Delegate<void(uint32)>().bind<Waypoints *, &waypointThreadEntry>(this), numeric_cast<uint32>(waypoints.size()), tasksCurrentPriority());
 
 	{ // average full path
 		uint32 sum = 0;

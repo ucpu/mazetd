@@ -2,6 +2,7 @@
 #include <cage-core/spatialStructure.h>
 #include <cage-core/geometry.h>
 #include <cage-core/enumerate.h>
+#include <cage-core/profiling.h>
 #include <cage-engine/scene.h>
 
 #include "../game.h"
@@ -327,6 +328,7 @@ namespace
 
 	void gameUpdate()
 	{
+		ProfilingScope profiling("attacks", "monsters");
 		AttacksSolver solver;
 		solver.run();
 	}
