@@ -53,7 +53,8 @@ namespace
 		entitiesVisitor([&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
 			CAGE_ASSERT(po.tile == mv.tileEnd);
 			if (gameTime < mv.timeEnd)
-				return;
+				return; // still moving
+
 			for (uint32 i = 0; i < globalWaypoints->waypoints.size(); i++)
 				if (globalWaypoints->waypoints[i]->tile == po.tile)
 					mo.visitedWaypointsBits |= 1u << i;
@@ -72,14 +73,18 @@ namespace
 			mv.tileStart = po.tile;
 			mv.tileEnd = po.tile = go.tile;
 			mv.timeStart = gameTime;
-			const uint32 distNext = globalGrid->neighborDistance(mv.tileStart, mv.tileEnd);
-			const uint32 timeAvail = mo.timeToArrive >= gameTime ? mo.timeToArrive - gameTime : 0;
-			mv.timeEnd = gameTime + timeAvail * distNext / go.distance;
+			if (mo.timeToArrive > gameTime)
+			{
+				const uint64 distNext = globalGrid->neighborDistance(mv.tileStart, mv.tileEnd); // 24.8
+				mv.timeEnd = numeric_cast<uint32>(gameTime + (mo.timeToArrive - gameTime) * distNext / go.distance);
+			}
+			mv.timeEnd = max(mv.timeEnd, gameTime + 1);
 
 			if (mo.affected(DamageTypeEnum::Water) && !mo.affected(DamageTypeEnum::Fire))
-				mv.timeEnd += 3 * (mv.timeEnd - mv.timeStart) / 2;
+				mv.timeEnd = gameTime + (mv.timeEnd - gameTime) * 2;
 			if (mo.affected(DamageTypeEnum::Fire) && !mo.affected(DamageTypeEnum::Water))
-				mv.timeEnd -= 1 * (mv.timeEnd - mv.timeStart) / 2;
+				mv.timeEnd = gameTime + (mv.timeEnd - gameTime) / 2;
+			mv.timeEnd = max(mv.timeEnd, gameTime + 1);
 		}, gameEntities(), true);
 	}
 
