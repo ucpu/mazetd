@@ -15,50 +15,6 @@ namespace
 {
 	std::vector<MonsterSpawningProperties> monsterSpawningProperties;
 
-	uint32 bitsApplyLimit(uint32 bits, uint32 limit)
-	{
-		for (uint32 i = limit; i < 32; i++)
-			bits &= ~(1u << i);
-		return bits;
-	}
-
-	uint32 bitsPickOneIndex(uint32 bits)
-	{
-		uint32 cnt = 0;
-		for (uint32 i = 0; i < 32; i++)
-			cnt += (bits & (1u << i)) > 0;
-		uint32 idx = randomRange(0u, cnt);
-		for (uint32 i = 0; i < 32; i++)
-			if (bits & (1u << i))
-				if (idx-- == 0)
-					return i;
-		CAGE_ASSERT(false);
-		return m;
-	}
-
-	uint32 bitsLimitRandomOne(uint32 bits)
-	{
-		return 1u << bitsPickOneIndex(bits);
-	}
-
-	uint32 shortestSpawnPointBits()
-	{
-		return 1u << globalWaypoints->minDistanceSpawner;
-	}
-
-	uint32 randomSpawnPointBits()
-	{
-		uint32 bits = m;
-		bits = bitsApplyLimit(bits, numeric_cast<uint32>(globalWaypoints->waypoints.size()));
-		bits = bitsLimitRandomOne(bits);
-		return bits;
-	}
-
-	uint32 allSpawnPointsBits()
-	{
-		return bitsApplyLimit(m, numeric_cast<uint32>(globalWaypoints->waypoints.size()));
-	}
-
 	void generateMonsterProperties()
 	{
 		monsterSpawningProperties.clear();
@@ -259,14 +215,13 @@ void SpawningGroup::spawnOne()
 {
 	Entity *e = gameEntities()->createUnique();
 
-	const uint32 spawnPointIndex = bitsPickOneIndex(spawnPointsBits);
-	const uint32 position = globalWaypoints->waypoints[spawnPointIndex]->tile;
+	const uint32 position = globalWaypoints->waypoints[globalWaypoints->minDistanceSpawner]->tile;
 	e->value<PositionComponent>().tile = position;
 	e->value<NameComponent>().name = name;
 
 	MonsterComponent &mo = e->value<MonsterComponent>();
 	(MonsterBaseProperties &)mo = (const MonsterBaseProperties &)*this;
-	mo.visitedWaypointsBits = 1u << spawnPointIndex;
+	mo.visitedWaypointsBits = 1u << globalWaypoints->minDistanceSpawner;
 	mo.timeToArrive = gameTime + numeric_cast<uint32>(30 * stor(globalWaypoints->find(position, mo.visitedWaypointsBits).distance) / mo.speed);
 
 	MovementComponent &mv = e->value<MovementComponent>();
@@ -335,7 +290,6 @@ void SpawningGroup::generate()
 
 	if (waveIndex < monsterVarietes)
 		resistances = DamageTypeFlags::None;
-	spawnPointsBits = shortestSpawnPointBits();
 	spawnCount = interpolate(20, 25, normWave);
 	bossIndex = randomRange(0u, spawnCount);
 	money = interpolate(500, 2'500, normWave) / spawnCount; // total of 60'000 for 45 waves (+ some money per time)

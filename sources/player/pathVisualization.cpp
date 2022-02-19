@@ -11,7 +11,6 @@
 namespace
 {
 	uint64 timeToDestroy;
-	uint32 waypointIndex;
 
 	InputListener<InputClassEnum::KeyRepeat, InputKey, bool> keyRepeatListener;
 
@@ -26,12 +25,10 @@ namespace
 	void placeMarks()
 	{
 		destroyMarks();
-		if (globalWaypoints && engineControlTime() >= timeToDestroy)
-			waypointIndex = globalWaypoints->minDistanceSpawner;
 		timeToDestroy = engineControlTime() + 5 * 1000000;
 		if (!globalWaypoints)
 			return;
-		const auto &wp = globalWaypoints->waypoints[waypointIndex % globalWaypoints->waypoints.size()];
+		const auto &wp = globalWaypoints->waypoints[globalWaypoints->minDistanceSpawner];
 		uint32 prev = m;
 		const Real colorIndexScale = 1 / Real(wp->fullPath.size());
 		for (const auto it : enumerate(wp->fullPath))
@@ -52,7 +49,6 @@ namespace
 			}
 			prev = *it;
 		}
-		waypointIndex++;
 	}
 
 	bool keyRepeat(InputKey in)
@@ -96,4 +92,3 @@ void destroyShortestPathVisualizationMarks()
 {
 	timeToDestroy = 0;
 }
-

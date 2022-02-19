@@ -92,7 +92,6 @@ struct MonsterSpawningProperties : public MonsterBaseProperties
 
 struct SpawningGroup : public MonsterSpawningProperties
 {
-	uint32 spawnPointsBits = m;
 	uint32 spawnCount = 0;
 	uint32 spawnSimultaneously = 1;
 	uint32 spawnPeriod = 15;
