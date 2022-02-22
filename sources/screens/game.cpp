@@ -37,6 +37,19 @@ namespace
 			Entity *e = ents->get(316);
 			e->value<GuiTextComponent>().value = Stringizer() + playerMoney;
 		}
+
+		{ // monsters
+			uint32 cnt = 0;
+			sint64 lfTot = 1;
+			sint64 lfRem = 0;
+			entitiesVisitor([&](const MonsterComponent &mc) {
+				cnt++;
+				lfTot += mc.maxLife;
+				lfRem += mc.life;
+			}, gameEntities(), false);
+			Entity *e = ents->get(318);
+			e->value<GuiTextComponent>().value = Stringizer() + cnt + " @ " + (100 * lfRem / lfTot) + " %";
+		}
 	}
 
 	void updateCursor()
@@ -80,7 +93,8 @@ namespace
 					pp.parent = 201;
 					pp.order = index++;
 					e->value<GuiLabelComponent>();
-					e->value<GuiTextComponent>().value = Stringizer() + "Life: " + g->value<MonsterComponent>().life;
+					const MonsterComponent &mc = g->value<MonsterComponent>();
+					e->value<GuiTextComponent>().value = Stringizer() + "Life: " + (100 * mc.life / mc.maxLife) + " % (" + mc.life + ")";
 				}
 				{ // waypoints
 					Entity *e = ents->createUnique();
@@ -337,7 +351,7 @@ void updateSpawningMonsterPropertiesScreen()
 		pp.parent = 501;
 		pp.order = index++;
 		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Life: " + mo.life;
+		e->value<GuiTextComponent>().value = Stringizer() + "Life: " + mo.maxLife;
 	}
 
 	{ // speed
@@ -497,6 +511,34 @@ void setScreenGame()
 		pp.order = 2;
 		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
 		e->value<GuiTextComponent>().value = "dollars";
+	}
+
+	{
+		Entity *e = ents->create(305);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 301;
+		pp.order = 5;
+		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
+		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
+	}
+
+	{
+		Entity *e = ents->create(317);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 305;
+		pp.order = 1;
+		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		GuiImageComponent &img = e->value<GuiImageComponent>();
+		img.textureName = HashString("mazetd/gui/monster.png");
+	}
+
+	{
+		Entity *e = ents->create(318);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 305;
+		pp.order = 2;
+		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = "monsters";
 	}
 
 	// buildings menu

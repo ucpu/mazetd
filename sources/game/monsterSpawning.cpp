@@ -25,7 +25,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Frog.object");
 			msp.animationName = HashString("mazetd/monsters/Frog.glb?Frog_Jump");
 			msp.resistances = DamageTypeFlags::Water;
-			msp.life *= 0.9;
+			msp.maxLife *= 0.9;
 			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -36,7 +36,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Snake.object");
 			msp.animationName = HashString("mazetd/monsters/Snake.glb?Snake_Walk");
 			msp.resistances = DamageTypeFlags::Poison;
-			msp.life *= 0.9;
+			msp.maxLife *= 0.9;
 			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -46,7 +46,7 @@ namespace
 			msp.name = "Spider";
 			msp.modelName = HashString("mazetd/monsters/Spider.object");
 			msp.animationName = HashString("mazetd/monsters/Spider.glb?Spider_Walk");
-			msp.life *= 1;
+			msp.maxLife *= 1;
 			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -58,7 +58,7 @@ namespace
 			msp.animationName = HashString("mazetd/monsters/Wasp.glb?Wasp_Flying");
 			msp.resistances = DamageTypeFlags::Poison;
 			msp.monsterClass = MonsterClassFlags::Flier;
-			msp.life *= 0.9;
+			msp.maxLife *= 0.9;
 			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -69,7 +69,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Stegosaurus.object");
 			msp.animationName = HashString("mazetd/monsters/Stegosaurus.glb?Stegosaurus_Walk");
 			msp.resistances = DamageTypeFlags::Fire;
-			msp.life *= 1.1;
+			msp.maxLife *= 1.1;
 			msp.speed *= 1;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -80,7 +80,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Rat.object");
 			msp.animationName = HashString("mazetd/monsters/Rat.glb?Rat_Walk");
 			msp.resistances = DamageTypeFlags::Water;
-			msp.life *= 0.9;
+			msp.maxLife *= 0.9;
 			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -90,7 +90,7 @@ namespace
 			msp.name = "Velociraptor";
 			msp.modelName = HashString("mazetd/monsters/Velociraptor.object");
 			msp.animationName = HashString("mazetd/monsters/Velociraptor.glb?Velociraptor_Walk");
-			msp.life *= 1.2;
+			msp.maxLife *= 1.2;
 			msp.speed *= 1.15;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -101,7 +101,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Slime.object");
 			msp.animationName = HashString("mazetd/monsters/Slime.glb?Slime_Idle");
 			msp.resistances = DamageTypeFlags::Fire | DamageTypeFlags::Magic;
-			msp.life *= 0.8;
+			msp.maxLife *= 0.8;
 			msp.speed *= 0.8;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -112,7 +112,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Triceratops.object");
 			msp.animationName = HashString("mazetd/monsters/Triceratops.glb?Triceratops_Walk");
 			msp.resistances = DamageTypeFlags::Poison;
-			msp.life *= 1.1;
+			msp.maxLife *= 1.1;
 			msp.speed *= 1;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -123,7 +123,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Bat.object");
 			msp.animationName = HashString("mazetd/monsters/Bat.glb?Bat_Flying");
 			msp.monsterClass = MonsterClassFlags::Flier;
-			msp.life *= 1;
+			msp.maxLife *= 1;
 			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -134,7 +134,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Apatosaurus.object");
 			msp.animationName = HashString("mazetd/monsters/Apatosaurus.glb?Apatosaurus_Walk");
 			msp.resistances = DamageTypeFlags::Physical;
-			msp.life *= 1.1;
+			msp.maxLife *= 1.1;
 			msp.speed *= 0.9;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -145,7 +145,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Skeleton.object");
 			msp.animationName = HashString("mazetd/monsters/Skeleton.glb?Skeleton_Running");
 			msp.resistances = DamageTypeFlags::Physical | DamageTypeFlags::Magic;
-			msp.life *= 0.8;
+			msp.maxLife *= 0.8;
 			msp.speed *= 0.8;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -156,7 +156,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Parasaurolophus.object");
 			msp.animationName = HashString("mazetd/monsters/Parasaurolophus.glb?Parasaurolophus_Walk");
 			msp.resistances = DamageTypeFlags::Water;
-			msp.life *= 1.1;
+			msp.maxLife *= 1.1;
 			msp.speed *= 1;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -167,7 +167,7 @@ namespace
 			msp.modelName = HashString("mazetd/monsters/Trex.object");
 			msp.animationName = HashString("mazetd/monsters/Trex.glb?TRex_Walk");
 			msp.resistances = DamageTypeFlags::Physical;
-			msp.life *= 1.1;
+			msp.maxLife *= 1.1;
 			msp.speed *= 1.1;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -179,7 +179,7 @@ namespace
 			msp.animationName = HashString("mazetd/monsters/Dragon.glb?Dragon_Flying");
 			msp.resistances = DamageTypeFlags::Fire | DamageTypeFlags::Magic;
 			msp.monsterClass = MonsterClassFlags::Flier;
-			msp.life *= 1;
+			msp.maxLife *= 1;
 			msp.speed *= 1.2;
 			monsterSpawningProperties.push_back(msp);
 		}
@@ -238,9 +238,11 @@ void SpawningGroup::spawnOne()
 	if (bossIndex-- == 0)
 	{
 		mo.monsterClass |= MonsterClassFlags::Boss;
-		mo.life *= 2;
+		mo.maxLife *= 2;
 		f->value<TransformComponent>().scale = 1.5;
 	}
+
+	mo.life = mo.maxLife;
 }
 
 void SpawningGroup::process()
@@ -295,7 +297,7 @@ void SpawningGroup::generate()
 	money = interpolate(500, 2'500, normWave) / spawnCount; // total of 60'000 for 45 waves (+ some money per time)
 	damage = interpolate(3, 5, normWave);
 	speed = interpolate(2, 5, normWave) * speed; // 5 minutes for 1500 tiles
-	life = interpolate((sint64)3'000, (sint64)1'500'000, pow(waveIndex / Real(totalWaves - 1), 2)) * life / 1000 / spawnCount;
+	maxLife = interpolate((sint64)3'000, (sint64)1'500'000, pow(waveIndex / Real(totalWaves - 1), 2)) * maxLife / 1000 / spawnCount;
 
 	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();

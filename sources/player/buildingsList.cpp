@@ -22,7 +22,7 @@ namespace
 		EntityManager *ents = engineGuiEntities();
 		uint32 index = 1000;
 
-		static constexpr StringLiteral categoryNames[] = { "Basic", "Towers", "Bonuses", "Targeting", "Elements", "Mana" };
+		static constexpr StringLiteral categoryNames[] = { "Damage", "Enhancements", "Targeting", "Elements", "Mana" };
 
 		void prepareCategories()
 		{
@@ -41,12 +41,9 @@ namespace
 			}
 		}
 
-		Entity *generate(uint32 categoryIndex, StringLiteral name)
+		Entity *generateBase(StringLiteral name)
 		{
 			Entity *e = ents->create(++index);
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 410 + categoryIndex;
-			pp.order = index;
 			GuiButtonComponent &but = e->value<GuiButtonComponent>();
 			GuiTextComponent &txt = e->value<GuiTextComponent>();
 			txt.value = String(name);
@@ -57,17 +54,31 @@ namespace
 			return e;
 		}
 
+		Entity *generate(uint32 categoryIndex, StringLiteral name)
+		{
+			Entity *e = generateBase(name);
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = 410 + categoryIndex;
+			pp.order = index;
+			return e;
+		}
+
 		void generateAll()
 		{
-			// basic
+			// wall
 
 			{
-				Entity *e = generate(0, "Wall");
+				Entity *e = generateBase("Wall");
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
+				pp.parent = 401;
+				pp.order = -1;
 				e->value<BuildingComponent>();
 				e->value<CostComponent>().cost = 4;
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/wall.object");
 				e->value<DescriptionComponent>().description = "Blocks monsters path, but does not attack.";
 			}
+
+			// damage
 
 			{
 				Entity *e = generate(0, "Spikes");
@@ -86,10 +97,8 @@ namespace
 				// dps per dollar: 0.5
 			}
 
-			// towers
-
 			{
-				Entity *e = generate(1, "Mundane");
+				Entity *e = generate(0, "Mundane");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.1;
 				e->value<CostComponent>().cost = 50;
@@ -106,7 +115,7 @@ namespace
 			}
 
 			{
-				Entity *e = generate(1, "Spiritual");
+				Entity *e = generate(0, "Spiritual");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.8;
 				e->value<CostComponent>().cost = 500;
@@ -126,7 +135,7 @@ namespace
 			}
 
 			{
-				Entity *e = generate(1, "Infused");
+				Entity *e = generate(0, "Reinforced");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.6;
 				e->value<CostComponent>().cost = 1000;
@@ -146,7 +155,7 @@ namespace
 				// 12'000 dps (24'000 dps when combining physical+poison), 21'000 money
 			}
 
-			// bonuses
+			// enhancements
 
 			struct BonusData
 			{
@@ -156,17 +165,17 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr BonusData bonusData[] = {
-				{ "Damage", "Affected towers have doubled damage and mana cost.", BonusTypeEnum::Damage, HashString("mazetd/buildings/bonus-damage.object")},
-				{ "Firing Rate", "Affected towers have doubled rate of fire.", BonusTypeEnum::FiringRate, HashString("mazetd/buildings/bonus-firingRate.object") },
-				{ "Firing Range", "Affected towers have range of fire increased by 4 tiles.", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
-				{ "Splash Radius", "Affected towers have splash radius increased by 2 tiles. Mana cost is tripled.", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
-				{ "Intense Utility", "Affected tower's damage over time is applied 5 times faster.", BonusTypeEnum::IntenseDot, HashString("mazetd/buildings/bonus-intenseDot.object") },
-				{ "Mana Allowance", "Affected towers have one third mana cost.", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
+				{ "Damage", "Affected towers have doubled damage and mana cost.\nEnhancements do not stack.", BonusTypeEnum::Damage, HashString("mazetd/buildings/bonus-damage.object")},
+				{ "Firing Rate", "Affected towers have doubled rate of fire.\nEnhancements do not stack.", BonusTypeEnum::FiringRate, HashString("mazetd/buildings/bonus-firingRate.object") },
+				{ "Firing Range", "Affected towers have range of fire increased by 4 tiles.\nEnhancements do not stack.", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
+				{ "Splash Radius", "Affected towers have splash radius increased by 2 tiles. Mana cost is tripled.\nEnhancements do not stack.", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
+				{ "Intense Utility", "Affected tower's damage over time is applied 5 times faster.\nEnhancements do not stack.", BonusTypeEnum::IntenseDot, HashString("mazetd/buildings/bonus-intenseDot.object") },
+				{ "Mana Allowance", "Affected towers have one third mana cost.\nEnhancements do not stack.", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
 			};
 
 			for (const auto &it : bonusData)
 			{
-				Entity *e = generate(2, it.name);
+				Entity *e = generate(1, it.name);
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.55;
 				e->value<CostComponent>().cost = 500;
@@ -195,7 +204,7 @@ namespace
 
 			for (const auto &it : targetingData)
 			{
-				Entity *e = generate(3, it.name);
+				Entity *e = generate(2, it.name);
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.6;
 				e->value<CostComponent>().cost = 150;
@@ -222,7 +231,7 @@ namespace
 
 			for (const auto &it : elementsData)
 			{
-				Entity *e = generate(4, it.name);
+				Entity *e = generate(3, it.name);
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.4;
 				e->value<CostComponent>().cost = 400;
@@ -250,7 +259,7 @@ namespace
 
 			for (const auto &it : manaData)
 			{
-				Entity *e = generate(5, it.name);
+				Entity *e = generate(4, it.name);
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1;
 				e->value<CostComponent>().cost = 300;
@@ -263,7 +272,7 @@ namespace
 			}
 
 			{
-				Entity *e = generate(5, "Mana Relay");
+				Entity *e = generate(4, "Mana Relay");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 2.5;
 				e->value<CostComponent>().cost = 100;
@@ -275,7 +284,7 @@ namespace
 			}
 
 			{
-				Entity *e = generate(5, "Mana Capacitor");
+				Entity *e = generate(4, "Mana Capacitor");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.3;
 				e->value<CostComponent>().cost = 500;

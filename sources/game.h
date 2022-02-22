@@ -76,7 +76,7 @@ namespace cage
 struct MonsterBaseProperties
 {
 	StringLiteral name;
-	sint64 life = 1000;
+	sint64 maxLife = 1000;
 	uint32 money = 0;
 	uint32 damage = 0;
 	Real speed = 1; // tiles per second
@@ -148,6 +148,7 @@ struct MovementComponent
 
 struct MonsterComponent : public MonsterBaseProperties
 {
+	sint64 life = 0;
 	uint32 visitedWaypointsBits = 0;
 	uint32 timeToArrive = 0; // timestamp at which the monster should arrive to the final waypoint
 
