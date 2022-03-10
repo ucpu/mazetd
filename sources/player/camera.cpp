@@ -1,3 +1,4 @@
+#include <cage-core/config.h>
 #include <cage-engine/scene.h>
 #include <cage-engine/window.h>
 #include <cage-simple/engine.h>
@@ -7,6 +8,7 @@
 
 namespace
 {
+	ConfigBool confInvertCameraMove("mazetd/camera/invert", false);
 	Vec2i lastMousePos;
 	Vec2 camCenter;
 	Real camDist = 50;
@@ -71,7 +73,7 @@ namespace
 			const Vec2i mv2 = centerMouse();
 			const Vec3 mv3 = Quat(Degs(), camYaw, Degs()) * Vec3(mv2[0], 0, mv2[1]);
 			const Real speed = pow(camDist, 0.85) / engineWindow()->contentScaling() * 0.005;
-			camCenter += Vec2(mv3[0], mv3[2]) * speed;
+			camCenter += Vec2(mv3[0], mv3[2]) * speed * (confInvertCameraMove ? -1 : 1);
 			updateCamera();
 			return true;
 		}

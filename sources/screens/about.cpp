@@ -59,8 +59,10 @@ void setScreenAbout()
 		"Wheel - zoom",
 		"WSAD - move camera",
 		"QE - rotate camera",
-		"Spacebar - visualize monsters paths",
+		"P - visualize monsters paths",
+		"Spacebar - pause the game",
 		"PGUP/DN - speed up/down the game",
+		"Home - reset game speed",
 	};
 
 	uint32 idx = 0;

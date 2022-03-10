@@ -16,8 +16,9 @@ namespace
 	void engineUpdate()
 	{
 		const Vec2i res = engineWindow()->resolution();
-		if (gameRunning && globalGrid && !playerPanning && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
+		if (gameReady && !playerPanning && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
 		{
+			CAGE_ASSERT(globalGrid);
 			const Vec2i cur = engineWindow()->mousePosition();
 			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
 			TransformComponent &t = c->value<TransformComponent>();

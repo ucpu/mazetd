@@ -245,8 +245,9 @@ SpatialQuery *spatialMonsters();
 SpatialQuery *spatialStructures();
 
 extern uint32 gameTime;
-extern uint32 gameSpeed;
-extern bool gameRunning;
+extern Real gameSpeed;
+extern bool gameReady; // game map has been created
+extern bool gamePaused; // player has paused the game to place buildings
 
 extern Vec3 playerCursorPosition;
 extern uint32 playerCursorTile;

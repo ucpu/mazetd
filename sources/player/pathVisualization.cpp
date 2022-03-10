@@ -53,7 +53,7 @@ namespace
 
 	bool keyRepeat(InputKey in)
 	{
-		if (in.key != 32) // spacebar
+		if (in.key != 80) // key P
 			return false;
 		placeMarks();
 		return true;

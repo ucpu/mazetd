@@ -25,7 +25,7 @@ namespace
 	void updateMonsterAnimations()
 	{
 		EntityComponent *aniComp = engineEntities()->component<SkeletalAnimationComponent>();
-		const uint32 speed = gameRunning ? gameSpeed : 0;
+		const Real speed = gameReady ? gameSpeed : 0;
 		entitiesVisitor([&](Entity *e, const MovementComponent &mv, const MonsterComponent &mo, const EngineComponent &en) {
 			Entity *f = en.entity;
 			if (!f->has(aniComp))
@@ -63,7 +63,7 @@ namespace
 				// the monster has reached its final waypoint
 				playerHealth -= mo.damage;
 				e->destroy();
-				gameSpeed = 1;
+				gameSpeed = min(gameSpeed, 1);
 				return;
 			}
 

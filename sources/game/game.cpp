@@ -61,7 +61,8 @@ namespace
 	{
 		gameTime = 0;
 		gameSpeed = 1;
-		gameRunning = false;
+		gameReady = false;
+		gamePaused = false;
 		gameEntities()->destroy();
 
 		playerCursorPosition = Vec3::Nan();
@@ -119,8 +120,9 @@ EventDispatcher<bool()> &eventGameUpdate()
 }
 
 uint32 gameTime = 0;
-uint32 gameSpeed = 1;
-bool gameRunning = false;
+Real gameSpeed = 1;
+bool gameReady = false;
+bool gamePaused = false;
 
 Vec3 playerCursorPosition;
 uint32 playerCursorTile;

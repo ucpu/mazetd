@@ -10,15 +10,22 @@ namespace
 {
 	bool keyPress(InputKey in)
 	{
+		constexpr Real speedFactor = 1.15;
 		switch (in.key)
 		{
 		case 334: // numeric plus
 		case 266: // page up
-			gameSpeed = min(gameSpeed + 1, 10u);
+			gameSpeed = min(gameSpeed * speedFactor, 10.0);
 			return true;
 		case 333: // numeric minus
 		case 267: // page down
-			gameSpeed = min(gameSpeed, gameSpeed - 1);
+			gameSpeed = max(gameSpeed / speedFactor, 0.5);
+			return true;
+		case 268: // home
+			gameSpeed = 1;
+			return true;
+		case 32: // spacebar
+			gamePaused = !gamePaused;
 			return true;
 		}
 		return false;
@@ -26,7 +33,7 @@ namespace
 
 	void gameScheduleAction()
 	{
-		if (!gameRunning || gameSpeed == 0)
+		if (!gameReady || gamePaused)
 			return;
 		CAGE_ASSERT(globalGrid);
 		eventGameUpdate().dispatch();
@@ -54,8 +61,8 @@ namespace
 
 	void engineUpdate()
 	{
-		if (gameSpeed > 0)
-			gameUpdateSchedule->period(1000000 / gameSpeed / 30);
+		CAGE_ASSERT(gameSpeed > 0);
+		gameUpdateSchedule->period(numeric_cast<uint64>(1000000 / double(gameSpeed.value) / 30));
 	}
 
 	struct Callbacks

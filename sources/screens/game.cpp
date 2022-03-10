@@ -98,14 +98,29 @@ namespace
 
 			if (g->has<MonsterComponent>())
 			{ // monster
+				const MonsterComponent &mc = g->value<MonsterComponent>();
 				{ // life
 					Entity *e = ents->createUnique();
 					GuiParentComponent &pp = e->value<GuiParentComponent>();
 					pp.parent = 201;
 					pp.order = index++;
 					e->value<GuiLabelComponent>();
-					const MonsterComponent &mc = g->value<MonsterComponent>();
 					e->value<GuiTextComponent>().value = Stringizer() + "Life: " + (100 * mc.life / mc.maxLife) + " % (" + mc.life + ")";
+				}
+				{ // damages
+					constexpr const char *damageNames[] = { "Physical", "Fire", "Water", "Poison", "Magic" };
+					static_assert(sizeof(damageNames) / sizeof(damageNames[0]) == (uint32)DamageTypeEnum::Total);
+					for (uint32 i = 0; i < (uint32)DamageTypeEnum::Total; i++)
+					{
+						if (mc.dots[i].damage == 0 && mc.dots[i].duration == 0)
+							continue;
+						Entity *e = ents->createUnique();
+						GuiParentComponent &pp = e->value<GuiParentComponent>();
+						pp.parent = 201;
+						pp.order = index++;
+						e->value<GuiLabelComponent>();
+						e->value<GuiTextComponent>().value = Stringizer() + damageNames[i] + " damage: " + mc.dots[i].damage + " over " + mc.dots[i].duration + " ticks";
+					}
 				}
 				{ // waypoints
 					Entity *e = ents->createUnique();
@@ -160,7 +175,7 @@ namespace
 	void guiClean()
 	{
 		engineUpdateListener.detach();
-		gameRunning = false;
+		gameReady = false;
 	}
 }
 
@@ -392,7 +407,7 @@ void setScreenGame()
 	guiCleanListener.bind<&guiClean>();
 	engineUpdateListener.attach(controlThread().update);
 	engineUpdateListener.bind<&engineUpdate>();
-	gameRunning = true;
+	gameReady = true;
 
 	// cursor
 

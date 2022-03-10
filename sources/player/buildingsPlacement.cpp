@@ -171,7 +171,7 @@ namespace
 
 	bool mouseEvent(InputMouse in)
 	{
-		if (!gameRunning || playerCursorTile == m || in.mods != ModifiersFlags::None)
+		if (!gameReady || playerCursorTile == m || in.mods != ModifiersFlags::None)
 			return false;
 		switch (in.buttons)
 		{
