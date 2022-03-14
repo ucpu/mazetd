@@ -205,6 +205,10 @@ struct ManaCollectorComponent
 
 struct AttackComponent
 {
+	Entity *effectors[3] = {};
+	DamageTypeEnum element = DamageTypeEnum::Physical;
+	BonusTypeEnum bonus = BonusTypeEnum::None;
+	TargetingEnum targeting = TargetingEnum::Random;
 	uint32 firingDelay = 30;
 };
 
@@ -227,7 +231,7 @@ struct ModElementComponent
 
 struct ModBonusComponent
 {
-	BonusTypeEnum type = BonusTypeEnum::None;
+	BonusTypeEnum bonus = BonusTypeEnum::None;
 };
 
 struct ModTargetingComponent

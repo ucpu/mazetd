@@ -179,7 +179,7 @@ namespace
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.55;
 				e->value<CostComponent>().cost = 500;
-				e->value<ModBonusComponent>().type = it.bonus;
+				e->value<ModBonusComponent>().bonus = it.bonus;
 				e->value<GuiModelComponent>().model = it.model;
 				e->value<DescriptionComponent>().description = it.description;
 			}

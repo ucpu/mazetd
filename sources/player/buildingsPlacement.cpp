@@ -10,6 +10,7 @@
 
 void destroyShortestPathVisualizationMarks();
 void spatialUpdateStructures();
+void updateAttacksMods();
 
 namespace
 {
@@ -126,6 +127,7 @@ namespace
 		}
 		destroyShortestPathVisualizationMarks();
 		spatialUpdateStructures();
+		updateAttacksMods();
 	}
 
 	uint32 refundValue(Entity *e)
@@ -167,6 +169,7 @@ namespace
 
 		destroyShortestPathVisualizationMarks();
 		spatialUpdateStructures();
+		updateAttacksMods();
 	}
 
 	bool mouseEvent(InputMouse in)

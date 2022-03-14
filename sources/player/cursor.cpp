@@ -1,3 +1,4 @@
+#include <cage-core/entitiesVisitor.h>
 #include <cage-core/camera.h>
 #include <cage-core/geometry.h>
 #include <cage-core/collider.h>
@@ -12,18 +13,62 @@
 namespace
 {
 	Entity *cursorMarker = nullptr;
+	Entity *modsMarkers[3] = {};
+
+	template<uint32 Object>
+	void markPos(Entity *&e, uint32 position)
+	{
+		if (position == m && e)
+		{
+			e->destroy();
+			e = nullptr;
+		}
+		else if (position != m)
+		{
+			if (!e)
+				e = engineEntities()->createAnonymous();
+			e->value<RenderComponent>().object = Object;
+			e->value<TransformComponent>().position = globalGrid->center(position);
+		}
+	}
+
+	template<uint32 Object>
+	void markEnt(Entity *&e, Entity *mod)
+	{
+		markPos<Object>(e, mod ? mod->value<PositionComponent>().tile : m);
+	}
+
+	void updateCursorMarker()
+	{
+		markPos<HashString("mazetd/misc/cursor.obj")>(cursorMarker, playerCursorTile != m && none(globalGrid->flags[playerCursorTile] & TileFlags::Invalid) ? playerCursorTile : m);
+	}
+
+	void updateTowerMods()
+	{
+		const AttackComponent *mods = nullptr;
+		if (playerCursorTile != m)
+		{
+			entitiesVisitor([&](const PositionComponent &po, const AttackComponent &atc) {
+				if (po.tile == playerCursorTile)
+					mods = &atc;
+			}, gameEntities(), false);
+		}
+		for (uint32 i = 0; i < 3; i++)
+			markEnt<HashString("mazetd/misc/modMark.obj")>(modsMarkers[i], mods ? mods->effectors[i] : nullptr);
+	}
 
 	void engineUpdate()
 	{
+		playerCursorPosition = Vec3::Nan();
+		playerCursorTile = m;
 		const Vec2i res = engineWindow()->resolution();
 		if (gameReady && !playerPanning && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
 		{
 			CAGE_ASSERT(globalGrid);
 			const Vec2i cur = engineWindow()->mousePosition();
 			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
-			TransformComponent &t = c->value<TransformComponent>();
-			CameraComponent &a = c->value<CameraComponent>();
-			const Mat4 view = Mat4(inverse(t));
+			const CameraComponent &a = c->value<CameraComponent>();
+			const Mat4 view = Mat4(inverse(c->value<TransformComponent>()));
 			const Mat4 proj = perspectiveProjection(a.camera.perspectiveFov, Real(res[0]) / Real(res[1]), a.near, a.far);
 			const Mat4 inv = inverse(proj * view);
 			const Vec2 cp = (Vec2(cur) / Vec2(res) * 2 - 1) * Vec2(1, -1);
@@ -34,28 +79,10 @@ namespace
 			const Line line = makeSegment(near, far);
 			playerCursorPosition = intersection(line, +globalCollider, Transform());
 			if (playerCursorPosition.valid())
-			{
 				playerCursorTile = globalGrid->index(playerCursorPosition);
-				if (playerCursorTile != m && none(globalGrid->flags[playerCursorTile] & TileFlags::Invalid))
-				{
-					if (!cursorMarker)
-					{
-						cursorMarker = engineEntities()->createAnonymous();
-						RenderComponent &r = cursorMarker->value<RenderComponent>();
-						r.object = HashString("mazetd/misc/cursor.obj");
-					}
-					TransformComponent &t = cursorMarker->value<TransformComponent>();
-					t.position = globalGrid->center(playerCursorTile);
-					return;
-				}
-			}
 		}
-		if (cursorMarker)
-		{
-			cursorMarker->destroy();
-			cursorMarker = nullptr;
-		}
-		playerCursorTile = m;
+		updateCursorMarker();
+		updateTowerMods();
 	}
 
 	struct Callbacks

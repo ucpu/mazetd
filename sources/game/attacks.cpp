@@ -13,29 +13,11 @@
 
 namespace
 {
-	struct Neighbor
-	{
-		Vec3 np;
-		Vec3 npp;
-		Real dist2;
-		Entity *e = nullptr;
-	};
-
-	struct TowerData : public DamageComponent
+	struct TowerData
 	{
 		Entity *me = nullptr;
 		Vec3 mp;
 		Vec3 mpp;
-
-		BonusTypeEnum bonusType = BonusTypeEnum::None;
-		const Neighbor *bonusNeighbor = nullptr;
-
-		DamageTypeEnum damageType = DamageTypeEnum::Physical;
-		const Neighbor *elementNeighbor = nullptr;
-
-		TargetingEnum targetingType = TargetingEnum::Random;
-		const Neighbor *targetingNeighbor = nullptr;
-
 		uint32 manaCost = 0;
 	};
 
@@ -49,70 +31,19 @@ namespace
 	template<TargetingEnum Targeting>
 	struct MonsterPicker;
 
-	struct AttacksSolver : public TowerData
+	struct AttacksSolver : public TowerData, public DamageComponent, public AttackComponent
 	{
 		SpatialQuery *monstersQuery = spatialMonsters();
-		SpatialQuery *buildingsQuery = spatialStructures();
-		EntityComponent *compDamage = gameEntities()->component<DamageComponent>();
-		EntityComponent *compModBonus = gameEntities()->component<ModBonusComponent>();
-		EntityComponent *compModElement = gameEntities()->component<ModElementComponent>();
-		EntityComponent *compModTargeting = gameEntities()->component<ModTargetingComponent>();
 		EntityComponent *compMovement = gameEntities()->component<MovementComponent>();
 		EntityComponent *compPosition = gameEntities()->component<PositionComponent>();
 		EntityComponent *compPivot = gameEntities()->component<PivotComponent>();
 		EntityComponent *compManaRecv = gameEntities()->component<ManaReceiverComponent>();
 		EntityComponent *compManaStor = gameEntities()->component<ManaStorageComponent>();
-		std::vector<Neighbor> neighbors;
 		std::vector<Monster> monsters;
 
-		void findNeighbors()
+		void applyMods()
 		{
-			neighbors.clear();
-			buildingsQuery->intersection(Sphere(mp, 5));
-			for (uint32 nn : buildingsQuery->result())
-			{
-				if (nn == me->name())
-					continue;
-				Neighbor n;
-				n.e = gameEntities()->get(nn);
-				n.np = globalGrid->center(n.e->value<PositionComponent>().tile);
-				n.npp = n.np + Vec3(0, n.e->value<PivotComponent>().elevation, 0);
-				n.dist2 = distanceSquared(n.np, mp);
-				neighbors.push_back(n);
-			}
-			std::sort(neighbors.begin(), neighbors.end(), [](const Neighbor &a, const Neighbor &b) {
-				return a.dist2 < b.dist2;
-			});
-		}
-
-		const Neighbor *closestNeighbor(EntityComponent *comp)
-		{
-			for (const auto &it : neighbors)
-			{
-				if (it.e->has(comp))
-					return &it;
-			}
-			return nullptr;
-		}
-
-		void findMods()
-		{
-			bonusNeighbor = closestNeighbor(compModBonus);
-			if (bonusNeighbor)
-				bonusType = bonusNeighbor->e->value<ModBonusComponent>(compModBonus).type;
-
-			elementNeighbor = closestNeighbor(compModElement);
-			if (elementNeighbor)
-				damageType = elementNeighbor->e->value<ModElementComponent>(compModElement).element;
-
-			targetingNeighbor = closestNeighbor(compModTargeting);
-			if (targetingNeighbor)
-				targetingType = targetingNeighbor->e->value<ModTargetingComponent>(compModTargeting).targeting;
-		}
-
-		void applyBonus()
-		{
-			if (elementNeighbor)
+			if (element != DamageTypeEnum::Physical)
 			{
 				CAGE_ASSERT(overTime == 0);
 				overTime = numeric_cast<uint32>(cage::sqrt(damage) * 20);
@@ -120,7 +51,7 @@ namespace
 				manaCost = baseManaCost;
 				damage *= 3; // cost of original damage + cost of mana + cost of DOT
 			}
-			switch (bonusType)
+			switch (bonus)
 			{
 			case BonusTypeEnum::Damage: damage *= 2; manaCost *= 2; break;
 			case BonusTypeEnum::FiringRate: firingPeriod /= 2; break;
@@ -179,23 +110,7 @@ namespace
 		void effects()
 		{
 			EffectConfig cfg;
-			cfg.type = damageType;
-			cfg.pos2 = mpp;
-			if (bonusNeighbor)
-			{
-				cfg.pos1 = bonusNeighbor->npp;
-				renderEffect(cfg);
-			}
-			if (elementNeighbor)
-			{
-				cfg.pos1 = elementNeighbor->npp;
-				renderEffect(cfg);
-			}
-			if (targetingNeighbor)
-			{
-				cfg.pos1 = targetingNeighbor->npp;
-				renderEffect(cfg);
-			}
+			cfg.type = element;
 			cfg.pos1 = mpp;
 			cfg.pos2 = monsters[0].p + Vec3(0, monsters[0].e->value<PivotComponent>(compPivot).elevation, 0);
 			renderEffect(cfg);
@@ -203,10 +118,10 @@ namespace
 
 		void damageMonsters()
 		{
-			CAGE_ASSERT(damageType < DamageTypeEnum::Total);
+			CAGE_ASSERT(element < DamageTypeEnum::Total);
 			for (const auto &it : monsters)
 			{
-				auto &dot = it.mc->dots[(uint32)damageType];
+				auto &dot = it.mc->dots[(uint32)element];
 				dot.damage += damage;
 				dot.duration += overTime;
 			}
@@ -214,7 +129,7 @@ namespace
 
 		void run()
 		{
-			entitiesVisitor([&](Entity *e, const PositionComponent &pos, AttackComponent &atc) {
+			entitiesVisitor([&](Entity *e, const PositionComponent &pos, const DamageComponent &dmg, AttackComponent &atc) {
 				if (atc.firingDelay > 0)
 				{
 					atc.firingDelay--;
@@ -222,17 +137,14 @@ namespace
 				}
 
 				*(TowerData *)this = {};
-				*(DamageComponent *)this = e->value<DamageComponent>(compDamage);
+				*(DamageComponent *)this = dmg;
+				*(AttackComponent *)this = atc;
 				me = e;
 				mp = pos.position();
 				mpp = mp + Vec3(0, e->value<PivotComponent>(compPivot).elevation, 0);
 
 				if (acceptMods)
-				{
-					findNeighbors();
-					findMods();
-					applyBonus();
-				}
+					applyMods();
 
 				findMonstersForTower();
 				if (monsters.empty())
@@ -257,7 +169,7 @@ namespace
 
 		MonsterPicker(AttacksSolver *data) : data(data)
 		{
-			CAGE_ASSERT(data->targetingType == Targeting);
+			CAGE_ASSERT(data->targeting == Targeting);
 		}
 
 		Real value(Monster &mo)
@@ -299,7 +211,7 @@ namespace
 
 		MonsterPicker(AttacksSolver *data) : data(data)
 		{
-			CAGE_ASSERT(data->targetingType == TargetingEnum::Random);
+			CAGE_ASSERT(data->targeting == TargetingEnum::Random);
 		}
 
 		void run()
@@ -312,7 +224,7 @@ namespace
 	void AttacksSolver::pickTargetMonster()
 	{
 		CAGE_ASSERT(monsters.size() > 0);
-		switch (targetingType)
+		switch (targeting)
 		{
 		case TargetingEnum::Back: { MonsterPicker<TargetingEnum::Back>(this).run(); } break;
 		case TargetingEnum::Closest: { MonsterPicker<TargetingEnum::Closest>(this).run(); } break;

@@ -4,6 +4,7 @@ uvs = false
 tangents = false
 scale = 1.01
 cursor.obj
+modMark.obj
 
 []
 scheme = model

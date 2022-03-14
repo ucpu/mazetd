@@ -131,7 +131,7 @@ namespace
 					e->value<GuiTextComponent>().value = Stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
 				}
 			}
-			}, gameEntities(), false);
+		}, gameEntities(), false);
 
 		{
 			struct Pair
