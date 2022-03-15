@@ -170,6 +170,7 @@ namespace
 	{
 		updateTopBar();
 		updateCursor();
+		engineGuiEntities()->get(521)->value<GuiTextComponent>().value = gamePaused ? "Paused" : "";
 	}
 
 	void guiClean()
@@ -654,4 +655,20 @@ void setScreenGame()
 	}
 
 	updateSpawningMonsterPropertiesScreen();
+
+	// bottom status bar
+
+	{
+		Entity *e = ents->create(520);
+		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
+		sc.alignment = Vec2(0.5, 1);
+	}
+
+	{
+		Entity *e = ents->create(521);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 520;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = "Paused";
+	}
 }
