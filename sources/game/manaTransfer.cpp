@@ -50,7 +50,7 @@ namespace
 					return;
 
 				const Vec3 mp = globalGrid->center(pos.tile);
-				buildingsQuery->intersection(Sphere(mp, distr.range));
+				buildingsQuery->intersection(Sphere(mp * Vec3(1, 0, 1), distr.range));
 				std::vector<Sorting> recvs;
 				recvs.reserve(buildingsQuery->result().size());
 				for (uint32 n : buildingsQuery->result())
@@ -110,7 +110,7 @@ namespace
 			entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, PotentialComponent &pot) {
 				uint32 cnt = 5;
 				Real sum = pot.potential * cnt;
-				buildingsQuery->intersection(Sphere(globalGrid->center(pos.tile), distr.range));
+				buildingsQuery->intersection(Sphere(globalGrid->center(pos.tile) * Vec3(1, 0, 1), distr.range));
 				for (uint32 n : buildingsQuery->result())
 				{
 					if (n == e->name())

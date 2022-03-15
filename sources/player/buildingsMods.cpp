@@ -31,18 +31,16 @@ namespace
 		{
 			neighbors.clear();
 			const uint32 myName = me->name();
-			const Vec3 myPos = globalGrid->center(me->value<PositionComponent>(compPosition).tile);
-			constexpr Real Range = 5;
-			buildingsQuery->intersection(Sphere(myPos, Range + 2)); // extra threshold because the spatial search happens in 3D but the resulting distance is measured in 2D
+			const Vec3 myPos = globalGrid->center(me->value<PositionComponent>(compPosition).tile) * Vec3(1, 0, 1);
+			buildingsQuery->intersection(Sphere(myPos, 5));
 			for (uint32 nn : buildingsQuery->result())
 			{
 				if (nn == myName)
 					continue;
 				Neighbor n;
 				n.e = gameEntities()->get(nn);
-				n.dist2 = distanceSquared(globalGrid->center(n.e->value<PositionComponent>(compPosition).tile), myPos);
-				if (n.dist2 < sqr(Range))
-					neighbors.push_back(n);
+				n.dist2 = distanceSquared(globalGrid->center(n.e->value<PositionComponent>(compPosition).tile) * Vec3(1, 0, 1), myPos);
+				neighbors.push_back(n);
 			}
 			std::sort(neighbors.begin(), neighbors.end(), [](const Neighbor &a, const Neighbor &b) {
 				return a.dist2 < b.dist2;

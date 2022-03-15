@@ -63,11 +63,11 @@ void spatialUpdateStructures()
 	CAGE_ASSERT(globalGrid);
 
 	entitiesVisitor([&](Entity *e, const PositionComponent &pos, const BuildingComponent &) {
-		structsData->update(e->name(), globalGrid->center(pos.tile));
+		structsData->update(e->name(), globalGrid->center(pos.tile) * Vec3(1, 0, 1));
 	}, gameEntities(), false);
 
 	entitiesVisitor([&](Entity *e, const PositionComponent &pos, const TrapComponent &) {
-		structsData->update(e->name(), globalGrid->center(pos.tile));
+		structsData->update(e->name(), globalGrid->center(pos.tile) * Vec3(1, 0, 1));
 	}, gameEntities(), false);
 
 	structsData->rebuild();

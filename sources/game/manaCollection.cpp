@@ -75,7 +75,7 @@ namespace
 					if (none(f & requiredFlags(col.type)))
 						continue;
 					const Vec3 p = globalGrid->center(t);
-					if (distanceSquared(mp3, p) > sqr(col.range))
+					if (distanceSquared(mp3 * Vec3(1, 0, 1), p * Vec3(1, 0, 1)) > sqr(col.range))
 						continue;
 
 					f &= ~TileFlags::Mana;

@@ -79,13 +79,13 @@ namespace
 
 		void findMonstersForTower()
 		{
-			monstersQuery->intersection(Sphere(mp, firingRange));
+			monstersQuery->intersection(Sphere(mp * Vec3(1, 0, 1), firingRange));
 			filterMonsters();
 		}
 
 		void findMonstersForSplash()
 		{
-			monstersQuery->intersection(Sphere(monsters[0].p, splashRadius));
+			monstersQuery->intersection(Sphere(monsters[0].p * Vec3(1, 0, 1), splashRadius));
 			filterMonsters();
 		}
 
@@ -177,8 +177,8 @@ namespace
 			switch (Targeting)
 			{
 			case TargetingEnum::Back: return -numeric_cast<sint32>(mo.mc->timeToArrive);
-			case TargetingEnum::Closest: return distanceSquared(mo.p, data->mp);
-			case TargetingEnum::Farthest: return -distanceSquared(mo.p, data->mp);
+			case TargetingEnum::Closest: return distanceSquared(mo.p * Vec3(1, 0, 1), data->mp * Vec3(1, 0, 1));
+			case TargetingEnum::Farthest: return -distanceSquared(mo.p * Vec3(1, 0, 1), data->mp * Vec3(1, 0, 1));
 			case TargetingEnum::Front: return mo.mc->timeToArrive;
 			case TargetingEnum::Strongest: return -mo.mc->life;
 			case TargetingEnum::Weakest: return mo.mc->life;
@@ -192,7 +192,7 @@ namespace
 			Real bv = value(data->monsters[0]);
 			for (const auto &it : enumerate(data->monsters))
 			{
-				Real v = value(*it);
+				const Real v = value(*it);
 				if (v < bv)
 				{
 					bi = it.index;
