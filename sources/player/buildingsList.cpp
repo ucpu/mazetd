@@ -223,10 +223,10 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr ElementsData elementsData[] = {
-				{ "Fire", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to fire, which hastens monsters movement.\nFire is nullified by water.\nThe towers require mana to be able to fire.", DamageTypeEnum::Fire, HashString("mazetd/buildings/augment-fire.object") },
-				{ "Water", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to water, which slows down the monsters.\nWater is nullified by fire.\nThe towers require mana to be able to fire.", DamageTypeEnum::Water, HashString("mazetd/buildings/augment-water.object") },
-				{ "Poison", "Affected tower's damage is tripled and applied over time.\nThe damage poisons the monsters.\nPoisoned monsters take double damage from physical attacks.\nPoison is nullified by magic.\nThe towers require mana to be able to fire.", DamageTypeEnum::Poison, HashString("mazetd/buildings/augment-poison.object") },
-				{ "Magic", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to magic.\nMonsters affected by magic take double damage from non-physical attacks.\nMagic is dispelled by poison.\nThe towers require mana to be able to fire.", DamageTypeEnum::Magic, HashString("mazetd/buildings/augment-magic.object") },
+				{ "Fire", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to fire, which hastens monsters movement.\nFire is nullified by water.\nAffected towers require supply of mana to be able to fire.", DamageTypeEnum::Fire, HashString("mazetd/buildings/augment-fire.object") },
+				{ "Water", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to water, which slows down the monsters.\nWater is nullified by fire.\nAffected towers require supply of mana to be able to fire.", DamageTypeEnum::Water, HashString("mazetd/buildings/augment-water.object") },
+				{ "Poison", "Affected tower's damage is tripled and applied over time.\nThe damage poisons the monsters.\nPoisoned monsters take double damage from physical attacks.\nPoison is nullified by magic.\nAffected towers require supply of mana to be able to fire.", DamageTypeEnum::Poison, HashString("mazetd/buildings/augment-poison.object") },
+				{ "Magic", "Affected tower's damage is tripled and applied over time.\nThe damage is converted to magic.\nMonsters affected by magic take double damage from non-physical attacks.\nMagic is dispelled by poison.\nAffected towers require supply of mana to be able to fire.", DamageTypeEnum::Magic, HashString("mazetd/buildings/augment-magic.object") },
 			};
 
 			for (const auto &it : elementsData)

@@ -124,7 +124,7 @@ namespace
 		if (super)
 			dmg *= 2;
 		if (resist)
-			dmg /= 3;
+			dmg /= 4;
 		mo.life -= dmg;
 
 		EffectConfig cfg;
