@@ -10,6 +10,8 @@ namespace
 {
 	bool keyPress(InputKey in)
 	{
+		if (!gameReady)
+			return false;
 		constexpr Real speedFactor = 1.15;
 		switch (in.key)
 		{

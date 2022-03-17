@@ -1,6 +1,4 @@
-# Blender v2.93.0 OBJ File: ''
-# www.blender.org
-o Cube
+o pathMark
 v -0.250000 0.000000 0.500000
 v 0.250000 0.000000 0.500000
 v 0.000000 0.500000 0.500000

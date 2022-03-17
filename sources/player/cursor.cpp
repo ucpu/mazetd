@@ -13,10 +13,10 @@
 namespace
 {
 	Entity *cursorMarker = nullptr;
-	Entity *modsMarkers[3] = {};
+	Entity *towersMarkers[200] = {};
 
-	template<uint32 Object>
-	void markPos(Entity *&e, uint32 position)
+	template<uint32 Object, float Offset = 0.0f>
+	void markPos(Entity *&e, uint32 position, Real scale = 1)
 	{
 		if (position == m && e)
 		{
@@ -28,14 +28,15 @@ namespace
 			if (!e)
 				e = engineEntities()->createAnonymous();
 			e->value<RenderComponent>().object = Object;
-			e->value<TransformComponent>().position = globalGrid->center(position);
+			e->value<TransformComponent>().position = globalGrid->center(position) + Vec3(0, Offset, 0);
+			e->value<TransformComponent>().scale = scale;
 		}
 	}
 
-	template<uint32 Object>
-	void markEnt(Entity *&e, Entity *mod)
+	template<uint32 Object, float Offset = 0.0f>
+	void markEnt(Entity *&e, Entity *ent, Real scale = 1)
 	{
-		markPos<Object>(e, mod ? mod->value<PositionComponent>().tile : m);
+		markPos<Object, Offset>(e, ent ? ent->value<PositionComponent>().tile : m, scale);
 	}
 
 	void updateCursorMarker()
@@ -43,18 +44,62 @@ namespace
 		markPos<HashString("mazetd/misc/cursor.obj")>(cursorMarker, playerCursorTile != m && none(globalGrid->flags[playerCursorTile] & TileFlags::Invalid) ? playerCursorTile : m);
 	}
 
+	bool affected(Entity *e, const AttackComponent &mods)
+	{
+		for (const auto &it : mods.effectors)
+			if (it == e)
+				return true;
+		return false;
+	}
+
 	void updateTowerMods()
 	{
-		const AttackComponent *mods = nullptr;
+		Entity *currEnt = nullptr;
 		if (playerCursorTile != m)
 		{
-			entitiesVisitor([&](const PositionComponent &po, const AttackComponent &atc) {
+			entitiesVisitor([&](Entity *e, const PositionComponent &po) {
 				if (po.tile == playerCursorTile)
-					mods = &atc;
+					currEnt = e;
 			}, gameEntities(), false);
 		}
-		for (uint32 i = 0; i < 3; i++)
-			markEnt<HashString("mazetd/misc/modMark.obj")>(modsMarkers[i], mods ? mods->effectors[i] : nullptr);
+
+		uint32 tm = 0;
+
+		if (currEnt)
+		{
+			{ // mods
+				const AttackComponent *mods = currEnt->has<AttackComponent>() ? &currEnt->value<AttackComponent>() : nullptr;
+				for (uint32 i = 0; i < 3; i++)
+				{
+					Entity *ent = mods ? mods->effectors[i] : nullptr;
+					if (ent)
+						markEnt<HashString("mazetd/misc/modMark.obj")>(towersMarkers[tm++], ent);
+				}
+			}
+
+			// towers
+			entitiesVisitor([&](const PositionComponent &po, const AttackComponent &atc) {
+				if (affected(currEnt, atc))
+					markPos<HashString("mazetd/misc/modMark.obj")>(towersMarkers[tm++], po.tile);
+			}, gameEntities(), false);
+
+			// attack range
+			if (currEnt->has<DamageComponent>())
+			{
+				Real r = currEnt->value<DamageComponent>().firingRange;
+				CAGE_ASSERT(currEnt->has<AttackComponent>());
+				if (currEnt->value<AttackComponent>().bonus == BonusTypeEnum::FiringRange)
+					r += 4; // keep in sync with actual attacks
+				markEnt<HashString("mazetd/misc/attackRangeMark.obj"), 1.0f>(towersMarkers[tm++], currEnt, r);
+			}
+
+			// mana collector range
+			if (currEnt->has<ManaCollectorComponent>())
+				markEnt<HashString("mazetd/misc/manaRangeMark.obj"), 1.0f>(towersMarkers[tm++], currEnt, currEnt->value<ManaCollectorComponent>().range);
+		}
+
+		while (tm < sizeof(towersMarkers) / sizeof(towersMarkers[0]))
+			markPos<0>(towersMarkers[tm++], m);
 	}
 
 	void engineUpdate()

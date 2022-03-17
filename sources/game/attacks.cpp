@@ -55,7 +55,7 @@ namespace
 			{
 			case BonusTypeEnum::Damage: damage *= 2; manaCost *= 2; break;
 			case BonusTypeEnum::FiringRate: firingPeriod /= 2; break;
-			case BonusTypeEnum::FiringRange: firingRange += 4; break;
+			case BonusTypeEnum::FiringRange: firingRange += 4; break; // keep in sync with visualization
 			case BonusTypeEnum::SplashRadius: splashRadius += 2; manaCost *= 3; break;
 			case BonusTypeEnum::IntenseDot: overTime /= 5; break;
 			case BonusTypeEnum::ManaDiscount: manaCost /= 3; break;
@@ -143,8 +143,7 @@ namespace
 				mp = pos.position();
 				mpp = mp + Vec3(0, e->value<PivotComponent>(compPivot).elevation, 0);
 
-				if (acceptMods)
-					applyMods();
+				applyMods();
 
 				findMonstersForTower();
 				if (monsters.empty())

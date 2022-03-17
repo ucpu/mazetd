@@ -661,7 +661,7 @@ void setScreenGame()
 	{
 		Entity *e = ents->create(520);
 		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0.5, 1);
+		sc.alignment = Vec2(0.5, 0.99);
 	}
 
 	{

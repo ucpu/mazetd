@@ -24,7 +24,7 @@ namespace
 		CAGE_ASSERT(globalGrid);
 
 		entitiesVisitor([&](Entity *e, const MovementComponent &mv, const MonsterComponent &) {
-			monstersData->update(e->name(), mv.position());
+			monstersData->update(e->name(), mv.position() * Vec3(1, 0, 1));
 		}, gameEntities(), false);
 
 		monstersData->rebuild();

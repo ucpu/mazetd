@@ -10,6 +10,13 @@ modMark.obj
 scheme = model
 uvs = false
 tangents = false
+attackRangeMark.obj
+manaRangeMark.obj
+
+[]
+scheme = model
+uvs = false
+tangents = false
 pathMark.obj
 
 []

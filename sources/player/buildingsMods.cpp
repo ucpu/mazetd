@@ -84,7 +84,9 @@ namespace
 				a.firingDelay = firingDelay;
 			}, gameEntities(), false);
 
-			entitiesVisitor([&](Entity *me, AttackComponent &a) {
+			entitiesVisitor([&](Entity *me, const DamageComponent &dmg, AttackComponent &a) {
+				if (!dmg.acceptMods)
+					return;
 				findNeighbors(me);
 				findMods(a);
 			}, gameEntities(), false);

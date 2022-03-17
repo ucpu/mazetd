@@ -1,6 +1,4 @@
-# Blender v2.93.0 OBJ File: ''
-# www.blender.org
-o Cube_Cube.01
+o cursor
 v -0.5 0.0 0.5
 v -0.5 2.0 0.5
 v -0.5 0.0 -0.5
