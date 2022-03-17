@@ -15,8 +15,8 @@ namespace
 	Entity *cursorMarker = nullptr;
 	Entity *towersMarkers[200] = {};
 
-	template<uint32 Object, float Offset = 0.0f>
-	void markPos(Entity *&e, uint32 position, Real scale = 1)
+	template<uint32 Object>
+	void markPos(Entity *&e, uint32 position, Real scale = 1, Real offset = 0)
 	{
 		if (position == m && e)
 		{
@@ -28,15 +28,15 @@ namespace
 			if (!e)
 				e = engineEntities()->createAnonymous();
 			e->value<RenderComponent>().object = Object;
-			e->value<TransformComponent>().position = globalGrid->center(position) + Vec3(0, Offset, 0);
+			e->value<TransformComponent>().position = globalGrid->center(position) + Vec3(0, offset, 0);
 			e->value<TransformComponent>().scale = scale;
 		}
 	}
 
-	template<uint32 Object, float Offset = 0.0f>
-	void markEnt(Entity *&e, Entity *ent, Real scale = 1)
+	template<uint32 Object>
+	void markEnt(Entity *&e, Entity *ent, Real scale = 1, Real offset = 0)
 	{
-		markPos<Object, Offset>(e, ent ? ent->value<PositionComponent>().tile : m, scale);
+		markPos<Object>(e, ent ? ent->value<PositionComponent>().tile : m, scale, offset);
 	}
 
 	void updateCursorMarker()
@@ -90,12 +90,12 @@ namespace
 				CAGE_ASSERT(currEnt->has<AttackComponent>());
 				if (currEnt->value<AttackComponent>().bonus == BonusTypeEnum::FiringRange)
 					r += 4; // keep in sync with actual attacks
-				markEnt<HashString("mazetd/misc/attackRangeMark.obj"), 1.0f>(towersMarkers[tm++], currEnt, r);
+				markEnt<HashString("mazetd/misc/attackRangeMark.obj")>(towersMarkers[tm++], currEnt, r, 1);
 			}
 
 			// mana collector range
 			if (currEnt->has<ManaCollectorComponent>())
-				markEnt<HashString("mazetd/misc/manaRangeMark.obj"), 1.0f>(towersMarkers[tm++], currEnt, currEnt->value<ManaCollectorComponent>().range);
+				markEnt<HashString("mazetd/misc/manaRangeMark.obj")>(towersMarkers[tm++], currEnt, currEnt->value<ManaCollectorComponent>().range, 1);
 		}
 
 		while (tm < sizeof(towersMarkers) / sizeof(towersMarkers[0]))
