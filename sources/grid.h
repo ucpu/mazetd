@@ -28,7 +28,7 @@ struct Grid : private Immovable
 	Vec2i gridOffset;
 	Vec2i resolution;
 
-	Holder<PointerRange<const sint16>> elevations; 
+	Holder<PointerRange<const sint16>> elevations;
 	Holder<PointerRange<TileFlags>> flags;
 
 	uint32 index(Vec2i pos) const;

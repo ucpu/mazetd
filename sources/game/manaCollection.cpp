@@ -1,5 +1,9 @@
 #include <cage-core/entitiesVisitor.h>
 #include <cage-core/profiling.h>
+#include <cage-core/enumerate.h>
+#include <cage-core/hashString.h>
+#include <cage-engine/scene.h>
+#include <cage-simple/engine.h>
 
 #include "../game.h"
 #include "../grid.h"
@@ -46,10 +50,8 @@ namespace
 		}
 	}
 
-	void gameUpdate()
+	void collectMana()
 	{
-		placeNewMana();
-
 		ProfilingScope profiling("collect mana", "mana");
 
 		entitiesVisitor([](Entity *e, const PositionComponent &pos, const ManaCollectorComponent &col, ManaStorageComponent &stor) {
@@ -96,14 +98,57 @@ namespace
 		}, gameEntities(), false);
 	}
 
+	void gameUpdate()
+	{
+		placeNewMana();
+		collectMana();
+	}
+
+	std::vector<Entity *> manaGrid;
+
+	void engineUpdate()
+	{
+		if (gameReady)
+		{
+			Entity *cam = engineEntities()->get(1);
+			const TransformComponent &ct = cam->value<TransformComponent>();
+			manaGrid.resize(globalGrid->flags.size());
+			for (auto it : enumerate(manaGrid))
+			{
+				const bool avail = any(globalGrid->flags[it.index] & TileFlags::Mana);
+				Entity *&e = *it;
+				if (avail && !e)
+				{
+					e = engineEntities()->createAnonymous();
+					e->value<RenderComponent>().object = HashString("mazetd/particles/sprite.obj;magic");
+					e->value<TransformComponent>().position = globalGrid->center(it.index) + Vec3(0, 0.1, 0) + randomDirection3() * Vec3(1, 0, 1) * 0.15;
+					e->value<TransformComponent>().orientation = Quat(Vec3(0, -1, 0), Vec3(0, 0, 1));
+					e->value<TransformComponent>().scale = 0.5;
+					e->value<TextureAnimationComponent>().startTime = randomRange(0u, 1000000000u);
+					e->value<TextureAnimationComponent>().speed = 0.05;
+				}
+				else if (!avail && e)
+				{
+					e->destroy();
+					e = nullptr;
+				}
+			}
+		}
+		else
+			manaGrid.clear();
+	}
+
 	struct Callbacks
 	{
 		EventListener<void()> gameUpdateListener;
+		EventListener<void()> engineUpdateListener;
 
 		Callbacks()
 		{
 			gameUpdateListener.attach(eventGameUpdate());
 			gameUpdateListener.bind<&gameUpdate>();
+			engineUpdateListener.attach(controlThread().update);
+			engineUpdateListener.bind<&engineUpdate>();
 		}
 	} callbacksInstance;
 }

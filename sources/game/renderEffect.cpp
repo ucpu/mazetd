@@ -22,7 +22,7 @@ namespace
 	{
 		const uint64 time = engineControlTime();
 		Entity *cam = engineEntities()->get(1);
-		TransformComponent &ct = cam->value<TransformComponent>();
+		const TransformComponent &ct = cam->value<TransformComponent>();
 		entitiesVisitor([&](Entity *e, TransformComponent &tr, const RenderEffectComponent &re) {
 			tr.position += re.move;
 			tr.orientation = Quat(tr.position - ct.position, ct.orientation * Vec3(0, 1, 0));
@@ -68,7 +68,7 @@ void renderEffect(const EffectConfig &config)
 	const Vec3 dir = normalize(config.pos2 - config.pos1);
 	const uint32 n = max(uint32(dist.value), 1u);
 	Entity *cam = engineEntities()->get(1);
-	TransformComponent &ct = cam->value<TransformComponent>();
+	const TransformComponent &ct = cam->value<TransformComponent>();
 	for (uint32 i = 0; i < n; i++)
 	{
 		Entity *e = engineEntities()->createAnonymous();
@@ -79,9 +79,7 @@ void renderEffect(const EffectConfig &config)
 		TransformComponent &tr = e->value<TransformComponent>();
 		tr.position = config.pos1 + dir * (i + 0.2);
 		tr.orientation = Quat(tr.position - ct.position, ct.orientation * Vec3(0, 1, 0));
-		RenderComponent &r = e->value<RenderComponent>();
-		r.object = renderName(config);
-		TextureAnimationComponent &ta = e->value<TextureAnimationComponent>();
-		ta.startTime = randomRange(0u, 1000000000u);
+		e->value<RenderComponent>().object = renderName(config);
+		e->value<TextureAnimationComponent>().startTime = randomRange(0u, 1000000000u);
 	}
 }
