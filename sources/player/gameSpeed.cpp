@@ -12,7 +12,7 @@ namespace
 	{
 		if (!gameReady)
 			return false;
-		constexpr Real speedFactor = 1.15;
+		constexpr Real speedFactor = 1.5;
 		switch (in.key)
 		{
 		case 334: // numeric plus

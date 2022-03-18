@@ -13,7 +13,7 @@
 namespace
 {
 	Entity *cursorMarker = nullptr;
-	Entity *towersMarkers[200] = {};
+	Entity *towersMarkers[500] = {};
 
 	template<uint32 Object>
 	void markPos(Entity *&e, uint32 position, Real scale = 1, Real offset = 0)
@@ -96,6 +96,27 @@ namespace
 			// mana collector range
 			if (currEnt->has<ManaCollectorComponent>())
 				markEnt<HashString("mazetd/misc/manaRangeMark.obj")>(towersMarkers[tm++], currEnt, currEnt->value<ManaCollectorComponent>().range, 1);
+
+			// mana distributors
+			if (currEnt->has<ManaReceiverComponent>())
+			{
+				const Vec3 p = currEnt->value<PositionComponent>().position() * Vec3(1, 0, 1);
+				entitiesVisitor([&](const PositionComponent &po, const ManaDistributorComponent &man) {
+					if (distanceSquared(p, po.position() * Vec3(1, 0, 1)) < sqr(man.range))
+						markPos<HashString("mazetd/misc/manaMark.obj")>(towersMarkers[tm++], po.tile);
+				}, gameEntities(), false);
+			}
+
+			// mana receivers
+			if (currEnt->has<ManaDistributorComponent>())
+			{
+				const Real r2 = sqr(currEnt->value<ManaDistributorComponent>().range);
+				const Vec3 p = currEnt->value<PositionComponent>().position() * Vec3(1, 0, 1);
+				entitiesVisitor([&](const PositionComponent &po, const ManaReceiverComponent &) {
+					if (distanceSquared(p, po.position() * Vec3(1, 0, 1)) < r2)
+						markPos<HashString("mazetd/misc/manaMark.obj")>(towersMarkers[tm++], po.tile);
+				}, gameEntities(), false);
+			}
 		}
 
 		while (tm < sizeof(towersMarkers) / sizeof(towersMarkers[0]))
