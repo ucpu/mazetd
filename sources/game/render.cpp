@@ -28,13 +28,8 @@ namespace
 	void engineComponentAdded(Entity *e)
 	{
 		Entity *f = e->value<EngineComponent>().entity = engineEntities()->createAnonymous();
-		EntityComponent *pc = gameEntities()->component<PositionComponent>();
-		if (e->has(pc))
-		{
-			TransformComponent &t = f->value<TransformComponent>();
-			PositionComponent &p = e->value<PositionComponent>(pc);
-			t.position = globalGrid->center(p.tile);
-		}
+		if (e->has<PositionComponent>())
+			f->value<TransformComponent>().position = globalGrid->center(e->value<PositionComponent>().tile);
 	}
 
 	void engineComponentRemoved(Entity *e)

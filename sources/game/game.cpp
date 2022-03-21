@@ -43,6 +43,7 @@ namespace
 		Holder<EntityManager> man = newEntityManager();
 		registerEntityComponents(+man);
 		man->defineComponent(EngineComponent());
+		man->defineComponent(HealthbarComponent());
 		man->defineComponent(PositionComponent());
 		man->defineComponent(MovementComponent());
 		man->defineComponent(MonsterComponent());

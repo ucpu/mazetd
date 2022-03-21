@@ -243,6 +243,7 @@ void SpawningGroup::spawnOne()
 	}
 
 	mo.life = mo.maxLife;
+	e->value<HealthbarComponent>();
 }
 
 void SpawningGroup::process()

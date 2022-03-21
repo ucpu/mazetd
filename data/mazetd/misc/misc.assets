@@ -13,13 +13,24 @@ uvs = false
 tangents = false
 attackRangeMark.obj
 manaRangeMark.obj
+pathMark.obj
 
 []
 scheme = model
-uvs = false
+normals = false
+uvs = true
 tangents = false
-pathMark.obj
+healthbar.obj
 
 []
 scheme = pack
 misc.pack
+
+[]
+scheme = texture
+srgb = true
+target = 2dArray
+animationLoop = false
+wrapX = clampToEdge
+wrapY = clampToEdge
+healthbar/$$.png

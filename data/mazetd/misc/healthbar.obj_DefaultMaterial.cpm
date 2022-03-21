@@ -1,0 +1,17 @@
+[base]
+emission = 1
+
+[mult]
+opacity = 0.4
+
+[textures]
+albedo = healthbar/$$.png
+
+[flags]
+translucent
+noDepthWrite
+noVelocityWrite
+noShadowCast
+noLighting
+
+
