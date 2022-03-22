@@ -63,113 +63,9 @@ namespace
 		}
 	}
 
-	void updateCursor()
-	{
-		removeGuiEntitiesWithParent(201);
-
-		if (playerCursorTile == m)
-			return;
-
-		EntityManager *ents = engineGuiEntities();
-		sint32 index = 0;
-
-		entitiesVisitor([&](Entity *g, const PositionComponent &po, const NameComponent &nm) {
-			if (po.tile != playerCursorTile)
-				return;
-
-			{ // name
-				Entity *e = ents->createUnique();
-				GuiParentComponent &pp = e->value<GuiParentComponent>();
-				pp.parent = 201;
-				pp.order = index++;
-				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = String(nm.name);
-			}
-
-			if (g->has<ManaStorageComponent>())
-			{ // mana
-				Entity *e = ents->createUnique();
-				GuiParentComponent &pp = e->value<GuiParentComponent>();
-				pp.parent = 201;
-				pp.order = index++;
-				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = Stringizer() + "Mana: " + g->value<ManaStorageComponent>().mana + " / " + g->value<ManaStorageComponent>().capacity;
-			}
-
-			if (g->has<MonsterComponent>())
-			{ // monster
-				const MonsterComponent &mc = g->value<MonsterComponent>();
-				{ // life
-					Entity *e = ents->createUnique();
-					GuiParentComponent &pp = e->value<GuiParentComponent>();
-					pp.parent = 201;
-					pp.order = index++;
-					e->value<GuiLabelComponent>();
-					e->value<GuiTextComponent>().value = Stringizer() + "Life: " + (100 * mc.life / mc.maxLife) + " % (" + mc.life + ")";
-				}
-				{ // damages
-					constexpr const char *damageNames[] = { "Physical", "Fire", "Water", "Poison", "Magic" };
-					static_assert(sizeof(damageNames) / sizeof(damageNames[0]) == (uint32)DamageTypeEnum::Total);
-					for (uint32 i = 0; i < (uint32)DamageTypeEnum::Total; i++)
-					{
-						if (mc.dots[i].damage == 0 && mc.dots[i].duration == 0)
-							continue;
-						Entity *e = ents->createUnique();
-						GuiParentComponent &pp = e->value<GuiParentComponent>();
-						pp.parent = 201;
-						pp.order = index++;
-						e->value<GuiLabelComponent>();
-						e->value<GuiTextComponent>().value = Stringizer() + damageNames[i] + " damage: " + mc.dots[i].damage + " over " + mc.dots[i].duration + " ticks";
-					}
-				}
-				{ // waypoints
-					Entity *e = ents->createUnique();
-					GuiParentComponent &pp = e->value<GuiParentComponent>();
-					pp.parent = 201;
-					pp.order = index++;
-					e->value<GuiLabelComponent>();
-					e->value<GuiTextComponent>().value = Stringizer() + "Waypoints: " + bitCount(g->value<MonsterComponent>().visitedWaypointsBits);
-				}
-			}
-		}, gameEntities(), false);
-
-		{
-			struct Pair
-			{
-				TileFlags flag = TileFlags::None;
-				StringLiteral name;
-			};
-
-			constexpr const Pair pairs[] = {
-				Pair{ TileFlags::Mana, "Harvestable Mana" },
-				Pair{ TileFlags::Waypoint, "Monsters Waypoint" },
-				Pair{ TileFlags::Water, "Water Tile" },
-				Pair{ TileFlags::Sun, "Sun Tile" },
-				Pair{ TileFlags::Wind, "Wind Tile" },
-				Pair{ TileFlags::Snow, "Snow Tile" },
-			};
-
-			const TileFlags flags = globalGrid->flags[playerCursorTile];
-
-			for (const auto &p : pairs)
-			{
-				if (none(flags & p.flag))
-					continue;
-
-				Entity *e = ents->createUnique();
-				GuiParentComponent &pp = e->value<GuiParentComponent>();
-				pp.parent = 201;
-				pp.order = index++;
-				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = String(p.name);
-			}
-		}
-	}
-
 	void engineUpdate()
 	{
 		updateTopBar();
-		updateCursor();
 		engineGuiEntities()->get(521)->value<GuiTextComponent>().value = gamePaused ? "Paused" : "";
 	}
 
@@ -409,25 +305,6 @@ void setScreenGame()
 	engineUpdateListener.attach(controlThread().update);
 	engineUpdateListener.bind<&engineUpdate>();
 	gameReady = true;
-
-	// cursor
-
-	{
-		Entity *e = ents->create(200);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0, 1);
-	}
-
-	{
-		Entity *e = ents->create(201);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 200;
-		GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
-		sp.collapsed = false;
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-		ll.vertical = true;
-		e->value<GuiTextComponent>().value = "Cursor";
-	}
 
 	// top bar
 

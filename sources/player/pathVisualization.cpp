@@ -51,6 +51,12 @@ namespace
 		}
 	}
 
+	void gameUpdate()
+	{
+		if (gameTime == 1)
+			placeMarks();
+	}
+
 	bool keyRepeat(InputKey in)
 	{
 		if (in.key != 80) // key P
@@ -75,11 +81,14 @@ namespace
 
 	struct Callbacks
 	{
+		EventListener<void()> gameUpdateListener;
 		EventListener<void()> engineInitListener;
 		EventListener<void()> engineUpdateListener;
 
 		Callbacks()
 		{
+			gameUpdateListener.attach(eventGameUpdate());
+			gameUpdateListener.bind<&gameUpdate>();
 			engineInitListener.attach(controlThread().initialize);
 			engineInitListener.bind<&engineInit>();
 			engineUpdateListener.attach(controlThread().update);

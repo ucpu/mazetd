@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <functional>
 
+void setScreenGameWin();
 void updateSpawningMonsterPropertiesScreen();
 
 namespace
@@ -302,6 +303,9 @@ void SpawningGroup::generate()
 
 	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();
+
+	if (waveIndex == totalWaves + 1)
+		setScreenGameWin();
 }
 
 void SpawningGroup::init()
