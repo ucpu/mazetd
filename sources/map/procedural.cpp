@@ -8,7 +8,7 @@ namespace
 {
 	struct ProceduralImpl : public Procedural
 	{
-		Vec2 elevationOffset = randomChance2() * 1000;
+		const Vec2 elevationOffset = randomChance2() * 1000;
 
 		Holder<NoiseFunction> elevationNoise = []() {
 			NoiseFunctionCreateConfig cfg;
@@ -102,8 +102,8 @@ namespace
 				roughness = interpolate(roughness, r, factor);
 			}
 			{
-				const Vec2i tile = Vec2i((pos2 + 1000) * 15) % 15;
-				if (tile[0] == 7 || tile[1] == 7)
+				const Vec2i tile = Vec2i((pos2 + 1000) * 10) % 10;
+				if (tile[0] == 5 || tile[1] == 5)
 				{
 					constexpr Real factor = 0.3;
 					albedo = interpolate(albedo, Vec3(0.5), factor);

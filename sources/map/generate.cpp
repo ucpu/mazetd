@@ -45,9 +45,9 @@ namespace
 				ProfilingScope profiling("chunk unwrap", "mapgen");
 				MeshUnwrapConfig cfg;
 #ifdef CAGE_DEBUG
-				cfg.texelsPerUnit = 15;
+				cfg.texelsPerUnit = 10;
 #else
-				cfg.texelsPerUnit = 30;
+				cfg.texelsPerUnit = 20;
 #endif // CAGE_DEBUG
 				resolution = meshUnwrap(+msh, cfg);
 			}
@@ -74,7 +74,7 @@ namespace
 #ifdef CAGE_DEBUG
 				constexpr uint32 rounds = 2;
 #else
-				constexpr uint32 rounds = 5;
+				constexpr uint32 rounds = 4;
 #endif // CAGE_DEBUG
 				imageDilation(+chunk.albedo, rounds);
 				imageDilation(+chunk.material, rounds);
@@ -90,11 +90,7 @@ namespace
 			{
 				const TileFlags f = grid->flags[i];
 				if (any(f & TileFlags::Invalid) && none(f & TileFlags::Water))
-				{
-					const Real e = saturate(find(pos[1], -7.5, -6.5));
-					const Real o = any(f & TileFlags::Border) ? 1 : 1.5;
-					d += o * e;
-				}
+					d += saturate(find(pos[1], -7.5, -6.5));
 			}
 			return d;
 		}
@@ -110,16 +106,22 @@ namespace
 			{
 				ProfilingScope profiling("marching cubes", "mapgen");
 				MarchingCubesCreateConfig cfg;
-				cfg.box = Aabb(Vec3(-70, -15, -70), Vec3(70, 15, 70));
+				cfg.box = Aabb(Vec3(-55, -15, -55), Vec3(55, 15, 55));
 				cfg.clip = true;
 #ifdef CAGE_DEBUG
 				cfg.resolution = Vec3i(cfg.box.size() * 0.5);
 #else
-				cfg.resolution = Vec3i(cfg.box.size() * 2.5);
+				cfg.resolution = Vec3i(cfg.box.size() * 2);
 #endif // CAGE_DEBUG
 				Holder<MarchingCubes> mc = newMarchingCubes(cfg);
-				mc->updateByPosition(Delegate<Real(const Vec3 &)>().bind<Maker, &Maker::sdf>(this));
-				msh = mc->makeMesh();
+				{
+					ProfilingScope profiling("sdf", "mapgen");
+					mc->updateByPosition(Delegate<Real(const Vec3 &)>().bind<Maker, &Maker::sdf>(this));
+				}
+				{
+					ProfilingScope profiling("mesh", "mapgen");
+					msh = mc->makeMesh();
+				}
 			}
 			{
 				ProfilingScope profiling("discard disconnected", "mapgen");
@@ -128,11 +130,13 @@ namespace
 			{
 				ProfilingScope profiling("mesh simplification", "mapgen");
 				MeshSimplifyConfig cfg;
-				cfg.approximateError = 0.1;
+				cfg.approximateError = 0.15;
 				cfg.minEdgeLength = 0.1;
 				cfg.maxEdgeLength = 3;
 #ifdef CAGE_DEBUG
-				cfg.iterations = 2;
+				cfg.iterations = 1;
+#else
+				cfg.iterations = 3;
 #endif // CAGE_DEBUG
 				meshSimplify(+msh, cfg);
 			}
@@ -140,7 +144,7 @@ namespace
 			{
 				ProfilingScope profiling("mesh chunking", "mapgen");
 				MeshChunkingConfig cfg;
-				cfg.maxSurfaceArea = 300;
+				cfg.maxSurfaceArea = 500;
 				meshes = meshChunking(+msh, cfg);
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "mesh chunks: " + meshes.size());
