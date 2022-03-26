@@ -14,6 +14,7 @@ namespace
 	Real camDist = 50;
 	Rads camYaw = Degs(45);
 	Transform camTrans;
+	bool ortho;
 
 	void updateCamera()
 	{
@@ -25,8 +26,8 @@ namespace
 				elev = globalGrid->center(index)[1];
 		}
 		const Real cd = saturate((camDist - 10) / (70 - 10));
-		const Rads pitch = interpolate(Degs(-85), Degs(-55), smoothstep(cd));
-		camTrans.orientation = Quat(pitch, camYaw, Degs());
+		const Rads pitch = interpolate(Degs(-50), Degs(-60), smoothstep(cd));
+		camTrans.orientation = Quat(ortho ? Rads(Degs(-90)) : pitch, camYaw, Degs());
 		camTrans.position = Vec3(camCenter[0], elev, camCenter[1]) + camTrans.orientation * Vec3(0, 0, camDist);
 	}
 
@@ -108,11 +109,23 @@ namespace
 		return false;
 	}
 
+	bool keyRelease(InputKey in)
+	{
+		if (in.key == 'C')
+		{
+			ortho = !ortho;
+			updateCamera();
+			return true;
+		}
+		return false;
+	}
+
 	InputListener<InputClassEnum::MousePress, InputMouse, bool> mousePressListener;
 	InputListener<InputClassEnum::MouseRelease, InputMouse, bool> mouseReleaseListener;
 	InputListener<InputClassEnum::MouseMove, InputMouse, bool> mouseMoveListener;
 	InputListener<InputClassEnum::MouseWheel, InputMouseWheel, bool> mouseWheelListener;
 	InputListener<InputClassEnum::FocusLose, InputWindow, bool> focusloseListener;
+	InputListener<InputClassEnum::KeyRelease, InputKey, bool> keyReleaseListener;
 
 	void engineInit()
 	{
@@ -126,6 +139,8 @@ namespace
 		mouseWheelListener.bind<&mouseWheel>();
 		focusloseListener.attach(engineWindow()->events, 104);
 		focusloseListener.bind<&focusLose>();
+		keyReleaseListener.attach(engineWindow()->events, 105);
+		keyReleaseListener.bind<&keyRelease>();
 	}
 
 	void engineUpdate()
@@ -164,6 +179,16 @@ namespace
 		Entity *e = engineEntities()->get(1);
 		TransformComponent &t = e->value<TransformComponent>();
 		t = interpolate(t, camTrans, 0.5);
+		CameraComponent &c = e->value<CameraComponent>();
+		c.cameraType = ortho ? CameraTypeEnum::Orthographic : CameraTypeEnum::Perspective;
+		if (ortho)
+		{
+			const Vec2i res = engineWindow()->resolution();
+			const Real ratio = Real(res[0]) / Real(res[1]);
+			c.camera.orthographicSize = Vec2(camDist * ratio, camDist) * 0.5;
+		}
+		else
+			c.camera.perspectiveFov = Degs(60);
 	}
 
 	void gameReset()

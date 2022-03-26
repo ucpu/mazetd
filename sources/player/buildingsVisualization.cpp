@@ -135,7 +135,12 @@ namespace
 			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
 			const CameraComponent &a = c->value<CameraComponent>();
 			const Mat4 view = Mat4(inverse(c->value<TransformComponent>()));
-			const Mat4 proj = perspectiveProjection(a.camera.perspectiveFov, Real(res[0]) / Real(res[1]), a.near, a.far);
+			const Mat4 proj = [&]() {
+				if (a.cameraType == CameraTypeEnum::Perspective)
+					return perspectiveProjection(a.camera.perspectiveFov, Real(res[0]) / Real(res[1]), a.near, a.far);
+				const Vec2 &os = a.camera.orthographicSize;
+				return orthographicProjection(-os[0], os[0], -os[1], os[1], a.near, a.far);
+			}();
 			const Mat4 inv = inverse(proj * view);
 			const Vec2 cp = (Vec2(cur) / Vec2(res) * 2 - 1) * Vec2(1, -1);
 			const Vec4 pn = inv * Vec4(cp, -1, 1);
