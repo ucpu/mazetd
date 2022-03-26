@@ -310,166 +310,141 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(300);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0.5, 0);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.5, 0);
 	}
 
 	{
 		Entity *e = ents->create(301);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 300;
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
+		e->value<GuiParentComponent>().parent = 300;
+		e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(310);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 301;
-		pp.order = 1;
-		GuiButtonComponent &but = e->value<GuiButtonComponent>();
-		GuiImageComponent &img = e->value<GuiImageComponent>();
-		img.textureName = HashString("mazetd/gui/menu.png");
-		GuiEventComponent &ev = e->value<GuiEventComponent>();
-		ev.event.bind<&buttonMenu>();
+		e->value<GuiParentComponent>().parent = 301;
+		e->value<GuiParentComponent>().order = 1;
+		e->value<GuiButtonComponent>();
+		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/menu.png");
+		e->value<GuiEventComponent>().event.bind<&buttonMenu>();
 	}
 
 	{
 		Entity *e = ents->create(302);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 301;
-		pp.order = 2;
-		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
+		e->value<GuiParentComponent>().parent = 301;
+		e->value<GuiParentComponent>().order = 2;
+		e->value<GuiPanelComponent>();
+		e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(311);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 302;
-		pp.order = 1;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
-		GuiImageComponent &img = e->value<GuiImageComponent>();
-		img.textureName = HashString("mazetd/gui/path.png");
+		e->value<GuiParentComponent>().parent = 302;
+		e->value<GuiParentComponent>().order = 1;
+		e->value<GuiLabelComponent>();
+		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/path.png");
 	}
 
 	{
 		Entity *e = ents->create(312);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 302;
-		pp.order = 2;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		e->value<GuiParentComponent>().parent = 302;
+		e->value<GuiParentComponent>().order = 2;
+		e->value<GuiLabelComponent>();
 		e->value<GuiTextComponent>().value = "path";
 	}
 
 	{
 		Entity *e = ents->create(303);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 301;
-		pp.order = 3;
-		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
+		e->value<GuiParentComponent>().parent = 301;
+		e->value<GuiParentComponent>().order = 3;
+		e->value<GuiPanelComponent>();
+		e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(313);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 303;
-		pp.order = 1;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
-		GuiImageComponent &img = e->value<GuiImageComponent>();
-		img.textureName = HashString("mazetd/gui/health.png");
+		e->value<GuiParentComponent>().parent = 303;
+		e->value<GuiParentComponent>().order = 1;
+		e->value<GuiLabelComponent>();
+		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/health.png");
 	}
 
 	{
 		Entity *e = ents->create(314);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 303;
-		pp.order = 2;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		e->value<GuiParentComponent>().parent = 303;
+		e->value<GuiParentComponent>().order = 2;
+		e->value<GuiLabelComponent>();
 		e->value<GuiTextComponent>().value = "health";
 	}
 
 	{
 		Entity *e = ents->create(304);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 301;
-		pp.order = 4;
-		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
+		e->value<GuiParentComponent>().parent = 301;
+		e->value<GuiParentComponent>().order = 4;
+		e->value<GuiPanelComponent>();
+		e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(315);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 304;
-		pp.order = 1;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
-		GuiImageComponent &img = e->value<GuiImageComponent>();
-		img.textureName = HashString("mazetd/gui/dollar.png");
+		e->value<GuiParentComponent>().parent = 304;
+		e->value<GuiParentComponent>().order = 1;
+		e->value<GuiLabelComponent>();
+		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/dollar.png");
 	}
 
 	{
 		Entity *e = ents->create(316);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 304;
-		pp.order = 2;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		e->value<GuiParentComponent>().parent = 304;
+		e->value<GuiParentComponent>().order = 2;
+		e->value<GuiLabelComponent>();
 		e->value<GuiTextComponent>().value = "dollars";
 	}
 
 	{
 		Entity *e = ents->create(305);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 301;
-		pp.order = 5;
-		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
+		e->value<GuiParentComponent>().parent = 301;
+		e->value<GuiParentComponent>().order = 5;
+		e->value<GuiPanelComponent>();
+		e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(317);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 305;
-		pp.order = 1;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
-		GuiImageComponent &img = e->value<GuiImageComponent>();
-		img.textureName = HashString("mazetd/gui/mana.png");
+		e->value<GuiParentComponent>().parent = 305;
+		e->value<GuiParentComponent>().order = 1;
+		e->value<GuiLabelComponent>();
+		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/mana.png");
 	}
 
 	{
 		Entity *e = ents->create(318);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 305;
-		pp.order = 2;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		e->value<GuiParentComponent>().parent = 305;
+		e->value<GuiParentComponent>().order = 2;
+		e->value<GuiLabelComponent>();
 		e->value<GuiTextComponent>().value = "mana";
 	}
 
 	{
 		Entity *e = ents->create(306);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 301;
-		pp.order = 6;
-		GuiPanelComponent &pnl = e->value<GuiPanelComponent>();
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
+		e->value<GuiParentComponent>().parent = 301;
+		e->value<GuiParentComponent>().order = 6;
+		e->value<GuiPanelComponent>();
+		e->value<GuiLayoutLineComponent>();
 	}
 
 	{
 		Entity *e = ents->create(319);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 306;
-		pp.order = 1;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
-		GuiImageComponent &img = e->value<GuiImageComponent>();
-		img.textureName = HashString("mazetd/gui/monster.png");
+		e->value<GuiParentComponent>().parent = 306;
+		e->value<GuiParentComponent>().order = 1;
+		e->value<GuiLabelComponent>();
+		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/monster.png");
 	}
 
 	{
 		Entity *e = ents->create(320);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 306;
-		pp.order = 2;
-		GuiLabelComponent &lb = e->value<GuiLabelComponent>();
+		e->value<GuiParentComponent>().parent = 306;
+		e->value<GuiParentComponent>().order = 2;
+		e->value<GuiLabelComponent>();
 		e->value<GuiTextComponent>().value = "monsters";
 	}
 
@@ -477,16 +452,13 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(400);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(1, 0);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(1, 0);
 	}
 
 	{
 		Entity *e = ents->create(401);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 400;
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-		ll.vertical = true;
+		e->value<GuiParentComponent>().parent = 400;
+		e->value<GuiLayoutLineComponent>().vertical = true;
 	}
 
 	generateBuildingsList();
@@ -495,18 +467,14 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(600);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(1, 1);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(1, 1);
 	}
 
 	{
 		Entity *e = ents->create(601);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 600;
-		GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
-		sp.collapsed = false;
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-		ll.vertical = true;
+		e->value<GuiParentComponent>().parent = 600;
+		e->value<GuiSpoilerComponent>().collapsed = false;
+		e->value<GuiLayoutLineComponent>().vertical = true;
 		e->value<GuiTextComponent>().value = "Building";
 	}
 
@@ -516,18 +484,14 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(500);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0, 0);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 0);
 	}
 
 	{
 		Entity *e = ents->create(501);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 500;
-		GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
-		sp.collapsed = false;
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-		ll.vertical = true;
+		e->value<GuiParentComponent>().parent = 500;
+		e->value<GuiSpoilerComponent>().collapsed = false;
+		e->value<GuiLayoutLineComponent>().vertical = true;
 		e->value<GuiTextComponent>().value = "Spawning";
 	}
 
@@ -537,15 +501,55 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(520);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0.5, 0.99);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.5, 0.99);
 	}
 
 	{
 		Entity *e = ents->create(521);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 520;
+		e->value<GuiParentComponent>().parent = 520;
 		e->value<GuiLabelComponent>();
 		e->value<GuiTextComponent>().value = "Paused";
+	}
+
+	// controls
+
+	{
+		Entity *e = ents->create(800);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 1);
+	}
+
+	{
+		Entity *e = ents->create(801);
+		GuiParentComponent &pp = e->value<GuiParentComponent>();
+		pp.parent = 800;
+		e->value<GuiSpoilerComponent>().collapsed = false;
+		e->value<GuiLayoutLineComponent>().vertical = true;
+		e->value<GuiTextComponent>().value = "Controls";
+	}
+
+	{
+		static constexpr const char *lines[] = {
+			"LMB - place selected building",
+			"MMB - destroy building",
+			"RMB - move camera",
+			"Wheel - zoom",
+			"WSAD - move camera",
+			"QE - rotate camera",
+			"C - change camera mode",
+			"P - visualize monsters paths",
+			"Spacebar - pause the game",
+			"PGUP/DN - speed up/down the game",
+			"Home - reset game speed",
+		};
+
+		uint32 idx = 0;
+		for (const auto &it : lines)
+		{
+			Entity *e = engineGuiEntities()->createUnique();
+			e->value<GuiParentComponent>().parent = 801;
+			e->value<GuiParentComponent>().order = idx++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = it;
+		}
 	}
 }

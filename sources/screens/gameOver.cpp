@@ -18,46 +18,36 @@ void setScreenGameOver()
 
 	{
 		Entity *e = ents->create(1);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0, 1);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 1);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 1;
-		GuiButtonComponent &control = e->value<GuiButtonComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Stop";
-		GuiEventComponent &ev = e->value<GuiEventComponent>();
-		ev.event.bind<&buttonStop>();
+		e->value<GuiParentComponent>().parent = 1;
+		e->value<GuiButtonComponent>();
+		e->value<GuiTextComponent>().value = "Stop";
+		e->value<GuiEventComponent>().event.bind<&buttonStop>();
 	}
 
 	{
 		Entity *e = ents->create(3);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0.45, 0.05);
-		GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-		ll.vertical = true;
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.45, 0.05);
+		e->value<GuiLayoutLineComponent>().vertical = true;
 	}
 
 	{
 		Entity *e = ents->create(4);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 3;
-		parent.order = 0;
-		GuiLabelComponent &label = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Game Over";
+		e->value<GuiParentComponent>().parent = 3;
+		e->value<GuiParentComponent>().order = 0;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = "Game Over";
 	}
 
 	{
 		Entity *e = ents->create(5);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 3;
-		parent.order = 1;
-		GuiLabelComponent &label = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = Stringizer() + "Waves: " + SpawningGroup::waveIndex;
+		e->value<GuiParentComponent>().parent = 3;
+		e->value<GuiParentComponent>().order = 1;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = Stringizer() + "Waves: " + SpawningGroup::waveIndex;
 	}
 }

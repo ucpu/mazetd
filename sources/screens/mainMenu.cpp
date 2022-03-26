@@ -31,71 +31,55 @@ void setScreenMainmenu()
 
 	{
 		Entity *e = ents->create(1);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0.45, 0.05);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.45, 0.05);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 1;
-		GuiLabelComponent &label = e->value<GuiLabelComponent>();
-		GuiTextFormatComponent &tf = e->value<GuiTextFormatComponent>();
-		tf.size = 50;
-		tf.color = Vec3(203, 238, 239) / 255; 
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "aMAZEing Tower Defense";
+		e->value<GuiParentComponent>().parent = 1;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextFormatComponent>().size = 50;
+		e->value<GuiTextFormatComponent>().color = Vec3(203, 238, 239) / 255; 
+		e->value<GuiTextComponent>().value = "aMAZEing Tower Defense";
 	}
 
 	{
 		Entity *e = ents->create(3);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0.8, 0.666);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.8, 0.666);
 	}
 
 	{
 		Entity *e = ents->create(4);
-		GuiPanelComponent &panel = e->value<GuiPanelComponent>();
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 3;
-		GuiLayoutLineComponent &layout = e->value<GuiLayoutLineComponent>();
-		layout.vertical = true;
+		e->value<GuiPanelComponent>();
+		e->value<GuiParentComponent>().parent = 3;
+		e->value<GuiLayoutLineComponent>().vertical = true;
 	}
 
 	{
 		Entity *e = ents->create(5);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 4;
-		parent.order = 1;
-		GuiButtonComponent &control = e->value<GuiButtonComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Start";
-		GuiEventComponent &ev = e->value<GuiEventComponent>();
-		ev.event.bind<&buttonStart>();
+		e->value<GuiParentComponent>().parent = 4;
+		e->value<GuiParentComponent>().order = 1;
+		e->value<GuiButtonComponent>();
+		e->value<GuiTextComponent>().value = "Start";
+		e->value<GuiEventComponent>().event.bind<&buttonStart>();
 	}
 
 	{
 		Entity *e = ents->create(6);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 4;
-		parent.order = 2;
-		GuiButtonComponent &control = e->value<GuiButtonComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "About";
-		GuiEventComponent &ev = e->value<GuiEventComponent>();
-		ev.event.bind<&buttonAbout>();
+		e->value<GuiParentComponent>().parent = 4;
+		e->value<GuiParentComponent>().order = 2;
+		e->value<GuiButtonComponent>();
+		e->value<GuiTextComponent>().value = "About";
+		e->value<GuiEventComponent>().event.bind<&buttonAbout>();
 	}
 
 	{
 		Entity *e = ents->create(7);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 4;
-		parent.order = 3;
-		GuiButtonComponent &control = e->value<GuiButtonComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Quit";
-		GuiEventComponent &ev = e->value<GuiEventComponent>();
-		ev.event.bind<&buttonQuit>();
+		e->value<GuiParentComponent>().parent = 4;
+		e->value<GuiParentComponent>().order = 3;
+		e->value<GuiButtonComponent>();
+		e->value<GuiTextComponent>().value = "Quit";
+		e->value<GuiEventComponent>().event.bind<&buttonQuit>();
 	}
 }
 

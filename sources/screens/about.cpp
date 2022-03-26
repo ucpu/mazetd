@@ -16,65 +16,44 @@ void setScreenAbout()
 
 	{
 		Entity *e = ents->create(1);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0, 1);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 1);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 1;
-		GuiButtonComponent &control = e->value<GuiButtonComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Back";
-		GuiEventComponent &ev = e->value<GuiEventComponent>();
-		ev.event.bind<&buttonBack>();
+		e->value<GuiParentComponent>().parent = 1;
+		e->value<GuiButtonComponent>();
+		e->value<GuiTextComponent>().value = "Back";
+		e->value<GuiEventComponent>().event.bind<&buttonBack>();
 	}
 
 	{
 		Entity *e = ents->create(4);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0.5, 0.2);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.5, 0.2);
 	}
 
 	{
 		Entity *e = ents->create(5);
-		GuiPanelComponent &panel = e->value<GuiPanelComponent>();
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 4;
-		GuiLayoutLineComponent &layout = e->value<GuiLayoutLineComponent>();
-		layout.vertical = true;
+		e->value<GuiPanelComponent>();
+		e->value<GuiParentComponent>().parent = 4;
+		e->value<GuiLayoutLineComponent>().vertical = true;
 	}
 
-	constexpr const char *lines[] = {
+	static constexpr const char *lines[] = {
 		"aMAZEing Tower Defense",
 		"Free game",
 		"Made by Tomáš Malý",
 		"Graphics by Quaternius, Kenney and others",
 		"Open source: https://github.com/ucpu/mazetd",
-		"",
-		"LMB - placing selected building",
-		"MMB - destroy building",
-		"RMB - move camera",
-		"Wheel - zoom",
-		"WSAD - move camera",
-		"QE - rotate camera",
-		"P - visualize monsters paths",
-		"Spacebar - pause the game",
-		"PGUP/DN - speed up/down the game",
-		"Home - reset game speed",
 	};
 
 	uint32 idx = 0;
 	for (const auto &it : lines)
 	{
 		Entity *e = engineGuiEntities()->createUnique();
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 5;
-		parent.order = idx;
-		GuiLabelComponent &lab = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = it;
-		idx++;
+		e->value<GuiParentComponent>().parent = 5;
+		e->value<GuiParentComponent>().order = idx++;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = it;
 	}
 }

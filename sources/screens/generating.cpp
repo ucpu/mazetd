@@ -33,16 +33,13 @@ void setScreenGenerating()
 
 	{
 		Entity *e = ents->create(1);
-		GuiScrollbarsComponent &sc = e->value<GuiScrollbarsComponent>();
-		sc.alignment = Vec2(0.45, 0.05);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.45, 0.05);
 	}
 
 	{
 		Entity *e = ents->create(2);
-		GuiParentComponent &parent = e->value<GuiParentComponent>();
-		parent.parent = 1;
-		GuiLabelComponent &label = e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Generating";
+		e->value<GuiParentComponent>().parent = 1;
+		e->value<GuiLabelComponent>();
+		e->value<GuiTextComponent>().value = "Generating";
 	}
 }
