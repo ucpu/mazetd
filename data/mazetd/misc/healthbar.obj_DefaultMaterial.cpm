@@ -10,7 +10,6 @@ albedo = healthbar/$$.png
 [flags]
 translucent
 noDepthWrite
-noVelocityWrite
 noShadowCast
 noLighting
 

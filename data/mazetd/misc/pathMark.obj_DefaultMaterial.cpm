@@ -5,7 +5,6 @@ roughness = 0.8
 mask = 0
 
 [flags]
-noVelocityWrite
 noShadowCast
 
 

@@ -7,3 +7,4 @@ albedo = water/$$.png
 [flags]
 noLighting
 noShadowCast
+alphaClip
