@@ -6,6 +6,8 @@
 #include "../game.h"
 #include "../grid.h"
 
+extern bool ortho;
+
 namespace
 {
 	void gameUpdate()
@@ -16,7 +18,10 @@ namespace
 			TransformComponent &t = hc.entity->value<TransformComponent>();
 			t.position = mv.position() + Vec3(0, 0.3, 0);
 			t.orientation = Quat(t.position - ct.position, ct.orientation * Vec3(0, 1, 0));
-			t.position += t.orientation * Vec3(0, 0, 1);
+			if (ortho)
+				t.position += Vec3(0, 1, 0);
+			else
+				t.position += t.orientation * Vec3(0, 0, 1);
 			hc.entity->value<TextureAnimationComponent>().offset = 1 - Real(mo.life) / mo.maxLife;
 		}, gameEntities(), false);
 	}

@@ -6,6 +6,8 @@
 #include "../grid.h"
 #include "../game.h"
 
+bool ortho;
+
 namespace
 {
 	ConfigBool confInvertCameraMove("mazetd/camera/invert", false);
@@ -14,7 +16,6 @@ namespace
 	Real camDist = 50;
 	Rads camYaw = Degs(45);
 	Transform camTrans;
-	bool ortho;
 
 	void updateCamera()
 	{
