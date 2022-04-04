@@ -7,3 +7,4 @@ albedo = ../particles/water/$$.png
 [flags]
 noLighting
 noShadowCast
+alphaClip
