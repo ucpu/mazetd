@@ -196,8 +196,7 @@ namespace
 	{
 		Entity *e = engineEntities()->create(1);
 		updateCamera();
-		TransformComponent &t = e->value<TransformComponent>();
-		t = camTrans;
+		e->value<TransformComponent>() = camTrans;
 		CameraComponent &c = e->value<CameraComponent>();
 		c.near = 0.3;
 		c.far = 300;

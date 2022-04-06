@@ -1,7 +1,7 @@
 #include <cage-core/assetManager.h>
 #include <cage-core/serialization.h>
 #include <cage-core/entities.h>
-#include <cage-core/meshMaterial.h>
+#include <cage-core/meshImport.h>
 #include <cage-core/profiling.h>
 #include <cage-engine/assetStructs.h>
 #include <cage-engine/opengl.h>
@@ -105,10 +105,10 @@ namespace
 			{
 				ProfilingScope profiling("dispatch model", "mapgen");
 				Holder<Model> model = newModel();
-				MeshMaterial mat;
+				MeshImportMaterial mat;
 				model->importMesh(+up.mesh, bufferView(mat));
-				model->setTextureName(0, re.albedo);
-				model->setTextureName(1, re.material);
+				model->textureNames[0] = re.albedo;
+				model->textureNames[1] = re.material;
 				re.model = engineAssets()->generateUniqueName();
 				engineAssets()->fabricate<AssetSchemeIndexModel, Model>(re.model, std::move(model), "chunkModel");
 			}
