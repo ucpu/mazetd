@@ -72,9 +72,9 @@ namespace
 			{
 				ProfilingScope profiling("chunk image dilation", "mapgen");
 #ifdef CAGE_DEBUG
-				constexpr uint32 rounds = 2;
+				static constexpr uint32 rounds = 2;
 #else
-				constexpr uint32 rounds = 4;
+				static constexpr uint32 rounds = 4;
 #endif // CAGE_DEBUG
 				imageDilation(+chunk.albedo, rounds);
 				imageDilation(+chunk.material, rounds);
@@ -168,7 +168,7 @@ namespace
 		collider->rebuild();
 		globalCollider = std::move(collider);
 		globalWaypoints = std::move(paths);
-		globalGrid = std::move(grid); // this is last as it is frequently used to detect whether a map is loaded
+		globalGrid = std::move(grid); // this is last as it is frequently used to detect whether the map is loaded
 		CAGE_LOG(SeverityEnum::Info, "mapgen", "map generation done");
 	}
 
