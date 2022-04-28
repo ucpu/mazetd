@@ -44,6 +44,7 @@ namespace
 		registerEntityComponents(+man);
 		man->defineComponent(EngineComponent());
 		man->defineComponent(HealthbarComponent());
+		man->defineComponent(ManabarComponent());
 		man->defineComponent(PositionComponent());
 		man->defineComponent(MovementComponent());
 		man->defineComponent(MonsterComponent());

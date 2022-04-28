@@ -21,6 +21,7 @@ normals = false
 uvs = true
 tangents = false
 healthbar.obj
+manabar.obj
 
 []
 scheme = pack
@@ -34,3 +35,4 @@ animationLoop = false
 wrapX = clampToEdge
 wrapY = clampToEdge
 healthbar/$$.png
+manabar/$$.png

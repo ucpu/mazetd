@@ -105,6 +105,8 @@ namespace
 		copyComp<ManaCollectorComponent>(e);
 		if (playerBuildingSelection->has<DamageComponent>())
 			e->value<AttackComponent>();
+		if (playerBuildingSelection->has<ManaStorageComponent>())
+			e->value<ManabarComponent>();
 
 		{
 			Entity *f = e->value<EngineComponent>().entity;

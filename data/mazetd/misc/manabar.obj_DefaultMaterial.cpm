@@ -1,0 +1,16 @@
+[base]
+emission = 1
+
+[mult]
+opacity = 0.4
+
+[textures]
+albedo = manabar/$$.png
+
+[flags]
+translucent
+noDepthWrite
+noShadowCast
+noLighting
+
+

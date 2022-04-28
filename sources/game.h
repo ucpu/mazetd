@@ -119,6 +119,11 @@ struct HealthbarComponent
 	Entity *entity = nullptr;
 };
 
+struct ManabarComponent
+{
+	Entity *entity = nullptr;
+};
+
 struct GuiModelComponent
 {
 	uint32 model = 0;
