@@ -42,6 +42,7 @@ namespace
 				const Vec3 b = globalGrid->center(*it);
 				t.position = interpolate(a, b, 0.5);
 				t.orientation = Quat(b - a, Vec3(0, 1, 0));
+				t.scale = 0.5;
 				RenderComponent &r = e->value<RenderComponent>();
 				r.object = HashString("mazetd/misc/pathMark.obj");
 				r.color = colorValueToHeatmapRgb(Real(it.index) * colorIndexScale);

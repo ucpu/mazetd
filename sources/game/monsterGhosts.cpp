@@ -19,11 +19,11 @@ namespace
 
 	void engineUpdate()
 	{
-		entitiesVisitor([&](Entity *e, TransformComponent &tr, RenderComponent &re, const GhostComponent &gh) {
+		entitiesVisitor([&](Entity *e, TransformComponent &tr, const GhostComponent &gh) {
 			tr.orientation = gh.rot * tr.orientation;
 			tr.position += gh.mov;
-			re.opacity -= 0.004;
-			if (re.opacity < 0.02)
+			tr.scale *= 0.98;
+			if (tr.scale < 0.1)
 				e->destroy();
 		}, engineEntities(), true);
 	}
@@ -54,7 +54,7 @@ void createMonsterGhost(Entity *ge)
 	sk = f->value<SkeletalAnimationComponent>();
 	RenderComponent &re = ee->value<RenderComponent>();
 	re = f->value<RenderComponent>();
-	re.opacity = 0.5;
+	re.opacity = 0.55;
 	GhostComponent &gh = ee->value<GhostComponent>();
 	gh.rot = interpolate(Quat(), randomDirectionQuat(), 0.01);
 	gh.mov = (Vec3(0, 5, 0) + randomDirection3()) * 0.01;

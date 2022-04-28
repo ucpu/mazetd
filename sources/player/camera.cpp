@@ -27,7 +27,7 @@ namespace
 				elev = globalGrid->center(index)[1];
 		}
 		const Real cd = saturate((camDist - 10) / (70 - 10));
-		const Rads pitch = interpolate(Degs(-50), Degs(-60), smoothstep(cd));
+		const Rads pitch = interpolate(Degs(-70), Degs(-60), smoothstep(cd));
 		camTrans.orientation = Quat(ortho ? Rads(Degs(-90)) : pitch, camYaw, Degs());
 		camTrans.position = Vec3(camCenter[0], elev, camCenter[1]) + camTrans.orientation * Vec3(0, 0, camDist);
 	}

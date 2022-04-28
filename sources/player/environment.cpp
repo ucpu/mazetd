@@ -8,7 +8,7 @@ namespace
 	{
 		Entity *e = engineEntities()->createAnonymous();
 		TransformComponent &t = e->value<TransformComponent>();
-		t.orientation = Quat(Degs(-50), randomAngle(), Degs());
+		t.orientation = Quat(Degs(-60), randomAngle(), Degs());
 		LightComponent &l = e->value<LightComponent>();
 		l.lightType = LightTypeEnum::Directional;
 		l.color = Vec3(1);
