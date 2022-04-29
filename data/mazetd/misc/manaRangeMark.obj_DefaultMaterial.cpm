@@ -1,9 +1,9 @@
 [base]
-albedo = 0.7, 0.7, 0.7
+albedo = 0.7, 0.7, 0.8
 roughness = 0.5
 
 [mult]
-opacity = 0.15
+opacity = 0.1
 
 [flags]
 translucent

@@ -264,9 +264,9 @@ namespace
 				e->value<PivotComponent>().elevation = 1;
 				e->value<CostComponent>().cost = 300;
 				e->value<ManaStorageComponent>();
-				e->value<ManaDistributorComponent>();
 				e->value<ManaCollectorComponent>().type = it.type;
 				e->value<ManaCollectorComponent>().collectAmount = it.amount;
+				e->value<ManaDistributorComponent>().range = e->value<ManaCollectorComponent>().range;
 				e->value<GuiModelComponent>().model = it.model;
 				e->value<DescriptionComponent>().description = it.description;
 			}

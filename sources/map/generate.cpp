@@ -60,8 +60,6 @@ namespace
 			chunk.material = newImage();
 			chunk.material->initialize(Vec2i(resolution), 1);
 			chunk.material->colorConfig.gammaSpace = GammaSpaceEnum::None;
-			chunk.material->colorConfig.alphaMode = AlphaModeEnum::None;
-			chunk.material->colorConfig.alphaChannelIndex = m;
 			{
 				ProfilingScope profiling("chunk generate texture", "mapgen");
 				MeshGenerateTextureConfig cfg;

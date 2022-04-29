@@ -15,7 +15,7 @@ namespace
 		l.intensity = 1.5;
 		ShadowmapComponent &s = e->value<ShadowmapComponent>();
 		s.resolution = 4096;
-		s.worldSize = Vec3(80);
+		s.worldSize = Vec3(75);
 	}
 
 	void gameUpdate()
