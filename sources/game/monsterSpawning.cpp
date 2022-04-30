@@ -260,7 +260,7 @@ void SpawningGroup::process()
 
 	CAGE_ASSERT(spawnCount > 0);
 	spawnCount--;
-	spawnDelay += spawnPeriod;
+	spawnDelay += spawnPeriod + randomRange(-5, 5);
 	checkingMonstersCounts = false;
 
 	for (uint32 simultaneously = 0; simultaneously < spawnSimultaneously; simultaneously++)
