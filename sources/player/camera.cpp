@@ -13,13 +13,14 @@ namespace
 	ConfigBool confInvertCameraMove("mazetd/camera/invert", false);
 	Vec2i lastMousePos;
 	Vec2 camCenter;
-	Real camDist = 50;
-	Rads camYaw = Degs(45);
+	Real camDist;
+	Rads camYaw;
 	Transform camTrans;
+	bool needReset;
 
 	void updateCamera()
 	{
-		Real elev = 0;
+		Real elev = -8.5;
 		if (globalGrid)
 		{
 			const uint32 index = globalGrid->index(camCenter);
@@ -146,6 +147,19 @@ namespace
 
 	void engineUpdate()
 	{
+		Entity *e = engineEntities()->get(1);
+
+		if (needReset)
+		{
+			camCenter = {};
+			camDist = 50;
+			camYaw = Degs(45);
+			updateCamera();
+			e->value<TransformComponent>() = camTrans;
+			if (globalGrid)
+				needReset = false;
+		}
+
 		if (engineWindow()->isFocused())
 		{
 			Vec2 mv2;
@@ -177,7 +191,6 @@ namespace
 			}
 		}
 
-		Entity *e = engineEntities()->get(1);
 		TransformComponent &t = e->value<TransformComponent>();
 		t = interpolate(t, camTrans, 0.5);
 		CameraComponent &c = e->value<CameraComponent>();
@@ -195,15 +208,14 @@ namespace
 	void gameReset()
 	{
 		Entity *e = engineEntities()->create(1);
-		updateCamera();
-		e->value<TransformComponent>() = camTrans;
 		CameraComponent &c = e->value<CameraComponent>();
 		c.near = 0.3;
 		c.far = 300;
 		c.ambientColor = Vec3(1);
-		c.ambientIntensity = 0.3;
+		c.ambientIntensity = 0.1;
 		c.ambientDirectionalColor = Vec3(1);
-		c.ambientDirectionalIntensity = 0.4;
+		c.ambientDirectionalIntensity = 0.5;
+		needReset = true;
 	}
 
 	struct Callbacks
