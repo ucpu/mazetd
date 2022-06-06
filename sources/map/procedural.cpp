@@ -18,7 +18,7 @@ namespace
 			cfg.gain = 0.55;
 			cfg.lacunarity = 2.1;
 			cfg.frequency = 0.003;
-			cfg.seed = detail::globalRandomGenerator().next();
+			cfg.seed = detail::randomGenerator().next();
 			return newNoiseFunction(cfg);
 		}();
 
@@ -26,7 +26,7 @@ namespace
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Simplex;
 			cfg.frequency = 0.08;
-			cfg.seed = detail::globalRandomGenerator().next();
+			cfg.seed = detail::randomGenerator().next();
 			return newNoiseFunction(cfg);
 		}();
 
@@ -35,7 +35,7 @@ namespace
 			cfg.type = NoiseTypeEnum::Perlin;
 			cfg.fractalType = NoiseFractalTypeEnum::PingPong;
 			cfg.frequency = 0.1;
-			cfg.seed = detail::globalRandomGenerator().next();
+			cfg.seed = detail::randomGenerator().next();
 			return newNoiseFunction(cfg);
 		}();
 
@@ -43,7 +43,7 @@ namespace
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Perlin;
 			cfg.frequency = 0.2;
-			cfg.seed = detail::globalRandomGenerator().next();
+			cfg.seed = detail::randomGenerator().next();
 			return newNoiseFunction(cfg);
 		}();
 
@@ -51,7 +51,7 @@ namespace
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Perlin;
 			cfg.frequency = 0.5;
-			cfg.seed = detail::globalRandomGenerator().next();
+			cfg.seed = detail::randomGenerator().next();
 			return newNoiseFunction(cfg);
 		}();
 
