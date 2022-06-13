@@ -3,8 +3,11 @@ roughness = 0.8
 
 [mult]
 mask = 0
+opacity = 0.5
 
 [flags]
+translucent
+noDepthWrite
 noShadowCast
 
 

@@ -536,7 +536,6 @@ void setScreenGame()
 			"WSAD - move camera",
 			"QE - rotate camera",
 			"C - change camera mode",
-			"P - visualize monsters paths",
 			"Spacebar - pause the game",
 			"PGUP/DN - speed up/down the game",
 			"Home - reset game speed",

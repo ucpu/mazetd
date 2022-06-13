@@ -8,7 +8,6 @@
 #include "../game.h"
 #include "../grid.h"
 
-void destroyShortestPathVisualizationMarks();
 void spatialUpdateStructures();
 void updateAttacksMods();
 
@@ -127,7 +126,6 @@ namespace
 			globalGrid->flags[playerCursorTile] |= TileFlags::Building;
 			globalWaypoints->update();
 		}
-		destroyShortestPathVisualizationMarks();
 		spatialUpdateStructures();
 		updateAttacksMods();
 	}
@@ -169,7 +167,6 @@ namespace
 			}, gameEntities(), true);
 		}
 
-		destroyShortestPathVisualizationMarks();
 		spatialUpdateStructures();
 		updateAttacksMods();
 	}

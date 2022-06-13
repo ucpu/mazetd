@@ -10,27 +10,23 @@
 
 namespace
 {
-	uint64 timeToDestroy;
-
-	InputListener<InputClassEnum::KeyRepeat, InputKey, bool> keyRepeatListener;
-
 	struct PathMarkComponent
 	{};
 
-	void destroyMarks()
+	void engineInit()
 	{
-		engineEntities()->component<PathMarkComponent>()->destroy();
+		engineEntities()->defineComponent(PathMarkComponent());
 	}
 
-	void placeMarks()
+	void engineUpdate()
 	{
-		destroyMarks();
-		timeToDestroy = engineControlTime() + 5 * 1000000;
+		engineEntities()->component<PathMarkComponent>()->destroy();
 		if (!globalWaypoints)
 			return;
 		const auto &wp = globalWaypoints->waypoints[globalWaypoints->minDistanceSpawner];
-		uint32 prev = m;
 		const Real colorIndexScale = 1 / Real(wp->fullPath.size());
+		const Real animationFactor = ((engineControlTime() * gameSpeed) % 1e6) / 1e6;
+		uint32 prev = m;
 		for (const auto it : enumerate(wp->fullPath))
 		{
 			if (prev != m)
@@ -40,7 +36,7 @@ namespace
 				TransformComponent &t = e->value<TransformComponent>();
 				const Vec3 a = globalGrid->center(prev);
 				const Vec3 b = globalGrid->center(*it);
-				t.position = interpolate(a, b, 0.5);
+				t.position = interpolate(a, b, animationFactor);
 				t.orientation = Quat(b - a, Vec3(0, 1, 0));
 				t.scale = 0.5;
 				RenderComponent &r = e->value<RenderComponent>();
@@ -52,53 +48,17 @@ namespace
 		}
 	}
 
-	void gameUpdate()
-	{
-		if (gameTime == 1)
-			placeMarks();
-	}
-
-	bool keyRepeat(InputKey in)
-	{
-		if (in.key != 80) // key P
-			return false;
-		placeMarks();
-		return true;
-	}
-
-	void engineInit()
-	{
-		engineEntities()->defineComponent(PathMarkComponent());
-
-		keyRepeatListener.attach(engineWindow()->events, 200);
-		keyRepeatListener.bind<&keyRepeat>();
-	}
-
-	void engineUpdate()
-	{
-		if (engineControlTime() >= timeToDestroy)
-			destroyMarks();
-	}
-
 	struct Callbacks
 	{
-		EventListener<void()> gameUpdateListener;
 		EventListener<void()> engineInitListener;
 		EventListener<void()> engineUpdateListener;
 
 		Callbacks()
 		{
-			gameUpdateListener.attach(eventGameUpdate());
-			gameUpdateListener.bind<&gameUpdate>();
 			engineInitListener.attach(controlThread().initialize);
 			engineInitListener.bind<&engineInit>();
 			engineUpdateListener.attach(controlThread().update);
 			engineUpdateListener.bind<&engineUpdate>();
 		}
 	} callbacksInstance;
-}
-
-void destroyShortestPathVisualizationMarks()
-{
-	timeToDestroy = 0;
 }
