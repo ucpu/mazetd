@@ -12,7 +12,7 @@ namespace
 		LightComponent &l = e->value<LightComponent>();
 		l.lightType = LightTypeEnum::Directional;
 		l.color = Vec3(1);
-		l.intensity = 1;
+		l.intensity = 1.5;
 		ShadowmapComponent &s = e->value<ShadowmapComponent>();
 		s.resolution = 4096;
 		s.worldSize = Vec3(75);

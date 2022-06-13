@@ -25,7 +25,7 @@ namespace
 		Holder<NoiseFunction> waterNoise = []() {
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Simplex;
-			cfg.frequency = 0.08;
+			cfg.frequency = 0.03;
 			cfg.seed = detail::randomGenerator().next();
 			return newNoiseFunction(cfg);
 		}();
@@ -74,24 +74,24 @@ namespace
 			const Vec2 pos2 = Vec2(pos3[0], pos3[2]);
 			const Real elev = pos3[1];
 			{
-				const Real noise = waterNoise->evaluate(pos3) * 0.07;
-				albedo = colorHsvToRgb(Vec3(0.644 + noise, 0.52, 0.75));
+				const Real noise = waterNoise->evaluate(pos3) * 0.25;
+				albedo = colorHsvToRgb(Vec3(0.644, 0.52, 0.75 + noise));
 				roughness = roughnessNoise->evaluate(pos3) * 0.1 + 0.2;
 			}
 			{
 				const Real noise = grassNoise->evaluate(pos3) * 0.1;
-				const Vec3 grass = colorHsvToRgb(Vec3(0.266, 0.6, 0.87 + noise));
+				const Vec3 grass = colorHsvToRgb(Vec3(0.266 + randomChance() * 0.1, 0.85, 0.8 + noise));
 				const Real factor = saturate(find(elev, -7.2, -6.8));
 				albedo = interpolate(albedo, grass, factor);
-				const Real r = roughnessNoise->evaluate(pos3 + 156) * 0.2 + 0.45;
+				const Real r = roughnessNoise->evaluate(pos3 * 5 + 156) * 0.2 + 0.45;
 				roughness = interpolate(roughness, r, factor);
 			}
 			{
 				const Real noise = dirtNoise->evaluate(pos3) * 0.2;
-				const Vec3 dirt = colorHsvToRgb(Vec3(0.144, 0.45 + noise, 0.8));
+				const Vec3 dirt = colorHsvToRgb(Vec3(0.135, 0.75 + noise, 0.75 + randomChance() * 0.07));
 				const Real factor = saturate(find(elev, 0.8, 1.2));
 				albedo = interpolate(albedo, dirt, factor);
-				const Real r = roughnessNoise->evaluate(pos3 - 564) * 0.3 + 0.6;
+				const Real r = roughnessNoise->evaluate(pos3 * 2 - 564) * 0.3 + 0.6;
 				roughness = interpolate(roughness, r, factor);
 			}
 			{

@@ -214,7 +214,7 @@ namespace
 		c.ambientColor = Vec3(1);
 		c.ambientIntensity = 0.1;
 		c.ambientDirectionalColor = Vec3(1);
-		c.ambientDirectionalIntensity = 0.5;
+		c.ambientDirectionalIntensity = 0.2;
 		needReset = true;
 	}
 
