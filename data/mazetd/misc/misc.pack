@@ -3,7 +3,8 @@ attackRangeMark.obj
 cursor.obj
 healthbar.obj
 manabar.obj
-manaMark.obj
+manaCollectibleMark.obj
+manaInteractionMark.obj
 manaRangeMark.obj
 modMark.obj
 pathMark.obj

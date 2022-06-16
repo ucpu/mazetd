@@ -109,6 +109,7 @@ namespace
 				model->importMesh(+up.mesh, bufferView(mat));
 				model->textureNames[0] = re.albedo;
 				model->textureNames[1] = re.material;
+				model->layer = -100;
 				re.model = engineAssets()->generateUniqueName();
 				engineAssets()->fabricate<AssetSchemeIndexModel, Model>(re.model, std::move(model), "chunkModel");
 			}

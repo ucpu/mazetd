@@ -103,7 +103,7 @@ namespace
 				const Vec3 p = currEnt->value<PositionComponent>().position() * Vec3(1, 0, 1);
 				entitiesVisitor([&](const PositionComponent &po, const ManaDistributorComponent &man) {
 					if (distanceSquared(p, po.position() * Vec3(1, 0, 1)) < sqr(man.range))
-						markPos<HashString("mazetd/misc/manaMark.obj")>(towersMarkers[tm++], po.tile);
+						markPos<HashString("mazetd/misc/manaInteractionMark.obj")>(towersMarkers[tm++], po.tile);
 				}, gameEntities(), false);
 			}
 
@@ -114,7 +114,7 @@ namespace
 				const Vec3 p = currEnt->value<PositionComponent>().position() * Vec3(1, 0, 1);
 				entitiesVisitor([&](const PositionComponent &po, const ManaReceiverComponent &) {
 					if (distanceSquared(p, po.position() * Vec3(1, 0, 1)) < r2)
-						markPos<HashString("mazetd/misc/manaMark.obj")>(towersMarkers[tm++], po.tile);
+						markPos<HashString("mazetd/misc/manaInteractionMark.obj")>(towersMarkers[tm++], po.tile);
 				}, gameEntities(), false);
 			}
 		}

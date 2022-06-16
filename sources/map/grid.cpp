@@ -126,6 +126,16 @@ Vec3 Grid::center(uint32 idx) const
 	return Vec3(p[0], stor(elevations[idx]), p[1]);
 }
 
+Vec3 Grid::up(uint32 idx) const
+{
+	const Vec2i p = position(idx);
+	const Vec3 l = center(index(p + Vec2i(-1, 0)));
+	const Vec3 r = center(index(p + Vec2i(1, 0)));
+	const Vec3 u = center(index(p + Vec2i(0, -1)));
+	const Vec3 d = center(index(p + Vec2i(0, 1)));
+	return normalize(cross(d - u, r - l));
+}
+
 uint32 Grid::neighborDistance(uint32 a, uint32 b) const
 {
 	// todo optimized integer only solution

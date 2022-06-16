@@ -112,9 +112,9 @@ namespace
 			if (avail && !e)
 			{
 				e = engineEntities()->createAnonymous();
-				e->value<RenderComponent>().object = HashString("mazetd/particles/sprite.obj;magic");
-				e->value<TransformComponent>().position = globalGrid->center(it.index) + Vec3(0, 0.25, 0) + randomDirection3() * Vec3(1, 0, 1) * 0.1;
-				e->value<TransformComponent>().orientation = Quat(Vec3(0, -1, 0), Vec3(0, 0, 1));
+				e->value<RenderComponent>().object = HashString("mazetd/misc/manaCollectibleMark.obj");
+				e->value<TransformComponent>().position = globalGrid->center(it.index) + randomDirection3() * Vec3(1, 0, 1) * 0.1;
+				e->value<TransformComponent>().orientation = Quat(globalGrid->up(it.index), Vec3(0, 0, -1));
 				e->value<TransformComponent>().scale = 0.5;
 				e->value<TextureAnimationComponent>().startTime = randomRange(0u, 1000000000u);
 				e->value<TextureAnimationComponent>().speed = 0.05;

@@ -128,9 +128,9 @@ namespace
 			{
 				ProfilingScope profiling("mesh simplification", "mapgen");
 				MeshSimplifyConfig cfg;
-				cfg.approximateError = 0.15;
-				cfg.minEdgeLength = 0.1;
-				cfg.maxEdgeLength = 3;
+				cfg.approximateError = 0.1;
+				cfg.minEdgeLength = 0.2;
+				cfg.maxEdgeLength = 2;
 #ifdef CAGE_DEBUG
 				cfg.iterations = 1;
 #else

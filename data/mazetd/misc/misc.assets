@@ -1,10 +1,14 @@
 []
 scheme = model
+manaCollectibleMark.obj
+
+[]
+scheme = model
 uvs = false
 tangents = false
 scale = 1.01
 cursor.obj
-manaMark.obj
+manaInteractionMark.obj
 modMark.obj
 
 []
@@ -36,3 +40,7 @@ wrapX = clampToEdge
 wrapY = clampToEdge
 healthbar/$$.png
 manabar/$$.png
+
+[]
+scheme = shader
+decal.glsl

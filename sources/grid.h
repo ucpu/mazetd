@@ -36,6 +36,7 @@ struct Grid : private Immovable
 	uint32 index(Vec3 pos) const;
 	Vec2i position(uint32 idx) const;
 	Vec3 center(uint32 idx) const;
+	Vec3 up(uint32 idx) const;
 	uint32 neighborDistance(uint32 a, uint32 b) const; // 24.8 format
 };
 
