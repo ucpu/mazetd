@@ -96,7 +96,7 @@ namespace
 
 void updateAttacksMods()
 {
-	ProfilingScope profiling("update attacks mods", "player");
+	ProfilingScope profiling("update attacks mods");
 	EffectorsUpdater updater;
 	updater.run();
 }

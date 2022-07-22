@@ -38,11 +38,11 @@ namespace
 
 		void makeChunk(const Holder<Mesh> &msh)
 		{
-			ProfilingScope profiling("make chunk", "mapgen");
+			ProfilingScope profiling("make chunk");
 
 			uint32 resolution = 0;
 			{
-				ProfilingScope profiling("chunk unwrap", "mapgen");
+				ProfilingScope profiling("chunk unwrap");
 				MeshUnwrapConfig cfg;
 #ifdef CAGE_DEBUG
 				cfg.texelsPerUnit = 10;
@@ -61,14 +61,14 @@ namespace
 			chunk.material->initialize(Vec2i(resolution), 1);
 			chunk.material->colorConfig.gammaSpace = GammaSpaceEnum::None;
 			{
-				ProfilingScope profiling("chunk generate texture", "mapgen");
+				ProfilingScope profiling("chunk generate texture");
 				MeshGenerateTextureConfig cfg;
 				cfg.width = cfg.height = resolution;
 				cfg.generator.bind<ChunkMaterial, &ChunkMaterial::makeMaterial>(&chunk);
 				meshGenerateTexture(+msh, cfg);
 			}
 			{
-				ProfilingScope profiling("chunk image dilation", "mapgen");
+				ProfilingScope profiling("chunk image dilation");
 #ifdef CAGE_DEBUG
 				static constexpr uint32 rounds = 2;
 #else
@@ -95,14 +95,14 @@ namespace
 
 		void makeMeshes()
 		{
-			ProfilingScope profiling("make meshes", "mapgen");
+			ProfilingScope profiling("make meshes");
 
 			{ // reset rendering queues and assets
 				ChunkUpload chunk;
 				chunksUploadQueue.push(std::move(chunk));
 			}
 			{
-				ProfilingScope profiling("marching cubes", "mapgen");
+				ProfilingScope profiling("marching cubes");
 				MarchingCubesCreateConfig cfg;
 				cfg.box = Aabb(Vec3(-55, -15, -55), Vec3(55, 15, 55));
 				cfg.clip = true;
@@ -113,20 +113,20 @@ namespace
 #endif // CAGE_DEBUG
 				Holder<MarchingCubes> mc = newMarchingCubes(cfg);
 				{
-					ProfilingScope profiling("sdf", "mapgen");
+					ProfilingScope profiling("sdf");
 					mc->updateByPosition(Delegate<Real(const Vec3 &)>().bind<Maker, &Maker::sdf>(this));
 				}
 				{
-					ProfilingScope profiling("mesh", "mapgen");
+					ProfilingScope profiling("mesh");
 					msh = mc->makeMesh();
 				}
 			}
 			{
-				ProfilingScope profiling("discard disconnected", "mapgen");
+				ProfilingScope profiling("discard disconnected");
 				meshDiscardDisconnected(+msh);
 			}
 			{
-				ProfilingScope profiling("mesh simplification", "mapgen");
+				ProfilingScope profiling("mesh simplification");
 				MeshSimplifyConfig cfg;
 				cfg.approximateError = 0.1;
 				cfg.minEdgeLength = 0.2;
@@ -140,7 +140,7 @@ namespace
 			}
 			CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "mesh faces: " + msh->facesCount());
 			{
-				ProfilingScope profiling("mesh chunking", "mapgen");
+				ProfilingScope profiling("mesh chunking");
 				MeshChunkingConfig cfg;
 				cfg.maxSurfaceArea = 500;
 				meshes = meshChunking(+msh, cfg);

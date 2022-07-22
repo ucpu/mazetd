@@ -111,7 +111,7 @@ void Waypoints::update()
 	if (waypoints.empty())
 		return;
 
-	ProfilingScope profiling("update waypoints", "paths");
+	ProfilingScope profiling("update waypoints");
 
 	CAGE_LOG_DEBUG(SeverityEnum::Info, "paths", "recomputing paths");
 	tasksRunBlocking("paths directions", Delegate<void(uint32)>().bind<Waypoints *, &directionsThreadEntry>(this), numeric_cast<uint32>(waypoints.size()), tasksCurrentPriority());

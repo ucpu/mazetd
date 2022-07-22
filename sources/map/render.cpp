@@ -65,7 +65,7 @@ namespace
 
 	void graphicsDispatch()
 	{
-		ProfilingScope profiling("dispatch chunks", "mapgen");
+		ProfilingScope profiling("dispatch chunks");
 
 		for (uint32 iter = 0; iter < 5; iter++)
 		{
@@ -81,7 +81,7 @@ namespace
 			}
 
 			{
-				ProfilingScope profiling("dispatch albedo", "mapgen");
+				ProfilingScope profiling("dispatch albedo");
 				Holder<Texture> tex = newTexture();
 				tex->importImage(+up.albedo);
 				tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
@@ -92,7 +92,7 @@ namespace
 			}
 
 			{
-				ProfilingScope profiling("dispatch material", "mapgen");
+				ProfilingScope profiling("dispatch material");
 				Holder<Texture> tex = newTexture();
 				tex->importImage(+up.material);
 				tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
@@ -103,7 +103,7 @@ namespace
 			}
 
 			{
-				ProfilingScope profiling("dispatch model", "mapgen");
+				ProfilingScope profiling("dispatch model");
 				Holder<Model> model = newModel();
 				MeshImportMaterial mat;
 				model->importMesh(+up.mesh, bufferView(mat));
@@ -129,7 +129,7 @@ namespace
 
 	void engineUpdate()
 	{
-		ProfilingScope profiling("update chunks", "mapgen");
+		ProfilingScope profiling("update chunks");
 
 		for (uint32 iter = 0; iter < 5; iter++)
 		{

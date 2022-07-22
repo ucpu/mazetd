@@ -48,7 +48,7 @@ namespace
 
 	void moveMonsters()
 	{
-		ProfilingScope profiling("move monsters", "monsters");
+		ProfilingScope profiling("move monsters");
 
 		entitiesVisitor([&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
 			CAGE_ASSERT(po.tile == mv.tileEnd);
@@ -147,7 +147,7 @@ namespace
 
 	void damageMonsters()
 	{
-		ProfilingScope profiling("damage monsters", "monsters");
+		ProfilingScope profiling("damage monsters");
 
 		entitiesVisitor([&](Entity *e, MonsterComponent &mo) {
 			const Vec3 mpp = monsterPosition(e);

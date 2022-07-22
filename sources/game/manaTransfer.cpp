@@ -43,7 +43,7 @@ namespace
 		if ((gameTime % 6) == 0)
 		{
 			// distribute mana
-			ProfilingScope profiling("distribute mana", "mana");
+			ProfilingScope profiling("distribute mana");
 
 			entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, const PotentialComponent &pot, ManaStorageComponent &stor) {
 				if (stor.mana == 0)
@@ -105,7 +105,7 @@ namespace
 		else for (uint32 iter = 0; iter < 5; iter++)
 		{
 			// spread potentials
-			ProfilingScope profiling("spread potentials", "mana");
+			ProfilingScope profiling("spread potentials");
 
 			entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &distr, PotentialComponent &pot) {
 				uint32 cnt = 5;

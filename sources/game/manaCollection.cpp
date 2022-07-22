@@ -15,7 +15,7 @@ namespace
 		if ((gameTime % 3) == 0)
 			return;
 
-		ProfilingScope profiling("place mana", "mana");
+		ProfilingScope profiling("place mana");
 
 		// populates up to 20 tiles per second -> up to 100 mana per second
 		const uint32 totalTiles = globalGrid->resolution[0] * globalGrid->resolution[1];
@@ -52,7 +52,7 @@ namespace
 
 	void collectMana()
 	{
-		ProfilingScope profiling("collect mana", "mana");
+		ProfilingScope profiling("collect mana");
 
 		entitiesVisitor([](Entity *e, const PositionComponent &pos, const ManaCollectorComponent &col, ManaStorageComponent &stor) {
 			if (stor.mana + col.collectAmount > stor.capacity)

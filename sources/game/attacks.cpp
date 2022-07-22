@@ -239,7 +239,7 @@ namespace
 
 	void gameUpdate()
 	{
-		ProfilingScope profiling("attacks", "monsters");
+		ProfilingScope profiling("attacks");
 		AttacksSolver solver;
 		solver.run();
 	}

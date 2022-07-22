@@ -57,7 +57,7 @@ SpatialQuery *spatialStructures()
 
 void spatialUpdateStructures()
 {
-	ProfilingScope profiling("spatial update structures", "spatial");
+	ProfilingScope profiling("spatial update structures");
 
 	structsData->clear();
 	CAGE_ASSERT(globalGrid);
