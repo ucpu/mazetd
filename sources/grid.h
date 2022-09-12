@@ -3,6 +3,11 @@
 
 #include "common.h"
 
+namespace cage
+{
+	class Collider;
+}
+
 enum class TileFlags : uint16
 {
 	None = 0,

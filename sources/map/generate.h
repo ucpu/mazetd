@@ -2,6 +2,12 @@
 
 #include "../grid.h"
 
+namespace cage
+{
+	class Mesh;
+	class Image;
+}
+
 struct ChunkUpload : private Noncopyable
 {
 	Holder<Mesh> mesh;

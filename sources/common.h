@@ -3,6 +3,11 @@
 
 #include <cage-core/math.h>
 
+namespace cage
+{
+	class Entity;
+}
+
 using namespace cage;
 
 CAGE_FORCE_INLINE constexpr sint16 rtos16(Real v)

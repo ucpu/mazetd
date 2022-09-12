@@ -5,6 +5,11 @@
 
 #include "common.h"
 
+namespace cage
+{
+	class SpatialQuery;
+}
+
 // flags & enums
 
 enum class DamageTypeEnum
