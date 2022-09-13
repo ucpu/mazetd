@@ -21,7 +21,7 @@ namespace
 			const Vec3 a = globalGrid->center(mv.tileStart);
 			const Vec3 b = globalGrid->center(mv.tileEnd);
 			t.position = interpolate(a, b, f);
-			t.orientation = Quat(b - a, Vec3(0, 1, 0));
+			t.orientation = interpolate(t.orientation, Quat(b - a, Vec3(0, 1, 0)), 0.15);
 		}, gameEntities(), false);
 	}
 
