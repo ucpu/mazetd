@@ -1,8 +1,8 @@
 #include <cage-core/tasks.h>
 #include <cage-core/geometry.h>
 #include <cage-core/marchingCubes.h>
-#include <cage-core/mesh.h>
-#include <cage-core/image.h>
+#include <cage-core/meshAlgorithms.h>
+#include <cage-core/imageAlgorithms.h>
 #include <cage-core/collider.h>
 #include <cage-core/profiling.h>
 #include <cage-simple/engine.h>
@@ -122,8 +122,8 @@ namespace
 				}
 			}
 			{
-				ProfilingScope profiling("discard disconnected");
-				meshDiscardDisconnected(+msh);
+				ProfilingScope profiling("remove disconnected");
+				meshRemoveDisconnected(+msh);
 			}
 			{
 				ProfilingScope profiling("mesh simplification");
