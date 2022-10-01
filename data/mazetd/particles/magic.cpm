@@ -7,4 +7,4 @@ albedo = magic/$$.png
 [flags]
 noLighting
 noShadowCast
-alphaClip
+cutOut

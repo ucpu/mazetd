@@ -9,7 +9,7 @@ layer = -40
 shader = decal.glsl
 
 [flags]
-alphaClip
+cutOut
 noDepthTest
 noDepthWrite
 noShadowCast

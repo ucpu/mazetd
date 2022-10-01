@@ -8,7 +8,7 @@ opacity = 0.6
 albedo = healthbar/$$.png
 
 [flags]
-translucent
+fade
 noDepthWrite
 noShadowCast
 noLighting

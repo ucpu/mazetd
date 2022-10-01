@@ -6,4 +6,4 @@ albedo = physical/$$.png
 
 [flags]
 noLighting
-alphaClip
+cutOut

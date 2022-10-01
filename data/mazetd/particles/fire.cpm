@@ -7,4 +7,4 @@ albedo = fire/$$.png
 [flags]
 noLighting
 noShadowCast
-alphaClip
+cutOut

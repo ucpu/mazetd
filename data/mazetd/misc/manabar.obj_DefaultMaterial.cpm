@@ -8,7 +8,7 @@ opacity = 0.6
 albedo = manabar/$$.png
 
 [flags]
-translucent
+fade
 noDepthWrite
 noShadowCast
 noLighting
