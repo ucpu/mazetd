@@ -131,7 +131,7 @@ namespace
 		if (gameReady && !playerPanning && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
 		{
 			CAGE_ASSERT(globalGrid);
-			const Vec2i cur = engineWindow()->mousePosition();
+			const Vec2 cur = engineWindow()->mousePosition();
 			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
 			const CameraComponent &a = c->value<CameraComponent>();
 			const Mat4 view = Mat4(inverse(c->value<TransformComponent>()));

@@ -11,7 +11,7 @@ bool ortho;
 namespace
 {
 	ConfigBool confInvertCameraMove("mazetd/camera/invert", false);
-	Vec2i lastMousePos;
+	Vec2 lastMousePos;
 	Vec2 camCenter;
 	Real camDist;
 	Rads camYaw;
@@ -33,10 +33,10 @@ namespace
 		camTrans.position = Vec3(camCenter[0], elev, camCenter[1]) + camTrans.orientation * Vec3(0, 0, camDist);
 	}
 
-	Vec2i centerMouse()
+	Vec2 centerMouse()
 	{
-		const Vec2i cntr = engineWindow()->resolution() / 2;
-		const Vec2i pos = engineWindow()->mousePosition();
+		const Vec2 cntr = Vec2(engineWindow()->resolution()) / 2;
+		const Vec2 pos = engineWindow()->mousePosition();
 		engineWindow()->mousePosition(cntr);
 		return pos - cntr;
 	}
@@ -73,7 +73,7 @@ namespace
 			return false;
 		if (engineWindow()->isFocused())
 		{
-			const Vec2i mv2 = centerMouse();
+			const Vec2 mv2 = centerMouse();
 			const Vec3 mv3 = Quat(Degs(), camYaw, Degs()) * Vec3(mv2[0], 0, mv2[1]);
 			const Real speed = pow(camDist, 0.85) / engineWindow()->contentScaling() * 0.005;
 			camCenter += Vec2(mv3[0], mv3[2]) * speed * (confInvertCameraMove ? -1 : 1);
