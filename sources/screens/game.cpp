@@ -222,7 +222,7 @@ void updateSpawningMonsterPropertiesScreen()
 		struct Pair
 		{
 			MonsterClassFlags flag = MonsterClassFlags::None;
-			StringLiteral name;
+			StringPointer name;
 		};
 		constexpr const Pair pairs[] = {
 			Pair{ MonsterClassFlags::Flier, "Flier" },
@@ -245,7 +245,7 @@ void updateSpawningMonsterPropertiesScreen()
 		struct Pair
 		{
 			DamageTypeFlags flag = DamageTypeFlags::None;
-			StringLiteral name;
+			StringPointer name;
 		};
 		constexpr const Pair pairs[] = {
 			Pair{ DamageTypeFlags::Physical, "Physical" },
@@ -476,6 +476,7 @@ void setScreenGame()
 		e->value<GuiSpoilerComponent>().collapsed = false;
 		e->value<GuiLayoutLineComponent>().vertical = true;
 		e->value<GuiTextComponent>().value = "Building";
+		e->value<GuiWidgetStateComponent>().skinIndex = 2; // compact skin
 	}
 
 	updateSelectedBuildingScreen();
@@ -493,6 +494,7 @@ void setScreenGame()
 		e->value<GuiSpoilerComponent>().collapsed = false;
 		e->value<GuiLayoutLineComponent>().vertical = true;
 		e->value<GuiTextComponent>().value = "Spawning";
+		e->value<GuiWidgetStateComponent>().skinIndex = 2; // compact skin
 	}
 
 	updateSpawningMonsterPropertiesScreen();
@@ -525,6 +527,7 @@ void setScreenGame()
 		e->value<GuiSpoilerComponent>().collapsed = false;
 		e->value<GuiLayoutLineComponent>().vertical = true;
 		e->value<GuiTextComponent>().value = "Controls";
+		e->value<GuiWidgetStateComponent>().skinIndex = 2; // compact skin
 	}
 
 	{

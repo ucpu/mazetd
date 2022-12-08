@@ -53,6 +53,7 @@ void setScreenMainmenu()
 		e->value<GuiPanelComponent>();
 		e->value<GuiParentComponent>().parent = 3;
 		e->value<GuiLayoutLineComponent>().vertical = true;
+		e->value<GuiWidgetStateComponent>().skinIndex = 1; // large skin
 	}
 
 	{

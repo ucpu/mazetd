@@ -80,7 +80,7 @@ namespace cage
 
 struct MonsterBaseProperties
 {
-	StringLiteral name;
+	StringPointer name;
 	sint64 maxLife = 1000;
 	uint32 money = 0;
 	uint32 damage = 0;
@@ -136,12 +136,12 @@ struct GuiModelComponent
 
 struct NameComponent
 {
-	StringLiteral name;
+	StringPointer name;
 };
 
 struct DescriptionComponent
 {
-	StringLiteral description;
+	StringPointer description;
 };
 
 struct PositionComponent

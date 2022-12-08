@@ -22,12 +22,12 @@ namespace
 		EntityManager *ents = engineGuiEntities();
 		uint32 index = 1000;
 
-		static constexpr StringLiteral categoryNames[] = { "Damage", "Enhancements", "Targeting", "Elements", "Mana" };
+		static constexpr StringPointer categoryNames[] = { "Damage", "Enhancements", "Targeting", "Elements", "Mana" };
 
 		void prepareCategories()
 		{
 			sint32 order = 0;
-			for (StringLiteral name : categoryNames)
+			for (StringPointer name : categoryNames)
 			{
 				Entity *e = ents->create(410 + order++);
 				GuiParentComponent &pp = e->value<GuiParentComponent>();
@@ -41,7 +41,7 @@ namespace
 			}
 		}
 
-		Entity *generateBase(StringLiteral name)
+		Entity *generateBase(StringPointer name)
 		{
 			Entity *e = ents->create(++index);
 			GuiButtonComponent &but = e->value<GuiButtonComponent>();
@@ -54,7 +54,7 @@ namespace
 			return e;
 		}
 
-		Entity *generate(uint32 categoryIndex, StringLiteral name)
+		Entity *generate(uint32 categoryIndex, StringPointer name)
 		{
 			Entity *e = generateBase(name);
 			GuiParentComponent &pp = e->value<GuiParentComponent>();
@@ -159,8 +159,8 @@ namespace
 
 			struct BonusData
 			{
-				StringLiteral name;
-				StringLiteral description;
+				StringPointer name;
+				StringPointer description;
 				BonusTypeEnum bonus = BonusTypeEnum::None;
 				uint32 model = 0;
 			};
@@ -188,8 +188,8 @@ namespace
 
 			struct TargetingData
 			{
-				StringLiteral name;
-				StringLiteral description;
+				StringPointer name;
+				StringPointer description;
 				TargetingEnum targeting = TargetingEnum::Random;
 				uint32 model = 0;
 			};
@@ -217,8 +217,8 @@ namespace
 
 			struct ElementsData
 			{
-				StringLiteral name;
-				StringLiteral description;
+				StringPointer name;
+				StringPointer description;
 				DamageTypeEnum element = DamageTypeEnum::Total;
 				uint32 model = 0;
 			};
@@ -244,8 +244,8 @@ namespace
 
 			struct ManaData
 			{
-				StringLiteral name;
-				StringLiteral description;
+				StringPointer name;
+				StringPointer description;
 				ManaCollectorTypeEnum type = ManaCollectorTypeEnum::None;
 				uint32 amount = 0;
 				uint32 model = 0;

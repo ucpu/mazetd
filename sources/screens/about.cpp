@@ -37,6 +37,7 @@ void setScreenAbout()
 		e->value<GuiPanelComponent>();
 		e->value<GuiParentComponent>().parent = 4;
 		e->value<GuiLayoutLineComponent>().vertical = true;
+		e->value<GuiWidgetStateComponent>().skinIndex = 2; // compact skin
 	}
 
 	static constexpr const char *lines[] = {
