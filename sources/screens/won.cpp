@@ -19,7 +19,7 @@ namespace
 	}
 }
 
-void setScreenGameWin()
+void setScreenWon()
 {
 	cleanGui();
 	EntityManager *ents = engineGuiEntities();

@@ -6,7 +6,6 @@
 using namespace cage;
 
 void cleanGui();
-void removeGuiEntitiesWithParent(uint32 parent);
 
 EventDispatcher<bool()> &eventGuiClean();
 

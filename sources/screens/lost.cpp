@@ -11,7 +11,7 @@ namespace
 	}
 }
 
-void setScreenGameOver()
+void setScreenLost()
 {
 	cleanGui();
 	EntityManager *ents = engineGuiEntities();

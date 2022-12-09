@@ -5,7 +5,7 @@
 #include "../grid.h"
 #include "../game.h"
 
-void setScreenGameMenu();
+void setScreenPaused();
 void generateBuildingsList();
 
 namespace
@@ -15,7 +15,7 @@ namespace
 
 	bool buttonMenu(uint32)
 	{
-		setScreenGameMenu();
+		setScreenPaused();
 		return true;
 	}
 
@@ -74,119 +74,19 @@ namespace
 		engineUpdateListener.detach();
 		gameReady = false;
 	}
-}
 
-void updateSelectedBuildingScreen()
-{
-	removeGuiEntitiesWithParent(601);
-
-	Entity *sb = playerBuildingSelection;
-	if (!sb)
-		return;
-
-	EntityManager *ents = engineGuiEntities();
-	sint32 index = 0;
-
-	{ // name
-		CAGE_ASSERT(sb->has<NameComponent>());
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 601;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + sb->value<NameComponent>().name;
-	}
-
-	{ // description
-		CAGE_ASSERT(sb->has<DescriptionComponent>());
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 601;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = String(sb->value<DescriptionComponent>().description);
-	}
-
-	{ // cost
-		CAGE_ASSERT(sb->has<CostComponent>());
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 601;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Cost: " + sb->value<CostComponent>().cost;
-	}
-
-	// damage
-	if (sb->has<DamageComponent>())
+	void removeGuiEntitiesWithParent(uint32 parent)
 	{
-		{ // damage
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 601;
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + "Base damage: " + sb->value<DamageComponent>().damage;
-		}
-		{ // dps
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 601;
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + "Base damage per second: " + (30.f * sb->value<DamageComponent>().damage / sb->value<DamageComponent>().firingPeriod);
-		}
-		{ // baseManaCost
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 601;
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + "Base mana cost: " + sb->value<DamageComponent>().baseManaCost;
-		}
-	}
-
-	// mana collector
-	if (sb->has<ManaCollectorComponent>())
-	{
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 601;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Harvested mana multiplier: " + sb->value<ManaCollectorComponent>().collectAmount;
-	}
-
-	// mana storage
-	if (sb->has<ManaStorageComponent>())
-	{
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 601;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Mana capacity: " + sb->value<ManaStorageComponent>().capacity;
-	}
-
-	// mana distributor
-	if (sb->has<ManaDistributorComponent>())
-	{
-		{ // transfer limit
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 601;
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + "Mana transfer rate: " + sb->value<ManaDistributorComponent>().transferLimit;
-		}
-		{ // transfer range
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = 601;
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + "Mana transfer range: " + sb->value<ManaDistributorComponent>().range;
-		}
+		std::vector<uint32> ents;
+		entitiesVisitor([&](Entity *e, const GuiParentComponent &p) {
+			if (p.parent == parent)
+			{
+				ents.push_back(e->name());
+				e->destroy();
+			}
+			}, engineGuiEntities(), true);
+		for (uint32 n : ents)
+			removeGuiEntitiesWithParent(n);
 	}
 }
 
@@ -452,7 +352,7 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(400);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(1, 0);
+		e->value<GuiScrollbarsComponent>().alignment = Vec2(1, 0.5);
 	}
 
 	{
@@ -462,24 +362,6 @@ void setScreenGame()
 	}
 
 	generateBuildingsList();
-
-	// building properties
-
-	{
-		Entity *e = ents->create(600);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(1, 1);
-	}
-
-	{
-		Entity *e = ents->create(601);
-		e->value<GuiParentComponent>().parent = 600;
-		e->value<GuiSpoilerComponent>().collapsed = false;
-		e->value<GuiLayoutLineComponent>().vertical = true;
-		e->value<GuiTextComponent>().value = "Building";
-		e->value<GuiWidgetStateComponent>().skinIndex = 2; // compact skin
-	}
-
-	updateSelectedBuildingScreen();
 
 	// monster properties
 

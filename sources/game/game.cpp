@@ -3,7 +3,7 @@
 #include "../game.h"
 #include "../grid.h"
 
-void setScreenGameOver();
+void setScreenLost();
 
 Vec3 PositionComponent::position() const
 {
@@ -79,7 +79,7 @@ namespace
 		gameTime++;
 		if (playerHealth <= 0)
 		{
-			setScreenGameOver();
+			setScreenLost();
 			return true;
 		}
 		return false;

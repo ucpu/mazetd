@@ -5,16 +5,123 @@
 
 #include "../game.h"
 
-void updateSelectedBuildingScreen();
-
 namespace
 {
 	bool buildingSelectionClick(uint32 i)
 	{
 		playerBuildingSelection = engineGuiEntities()->get(i);
-		updateSelectedBuildingScreen();
 		engineGuiManager()->focus(0); // defocus to allow using keyboard shortcuts
 		return true;
+	}
+
+	void buildingTooltip(const GuiTooltipConfig &config)
+	{
+		Entity *sb = config.invoker;
+		if (!sb)
+			return;
+
+		EntityManager *ents = engineGuiEntities();
+
+		{
+			Entity *e = config.tooltip;
+			e->value<GuiPanelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + sb->value<NameComponent>().name;
+			e->value<GuiLayoutLineComponent>().vertical = true;
+		}
+
+		sint32 index = 0;
+
+		{ // description
+			CAGE_ASSERT(sb->has<DescriptionComponent>());
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = config.tooltip->name();
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = String(sb->value<DescriptionComponent>().description);
+		}
+
+		// damage
+		if (sb->has<DamageComponent>())
+		{
+			{ // damage
+				Entity *e = ents->createUnique();
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
+				pp.parent = config.tooltip->name();
+				pp.order = index++;
+				e->value<GuiLabelComponent>();
+				e->value<GuiTextComponent>().value = Stringizer() + "Base damage: " + sb->value<DamageComponent>().damage;
+			}
+			{ // dps
+				Entity *e = ents->createUnique();
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
+				pp.parent = config.tooltip->name();
+				pp.order = index++;
+				e->value<GuiLabelComponent>();
+				e->value<GuiTextComponent>().value = Stringizer() + "Base damage per second: " + (30.f * sb->value<DamageComponent>().damage / sb->value<DamageComponent>().firingPeriod);
+			}
+			{ // baseManaCost
+				Entity *e = ents->createUnique();
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
+				pp.parent = config.tooltip->name();
+				pp.order = index++;
+				e->value<GuiLabelComponent>();
+				e->value<GuiTextComponent>().value = Stringizer() + "Base mana cost: " + sb->value<DamageComponent>().baseManaCost;
+			}
+		}
+
+		// mana collector
+		if (sb->has<ManaCollectorComponent>())
+		{
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = config.tooltip->name();
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + "Harvested mana multiplier: " + sb->value<ManaCollectorComponent>().collectAmount;
+		}
+
+		// mana storage
+		if (sb->has<ManaStorageComponent>())
+		{
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = config.tooltip->name();
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + "Mana capacity: " + sb->value<ManaStorageComponent>().capacity;
+		}
+
+		// mana distributor
+		if (sb->has<ManaDistributorComponent>())
+		{
+			{ // transfer limit
+				Entity *e = ents->createUnique();
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
+				pp.parent = config.tooltip->name();
+				pp.order = index++;
+				e->value<GuiLabelComponent>();
+				e->value<GuiTextComponent>().value = Stringizer() + "Mana transfer rate: " + sb->value<ManaDistributorComponent>().transferLimit;
+			}
+			{ // transfer range
+				Entity *e = ents->createUnique();
+				GuiParentComponent &pp = e->value<GuiParentComponent>();
+				pp.parent = config.tooltip->name();
+				pp.order = index++;
+				e->value<GuiLabelComponent>();
+				e->value<GuiTextComponent>().value = Stringizer() + "Mana transfer range: " + sb->value<ManaDistributorComponent>().range;
+			}
+		}
+
+		{ // cost
+			CAGE_ASSERT(sb->has<CostComponent>());
+			Entity *e = ents->createUnique();
+			GuiParentComponent &pp = e->value<GuiParentComponent>();
+			pp.parent = config.tooltip->name();
+			pp.order = index++;
+			e->value<GuiLabelComponent>();
+			e->value<GuiTextComponent>().value = Stringizer() + "Cost: " + sb->value<CostComponent>().cost;
+		}
 	}
 
 	struct BuildingsGenerator
@@ -33,24 +140,20 @@ namespace
 				GuiParentComponent &pp = e->value<GuiParentComponent>();
 				pp.parent = 401;
 				pp.order = order;
-				GuiSpoilerComponent &sp = e->value<GuiSpoilerComponent>();
-				GuiLayoutLineComponent &ll = e->value<GuiLayoutLineComponent>();
-				ll.vertical = true;
-				GuiTextComponent &txt = e->value<GuiTextComponent>();
-				txt.value = String(name);
+				e->value<GuiSpoilerComponent>();
+				e->value<GuiLayoutLineComponent>().vertical = true;
+				e->value<GuiTextComponent>().value = String(name);
 			}
 		}
 
 		Entity *generateBase(StringPointer name)
 		{
 			Entity *e = ents->create(++index);
-			GuiButtonComponent &but = e->value<GuiButtonComponent>();
-			GuiTextComponent &txt = e->value<GuiTextComponent>();
-			txt.value = String(name);
-			GuiTextFormatComponent &format = e->value<GuiTextFormatComponent>();
-			GuiEventComponent &evt = e->value<GuiEventComponent>();
-			evt.event.bind<&buildingSelectionClick>();
+			e->value<GuiButtonComponent>();
+			e->value<GuiTextComponent>().value = String(name);
+			e->value<GuiEventComponent>().event.bind<&buildingSelectionClick>();
 			e->value<NameComponent>().name = name;
+			e->value<GuiTooltipComponent>().tooltip.bind<&buildingTooltip>();
 			return e;
 		}
 

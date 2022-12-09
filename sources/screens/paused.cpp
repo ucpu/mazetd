@@ -19,7 +19,7 @@ namespace
 	}
 }
 
-void setScreenGameMenu()
+void setScreenPaused()
 {
 	cleanGui();
 	EntityManager *ents = engineGuiEntities();
