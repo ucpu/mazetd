@@ -34,7 +34,7 @@ namespace
 		man->defineComponent(ManaCollectorComponent());
 		man->defineComponent(DamageComponent());
 		man->defineComponent(ModElementComponent());
-		man->defineComponent(ModBonusComponent());
+		man->defineComponent(ModEnhancementComponent());
 		man->defineComponent(ModTargetingComponent());
 	}
 
@@ -70,7 +70,7 @@ namespace
 		playerCursorPosition = Vec3::Nan();
 		playerCursorTile = m;
 		playerHealth = 100;
-		playerMoney = 1500;
+		playerMoney = 1000;
 		playerBuildingSelection = nullptr;
 	}
 

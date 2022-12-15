@@ -95,7 +95,7 @@ namespace
 		copyComp<CostComponent>(e);
 		copyComp<PivotComponent>(e);
 		copyComp<DamageComponent>(e);
-		copyComp<ModBonusComponent>(e);
+		copyComp<ModEnhancementComponent>(e);
 		copyComp<ModTargetingComponent>(e);
 		copyComp<ModElementComponent>(e);
 		copyComp<ManaStorageComponent>(e);
@@ -133,7 +133,7 @@ namespace
 	uint32 refundValue(Entity *e)
 	{
 		const uint32 c = e->value<CostComponent>().cost;
-		return c < 10 ? c : 8 * c / 10;
+		return c <= 10 ? c : 8 * c / 10;
 	}
 
 	void clearStructure()

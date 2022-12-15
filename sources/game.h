@@ -48,7 +48,7 @@ enum class ManaCollectorTypeEnum
 	Snow,
 };
 
-enum class BonusTypeEnum
+enum class EnhancementTypeEnum
 {
 	None = 0,
 	Damage,
@@ -222,7 +222,7 @@ struct AttackComponent
 {
 	Entity *effectors[3] = {};
 	DamageTypeEnum element = DamageTypeEnum::Physical;
-	BonusTypeEnum bonus = BonusTypeEnum::None;
+	EnhancementTypeEnum enhancement = EnhancementTypeEnum::None;
 	TargetingEnum targeting = TargetingEnum::Random;
 	uint32 firingDelay = 30;
 };
@@ -234,7 +234,7 @@ struct DamageComponent
 	uint32 firingPeriod = 30;
 	Real firingRange = 5;
 	Real splashRadius = 0;
-	uint32 baseManaCost = 12;
+	uint32 manaCost = 0;
 	MonsterClassFlags invalidClasses = MonsterClassFlags::None;
 	bool acceptMods = true;
 };
@@ -244,9 +244,9 @@ struct ModElementComponent
 	DamageTypeEnum element = DamageTypeEnum::Total;
 };
 
-struct ModBonusComponent
+struct ModEnhancementComponent
 {
-	BonusTypeEnum bonus = BonusTypeEnum::None;
+	EnhancementTypeEnum enhancement = EnhancementTypeEnum::None;
 };
 
 struct ModTargetingComponent

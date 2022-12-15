@@ -12,12 +12,12 @@ namespace
 {
 	void placeNewMana()
 	{
-		if ((gameTime % 3) == 0)
+		if (SpawningGroup::waveIndex == 0)
 			return;
 
 		ProfilingScope profiling("place mana");
 
-		// populates up to 20 tiles per second -> up to 100 mana per second
+		// populates up to 30 tiles per second -> up to 100 mana per second
 		const uint32 totalTiles = globalGrid->resolution[0] * globalGrid->resolution[1];
 		uint32 occupied = 0;
 		while (true)

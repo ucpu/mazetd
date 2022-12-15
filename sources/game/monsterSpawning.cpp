@@ -275,31 +275,26 @@ void SpawningGroup::generate()
 	// assumed balance estimation:
 	// map has 3000 playable tiles
 	// maximum shortest path is 2250 tiles long (75 % of playable tiles)
-	// naive build has 0.25 dps per dollar (using inefficient towers)
-	// simple build has 0.5 dps per dollar (using efficient towers but no mana)
-	// intermediate build has 1 dps per dollar (using mana but not combining elements)
-	// optimized build has 2 dps per dollar (using mana and efficiently combining elements)
-	// collecting maximum 100 mana per second
-	// estimated 50'000 dps using elements+magic in optimized build costing 30'000 money (consumes 400 mana per second)
-	// estimated 50'000 dps using physical+poison in optimized build costing 45'000 money
-	// 1500 walls costing 6'000 money
+	// producing maximum 100 mana per second
+	// optimized build has 0.45 burst dps per dollar or 0.1 sustainable dps per dollar
+	// estimated 12'000 burst dps or 2'400 sustainable dps costing 26'500 money
+	// 1000 walls costing 5'000 money
 
 	const uint32 monsterVarietes = numeric_cast<uint32>(monsterSpawningProperties.size());
 	const uint32 totalWaves = monsterVarietes * 3;
-	const Real normWave = pow(saturate(waveIndex / Real(totalWaves - 1)), 1.5);
+	const Real linWave = saturate(waveIndex / Real(totalWaves - 1));
 
 	*this = {};
-	const MonsterSpawningProperties &proto = monsterSpawningProperties[waveIndex % monsterVarietes];
-	(MonsterSpawningProperties &)*this = proto;
+	(MonsterSpawningProperties &)*this = monsterSpawningProperties[waveIndex % monsterVarietes];
 
 	if (waveIndex < monsterVarietes)
 		resistances = DamageTypeFlags::None;
-	spawnCount = interpolate(20, 25, normWave);
+	spawnCount = interpolate(5, 25, linWave);
+	money = interpolate(300, 1000, linWave) / spawnCount; // total of 30'000 for 45 waves
+	speed = interpolate(2, 5, pow(linWave, 1.5)) * speed; // 5 minutes for 1500 tiles
+	maxLife = interpolate(100, 500'000, pow(waveIndex / Real(totalWaves - 1), 2.5)) * maxLife / 1000 / spawnCount; // no saturate on the wave index
+	damage = interpolate(3, 5, linWave);
 	bossIndex = randomRange(0u, spawnCount);
-	money = interpolate(500, 2'500, normWave) / spawnCount; // total of 60'000 for 45 waves (+ some money per time)
-	damage = interpolate(3, 5, normWave);
-	speed = interpolate(2, 5, normWave) * speed; // 5 minutes for 1500 tiles
-	maxLife = interpolate((sint64)3'000, (sint64)1'500'000, pow(waveIndex / Real(totalWaves - 1), 2)) * maxLife / 1000 / spawnCount;
 
 	waveIndex++;
 	updateSpawningMonsterPropertiesScreen();

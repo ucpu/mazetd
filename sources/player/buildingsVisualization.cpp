@@ -88,7 +88,7 @@ namespace
 			{
 				Real r = currEnt->value<DamageComponent>().firingRange;
 				CAGE_ASSERT(currEnt->has<AttackComponent>());
-				if (currEnt->value<AttackComponent>().bonus == BonusTypeEnum::FiringRange)
+				if (currEnt->value<AttackComponent>().enhancement == EnhancementTypeEnum::FiringRange)
 					r += 4; // keep in sync with actual attacks
 				markEnt<HashString("mazetd/misc/attackRangeMark.obj")>(towersMarkers[tm++], currEnt, r, 1);
 			}

@@ -23,7 +23,7 @@ namespace
 		SpatialQuery *buildingsQuery = spatialStructures();
 		EntityComponent *compPosition = gameEntities()->component<PositionComponent>();
 		EntityComponent *compModElement = gameEntities()->component<ModElementComponent>();
-		EntityComponent *compModBonus = gameEntities()->component<ModBonusComponent>();
+		EntityComponent *compModBonus = gameEntities()->component<ModEnhancementComponent>();
 		EntityComponent *compModTargeting = gameEntities()->component<ModTargetingComponent>();
 		std::vector<Neighbor> neighbors;
 
@@ -66,7 +66,7 @@ namespace
 			}
 			if (const Neighbor *n = closestNeighbor(compModBonus))
 			{
-				a.bonus = n->e->value<ModBonusComponent>(compModBonus).bonus;
+				a.enhancement = n->e->value<ModEnhancementComponent>(compModBonus).enhancement;
 				a.effectors[1] = n->e;
 			}
 			if (const Neighbor *n = closestNeighbor(compModTargeting))

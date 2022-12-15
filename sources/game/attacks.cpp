@@ -18,7 +18,6 @@ namespace
 		Entity *me = nullptr;
 		Vec3 mp;
 		Vec3 mpp;
-		uint32 manaCost = 0;
 	};
 
 	struct Monster
@@ -39,26 +38,24 @@ namespace
 		EntityComponent *compPivot = gameEntities()->component<PivotComponent>();
 		EntityComponent *compManaRecv = gameEntities()->component<ManaReceiverComponent>();
 		EntityComponent *compManaStor = gameEntities()->component<ManaStorageComponent>();
+		EntityComponent *compDamage = gameEntities()->component<DamageComponent>();
 		std::vector<Monster> monsters;
 
 		void applyMods()
 		{
 			if (element != DamageTypeEnum::Physical)
 			{
-				CAGE_ASSERT(overTime == 0);
-				overTime = numeric_cast<uint32>(cage::sqrt(damage) * 20);
-				CAGE_ASSERT(manaCost == 0);
-				manaCost = baseManaCost;
-				damage *= 3; // cost of original damage + cost of mana + cost of DOT
+				overTime += numeric_cast<uint32>(cage::sqrt(damage) * 20);
+				damage *= 2;
 			}
-			switch (bonus)
+			switch (enhancement)
 			{
-			case BonusTypeEnum::Damage: damage *= 2; manaCost *= 2; break;
-			case BonusTypeEnum::FiringRate: firingPeriod /= 2; break;
-			case BonusTypeEnum::FiringRange: firingRange += 4; break; // keep in sync with visualization
-			case BonusTypeEnum::SplashRadius: splashRadius += 2; manaCost *= 3; break;
-			case BonusTypeEnum::IntenseDot: overTime /= 5; break;
-			case BonusTypeEnum::ManaDiscount: manaCost /= 3; break;
+			case EnhancementTypeEnum::Damage: damage *= 2; manaCost *= 2; break;
+			case EnhancementTypeEnum::FiringRate: firingPeriod /= 2; break;
+			case EnhancementTypeEnum::FiringRange: firingRange += 4; break; // keep in sync with visualization
+			case EnhancementTypeEnum::SplashRadius: splashRadius += 2; manaCost *= 2; break;
+			case EnhancementTypeEnum::IntenseDot: overTime /= 5; break;
+			case EnhancementTypeEnum::ManaDiscount: manaCost /= 3; break;
 			}
 		}
 
@@ -93,17 +90,14 @@ namespace
 
 		bool consumeMana()
 		{
+			CAGE_ASSERT(me->has<ManaStorageComponent>() == manaCost > 0);
 			if (manaCost > 0)
 			{
-				me->add(compManaRecv);
 				ManaStorageComponent &mn = me->value<ManaStorageComponent>(compManaStor);
-				mn.capacity = baseManaCost * 10;
 				if (mn.mana < manaCost)
 					return false;
 				mn.mana -= manaCost;
 			}
-			else
-				me->remove(compManaRecv);
 			return true;
 		}
 
