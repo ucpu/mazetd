@@ -20,6 +20,7 @@ enum class DamageTypeEnum
 	Poison,
 	Magic,
 	Total,
+	Mana, // used for renderEffect
 };
 
 enum class DamageTypeFlags
@@ -200,13 +201,11 @@ struct ManaStorageComponent
 {
 	uint32 mana = 0;
 	uint32 capacity = 0;
+	sint32 transferOrdering = 0;
 };
 
 struct ManaDistributorComponent
-{
-	uint32 transferLimit = 100; // 5 times per second
-	Real range = 5;
-};
+{};
 
 struct ManaReceiverComponent
 {};
@@ -234,7 +233,7 @@ struct DamageComponent
 	uint32 firingPeriod = 30;
 	Real firingRange = 5;
 	Real splashRadius = 0;
-	uint32 baseManaCost = 12;
+	uint32 manaCost = 12;
 	MonsterClassFlags invalidClasses = MonsterClassFlags::None;
 	bool acceptMods = true;
 };

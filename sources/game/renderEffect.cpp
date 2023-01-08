@@ -54,6 +54,7 @@ namespace
 		case DamageTypeEnum::Water: return HashString("mazetd/particles/sprite.obj;water");
 		case DamageTypeEnum::Poison: return HashString("mazetd/particles/sprite.obj;poison");
 		case DamageTypeEnum::Magic: return HashString("mazetd/particles/sprite.obj;magic");
+		case DamageTypeEnum::Mana: return HashString("mazetd/particles/sprite.obj;mana");
 		default: return HashString("cage/model/fake.obj");
 		}
 	}
@@ -61,8 +62,7 @@ namespace
 
 void renderEffect(const EffectConfig &config)
 {
-	if (config.type >= DamageTypeEnum::Total)
-		return;
+	CAGE_ASSERT(config.type != DamageTypeEnum::Total);
 	const uint64 step = controlThread().updatePeriod();
 	const Real dist = distance(config.pos1, config.pos2);
 	const Vec3 dir = normalize(config.pos2 - config.pos1);

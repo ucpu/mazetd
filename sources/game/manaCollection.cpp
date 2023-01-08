@@ -87,7 +87,7 @@ namespace
 						EffectConfig cfg;
 						cfg.pos1 = p;
 						cfg.pos2 = mp3 + Vec3(0, e->value<PivotComponent>().elevation, 0);
-						cfg.type = DamageTypeEnum::Magic;
+						cfg.type = DamageTypeEnum::Mana;
 						renderEffect(cfg);
 					}
 

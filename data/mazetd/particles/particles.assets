@@ -18,6 +18,14 @@ sprite.obj;magic
 scheme = model
 normals = false
 tangents = false
+scale = 0.07
+material = mana.cpm
+sprite.obj;mana
+
+[]
+scheme = model
+normals = false
+tangents = false
 scale = 0.15
 material = poison.cpm
 sprite.obj;poison
@@ -45,6 +53,7 @@ srgb = true
 downscale = 4
 fire/$$.png
 magic/$$.png
+mana/$$.png
 poison/$$.png
 physical/$$.png
 water/$$.png

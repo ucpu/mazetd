@@ -23,7 +23,7 @@ namespace
 				t.position += Vec3(0, 2, 0);
 			else
 				t.position += t.orientation * Vec3(0, 0, 2);
-			hc.entity->value<TextureAnimationComponent>().offset = 1 - Real(mo.life) / mo.maxLife;
+			hc.entity->value<TextureAnimationComponent>().offset = Real(mo.life) / mo.maxLife;
 		}, gameEntities(), false);
 
 		entitiesVisitor([&](Entity *e) {
@@ -41,7 +41,7 @@ namespace
 				t.position += Vec3(0, 2, 0);
 			else
 				t.position += t.orientation * Vec3(0, 0, 2);
-			mc.entity->value<TextureAnimationComponent>().offset = 1 - Real(ms.mana) / ms.capacity;
+			mc.entity->value<TextureAnimationComponent>().offset = Real(ms.mana) / ms.capacity;
 		}, gameEntities(), false);
 	}
 

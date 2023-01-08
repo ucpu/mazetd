@@ -2,15 +2,13 @@
 emission = 1
 
 [mult]
-opacity = 0.6
+opacity = 0.8
 
 [textures]
-albedo = healthbar/$$.png
+albedo = healthbar/$.png
 
 [flags]
 fade
 noDepthWrite
 noShadowCast
 noLighting
-
-

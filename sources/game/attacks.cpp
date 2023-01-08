@@ -18,7 +18,6 @@ namespace
 		Entity *me = nullptr;
 		Vec3 mp;
 		Vec3 mpp;
-		uint32 manaCost = 0;
 	};
 
 	struct Monster
@@ -34,11 +33,6 @@ namespace
 	struct AttacksSolver : public TowerData, public DamageComponent, public AttackComponent
 	{
 		SpatialQuery *monstersQuery = spatialMonsters();
-		EntityComponent *compMovement = gameEntities()->component<MovementComponent>();
-		EntityComponent *compPosition = gameEntities()->component<PositionComponent>();
-		EntityComponent *compPivot = gameEntities()->component<PivotComponent>();
-		EntityComponent *compManaRecv = gameEntities()->component<ManaReceiverComponent>();
-		EntityComponent *compManaStor = gameEntities()->component<ManaStorageComponent>();
 		std::vector<Monster> monsters;
 
 		void applyMods()
@@ -47,8 +41,6 @@ namespace
 			{
 				CAGE_ASSERT(overTime == 0);
 				overTime = numeric_cast<uint32>(cage::sqrt(damage) * 20);
-				CAGE_ASSERT(manaCost == 0);
-				manaCost = baseManaCost;
 				damage *= 3; // cost of original damage + cost of mana + cost of DOT
 			}
 			switch (bonus)
@@ -69,7 +61,7 @@ namespace
 			{
 				Monster mo;
 				mo.e = gameEntities()->get(n);
-				mo.p = mo.e->has(compMovement) ? mo.e->value<MovementComponent>(compMovement).position() : mo.e->value<PositionComponent>(compPosition).position();
+				mo.p = mo.e->has<MovementComponent>() ? mo.e->value<MovementComponent>().position() : mo.e->value<PositionComponent>().position();
 				mo.mc = &mo.e->value<MonsterComponent>();
 				if (any(invalidClasses & mo.mc->monsterClass))
 					continue;
@@ -95,15 +87,11 @@ namespace
 		{
 			if (manaCost > 0)
 			{
-				me->add(compManaRecv);
-				ManaStorageComponent &mn = me->value<ManaStorageComponent>(compManaStor);
-				mn.capacity = baseManaCost * 10;
+				ManaStorageComponent &mn = me->value<ManaStorageComponent>();
 				if (mn.mana < manaCost)
 					return false;
 				mn.mana -= manaCost;
 			}
-			else
-				me->remove(compManaRecv);
 			return true;
 		}
 
@@ -112,7 +100,7 @@ namespace
 			EffectConfig cfg;
 			cfg.type = element;
 			cfg.pos1 = mpp;
-			cfg.pos2 = monsters[0].p + Vec3(0, monsters[0].e->value<PivotComponent>(compPivot).elevation, 0);
+			cfg.pos2 = monsters[0].p + Vec3(0, monsters[0].e->value<PivotComponent>().elevation, 0);
 			renderEffect(cfg);
 		}
 
@@ -141,7 +129,7 @@ namespace
 				*(AttackComponent *)this = atc;
 				me = e;
 				mp = pos.position();
-				mpp = mp + Vec3(0, e->value<PivotComponent>(compPivot).elevation, 0);
+				mpp = mp + Vec3(0, e->value<PivotComponent>().elevation, 0);
 
 				applyMods();
 

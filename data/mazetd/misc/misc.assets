@@ -38,8 +38,8 @@ target = 2dArray
 animationLoop = false
 wrapX = clampToEdge
 wrapY = clampToEdge
-healthbar/$$.png
-manabar/$$.png
+healthbar/$.png
+manabar/$.png
 
 []
 scheme = shader

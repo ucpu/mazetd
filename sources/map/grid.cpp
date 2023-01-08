@@ -183,8 +183,13 @@ Holder<Grid> newGrid(Holder<Procedural> procedural)
 	findBorder(+g);
 	{
 		uint32 valid = 0;
-		for (TileFlags f : g->flags)
-			valid += none(f & TileFlags::Invalid);
+		for (TileFlags &f : g->flags)
+		{
+			const bool v = none(f & TileFlags::Invalid);
+			valid += v;
+			if (v)
+				f |= TileFlags::Mana;
+		}
 		CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "valid tiles: " + valid);
 	}
 	return g;

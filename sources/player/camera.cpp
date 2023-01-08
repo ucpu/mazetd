@@ -1,6 +1,7 @@
 #include <cage-core/config.h>
 #include <cage-engine/scene.h>
 #include <cage-engine/window.h>
+#include <cage-engine/sceneScreenSpaceEffects.h>
 #include <cage-simple/engine.h>
 
 #include "../grid.h"
@@ -10,7 +11,7 @@ bool ortho;
 
 namespace
 {
-	ConfigBool confInvertCameraMove("mazetd/camera/invert", false);
+	const ConfigBool confInvertCameraMove("mazetd/camera/invert", false);
 	Vec2 lastMousePos;
 	Vec2 camCenter;
 	Real camDist;
@@ -214,6 +215,9 @@ namespace
 		c.ambientColor = Vec3(1);
 		c.ambientIntensity = 0.2;
 		needReset = true;
+		//ScreenSpaceEffectsComponent &ef = e->value<ScreenSpaceEffectsComponent>();
+		//ef.effects &= ~ScreenSpaceEffectsFlags::EyeAdaptation;
+		//ef.eyeAdaptation.nightDesaturate = 0;
 	}
 
 	struct Callbacks

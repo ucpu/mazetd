@@ -60,13 +60,13 @@ namespace
 				e->value<GuiLabelComponent>();
 				e->value<GuiTextComponent>().value = Stringizer() + "Base damage per second: " + (30.f * sb->value<DamageComponent>().damage / sb->value<DamageComponent>().firingPeriod);
 			}
-			{ // baseManaCost
+			{ // manaCost
 				Entity *e = ents->createUnique();
 				GuiParentComponent &pp = e->value<GuiParentComponent>();
 				pp.parent = config.tooltip->name();
 				pp.order = index++;
 				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = Stringizer() + "Base mana cost: " + sb->value<DamageComponent>().baseManaCost;
+				e->value<GuiTextComponent>().value = Stringizer() + "Mana cost: " + sb->value<DamageComponent>().manaCost;
 			}
 		}
 
@@ -90,27 +90,6 @@ namespace
 			pp.order = index++;
 			e->value<GuiLabelComponent>();
 			e->value<GuiTextComponent>().value = Stringizer() + "Mana capacity: " + sb->value<ManaStorageComponent>().capacity;
-		}
-
-		// mana distributor
-		if (sb->has<ManaDistributorComponent>())
-		{
-			{ // transfer limit
-				Entity *e = ents->createUnique();
-				GuiParentComponent &pp = e->value<GuiParentComponent>();
-				pp.parent = config.tooltip->name();
-				pp.order = index++;
-				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = Stringizer() + "Mana transfer rate: " + sb->value<ManaDistributorComponent>().transferLimit;
-			}
-			{ // transfer range
-				Entity *e = ents->createUnique();
-				GuiParentComponent &pp = e->value<GuiParentComponent>();
-				pp.parent = config.tooltip->name();
-				pp.order = index++;
-				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = Stringizer() + "Mana transfer range: " + sb->value<ManaDistributorComponent>().range;
-			}
 		}
 
 		{ // cost
@@ -208,7 +187,9 @@ namespace
 				DamageComponent &d = e->value<DamageComponent>();
 				d.firingPeriod = 60; // 0.5 shots per second
 				d.damage = 25;
-				d.baseManaCost = 25;
+				d.manaCost = 25;
+				e->value<ManaStorageComponent>().capacity = 100;
+				e->value<ManaReceiverComponent>();
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-light.object");
 				e->value<DescriptionComponent>().description = "Cheapest tower.";
 				// dps: 12.5
@@ -224,7 +205,9 @@ namespace
 				e->value<CostComponent>().cost = 500;
 				DamageComponent &d = e->value<DamageComponent>();
 				d.damage = 100;
-				d.baseManaCost = 10;
+				d.manaCost = 10;
+				e->value<ManaStorageComponent>().capacity = 100;
+				e->value<ManaReceiverComponent>();
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-heavy.object");
 				e->value<DescriptionComponent>().description = "Tower with best mana efficiency.";
 				// dps: 100
@@ -245,7 +228,9 @@ namespace
 				DamageComponent &d = e->value<DamageComponent>();
 				d.firingPeriod = 15; // 2 shots per second
 				d.damage = 150;
-				d.baseManaCost = 50;
+				d.manaCost = 50;
+				e->value<ManaStorageComponent>().capacity = 200;
+				e->value<ManaReceiverComponent>();
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/tower-medium.object");
 				e->value<DescriptionComponent>().description = "Tower with best DPS per dollar.";
 				// dps: 300
@@ -268,12 +253,12 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr BonusData bonusData[] = {
-				{ "Damage", "Affected towers have doubled damage and mana cost.\nEnhancements do not stack.", BonusTypeEnum::Damage, HashString("mazetd/buildings/bonus-damage.object")},
-				{ "Firing Rate", "Affected towers have doubled rate of fire.\nEnhancements do not stack.", BonusTypeEnum::FiringRate, HashString("mazetd/buildings/bonus-firingRate.object") },
-				{ "Firing Range", "Affected towers have range of fire increased by 4 tiles.\nEnhancements do not stack.", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
-				{ "Splash Radius", "Affected towers have splash radius increased by 2 tiles. Mana cost is tripled.\nEnhancements do not stack.", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
-				{ "Intense Utility", "Affected tower's damage over time is applied 5 times faster.\nEnhancements do not stack.", BonusTypeEnum::IntenseDot, HashString("mazetd/buildings/bonus-intenseDot.object") },
-				{ "Mana Allowance", "Affected towers have one third mana cost.\nEnhancements do not stack.", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
+				{ "Damage", "Affected towers have doubled damage and mana cost.\nEnhancements cannot be combined.", BonusTypeEnum::Damage, HashString("mazetd/buildings/bonus-damage.object")},
+				{ "Rate", "Affected towers have doubled rate of fire.\nEnhancements cannot be combined.", BonusTypeEnum::FiringRate, HashString("mazetd/buildings/bonus-firingRate.object") },
+				{ "Range", "Affected towers have range of fire increased by 4 tiles.\nEnhancements cannot be combined.", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
+				{ "Splash", "Affected towers have splash radius increased by 2 tiles. Mana cost is tripled.\nEnhancements cannot be combined.", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
+				{ "Intense", "Affected tower's damage over time is applied 5 times faster.\nEnhancements cannot be combined.", BonusTypeEnum::IntenseDot, HashString("mazetd/buildings/bonus-intenseDot.object") },
+				{ "Mana", "Affected towers have one third mana cost.\nEnhancements cannot be combined.", BonusTypeEnum::ManaDiscount, HashString("mazetd/buildings/bonus-manaDiscount.object") },
 			};
 
 			for (const auto &it : bonusData)
@@ -354,10 +339,10 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr ManaData manaData[] = {
-				{ "Waterwheel Collector", "Collects mana from surrounding water tiles.", ManaCollectorTypeEnum::Water, 10, HashString("mazetd/buildings/mana-collector-water.object")},
-				{ "Sunbloom Collector", "Collects mana from surrounding grass tiles.", ManaCollectorTypeEnum::Sun, 5, HashString("mazetd/buildings/mana-collector-sun.object") },
-				{ "Windmill Collector", "Collects mana from surrounding dirt tiles.", ManaCollectorTypeEnum::Wind, 5, HashString("mazetd/buildings/mana-collector-wind.object") },
-				{ "Snowmelt Collector", "Collects mana from surrounding snow tiles.", ManaCollectorTypeEnum::Snow, 10, HashString("mazetd/buildings/mana-collector-snow.object") },
+				{ "Waterwheel", "Collects mana from surrounding water tiles.", ManaCollectorTypeEnum::Water, 10, HashString("mazetd/buildings/mana-collector-water.object")},
+				{ "Sunbloom", "Collects mana from surrounding grass tiles.", ManaCollectorTypeEnum::Sun, 5, HashString("mazetd/buildings/mana-collector-sun.object") },
+				{ "Windmill", "Collects mana from surrounding dirt tiles.", ManaCollectorTypeEnum::Wind, 5, HashString("mazetd/buildings/mana-collector-wind.object") },
+				{ "Snowmelt", "Collects mana from surrounding snow tiles.", ManaCollectorTypeEnum::Snow, 10, HashString("mazetd/buildings/mana-collector-snow.object") },
 			};
 
 			for (const auto &it : manaData)
@@ -367,19 +352,33 @@ namespace
 				e->value<PivotComponent>().elevation = 1;
 				e->value<CostComponent>().cost = 300;
 				e->value<ManaStorageComponent>().capacity = 100;
+				e->value<ManaDistributorComponent>();
 				e->value<ManaCollectorComponent>().type = it.type;
 				e->value<ManaCollectorComponent>().collectAmount = it.amount;
-				e->value<ManaDistributorComponent>().range = e->value<ManaCollectorComponent>().range;
 				e->value<GuiModelComponent>().model = it.model;
 				e->value<DescriptionComponent>().description = it.description;
 			}
 
 			{
-				Entity *e = generate(4, "Mana Capacitor");
+				Entity *e = generate(4, "Relay");
+				e->value<BuildingComponent>();
+				e->value<PivotComponent>().elevation = 2.5;
+				e->value<CostComponent>().cost = 100;
+				e->value<ManaStorageComponent>().capacity = 100;
+				e->value<ManaStorageComponent>().transferOrdering = -1;
+				e->value<ManaReceiverComponent>();
+				e->value<ManaDistributorComponent>();
+				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/mana-relay.object");
+				e->value<DescriptionComponent>().description = "Directs mana transfers.";
+			}
+
+			{
+				Entity *e = generate(4, "Capacitor");
 				e->value<BuildingComponent>();
 				e->value<PivotComponent>().elevation = 1.3;
 				e->value<CostComponent>().cost = 500;
 				e->value<ManaStorageComponent>().capacity = 1500;
+				e->value<ManaStorageComponent>().transferOrdering = 1;
 				e->value<ManaReceiverComponent>();
 				e->value<ManaDistributorComponent>();
 				e->value<GuiModelComponent>().model = HashString("mazetd/buildings/mana-capacitor.object");

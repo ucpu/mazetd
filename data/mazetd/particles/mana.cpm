@@ -1,0 +1,10 @@
+[base]
+emission = 1
+
+[textures]
+albedo = mana/$$.png
+
+[flags]
+noLighting
+noShadowCast
+cutOut
