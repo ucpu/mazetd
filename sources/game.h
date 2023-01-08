@@ -199,7 +199,7 @@ struct CostComponent
 struct ManaStorageComponent
 {
 	uint32 mana = 0;
-	uint32 capacity = 100;
+	uint32 capacity = 0;
 };
 
 struct ManaDistributorComponent

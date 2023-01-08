@@ -26,16 +26,12 @@ namespace
 			hc.entity->value<TextureAnimationComponent>().offset = 1 - Real(mo.life) / mo.maxLife;
 		}, gameEntities(), false);
 
-		{
-			EntityComponent *storComp = gameEntities()->component<ManaStorageComponent>();
-			EntityComponent *barComp = gameEntities()->component<ManabarComponent>();
-			entitiesVisitor([&](Entity *e) {
-				if (e->has(storComp))
-					e->add(barComp);
-				else
-					e->remove(barComp);
-			}, gameEntities(), false);
-		}
+		entitiesVisitor([&](Entity *e) {
+			if (e->has<ManaStorageComponent>() && e->value<ManaStorageComponent>().capacity > 0)
+				e->value<ManabarComponent>();
+			else
+				e->remove<ManabarComponent>();
+		}, gameEntities(), false);
 
 		entitiesVisitor([&](Entity *e, const PositionComponent &pc, const PivotComponent &pv, const ManaStorageComponent &ms, const ManabarComponent &mc) {
 			TransformComponent &t = mc.entity->value<TransformComponent>();
