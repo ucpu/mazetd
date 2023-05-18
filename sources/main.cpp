@@ -40,7 +40,7 @@ int main(int argc, const char *args[])
 			Holder<StatisticsGui> engineStatistics = newStatisticsGui();
 			engineStatistics->statisticsScope = StatisticsGuiScopeEnum::None;
 
-			engineStart();
+			engineRun();
 		}
 
 		engineAssets()->remove(HashString("mazetd/mazetd.pack"));

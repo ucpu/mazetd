@@ -3,7 +3,7 @@
 
 namespace
 {
-	bool buttonStop(uint32)
+	bool buttonStop(Entity *)
 	{
 		eventGameReset().dispatch();
 		setScreenMainmenu();
@@ -18,7 +18,7 @@ void setScreenLost()
 
 	{
 		Entity *e = ents->create(1);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 1);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0, 1);
 	}
 
 	{
@@ -31,7 +31,7 @@ void setScreenLost()
 
 	{
 		Entity *e = ents->create(3);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.45, 0.05);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.45, 0.05);
 		e->value<GuiLayoutLineComponent>().vertical = true;
 	}
 

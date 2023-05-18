@@ -13,7 +13,7 @@ namespace
 	EventListener<void()> engineUpdateListener;
 	EventListener<void()> guiCleanListener;
 
-	bool buttonMenu(uint32)
+	bool buttonMenu(Entity *)
 	{
 		setScreenPaused();
 		return true;
@@ -210,7 +210,7 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(300);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.5, 0);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.5, 0);
 	}
 
 	{
@@ -352,7 +352,7 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(400);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(1, 0.5);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(1, 0.5);
 	}
 
 	{
@@ -367,7 +367,7 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(500);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 0);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0, 0);
 	}
 
 	{
@@ -385,7 +385,7 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(520);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.5, 0.99);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.5, 0.99);
 	}
 
 	{
@@ -399,7 +399,7 @@ void setScreenGame()
 
 	{
 		Entity *e = ents->create(800);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 1);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0, 1);
 	}
 
 	{

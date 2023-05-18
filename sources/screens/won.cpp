@@ -5,14 +5,14 @@ void setScreenGame();
 
 namespace
 {
-	bool buttonStop(uint32)
+	bool buttonStop(Entity *)
 	{
 		eventGameReset().dispatch();
 		setScreenMainmenu();
 		return true;
 	}
 
-	bool buttonContinue(uint32)
+	bool buttonContinue(Entity *)
 	{
 		setScreenGame();
 		return true;
@@ -26,7 +26,7 @@ void setScreenWon()
 
 	{
 		Entity *e = ents->create(1);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 1);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0, 1);
 	}
 
 	{
@@ -39,7 +39,7 @@ void setScreenWon()
 
 	{
 		Entity *e = ents->create(11);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(1, 1);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(1, 1);
 	}
 
 	{
@@ -52,7 +52,7 @@ void setScreenWon()
 
 	{
 		Entity *e = ents->create(3);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.45, 0.05);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.45, 0.05);
 		e->value<GuiLayoutLineComponent>().vertical = true;
 	}
 

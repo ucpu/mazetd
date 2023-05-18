@@ -2,7 +2,7 @@
 
 namespace
 {
-	bool buttonBack(uint32)
+	bool buttonBack(Entity *)
 	{
 		setScreenMainmenu();
 		return true;
@@ -16,7 +16,7 @@ void setScreenAbout()
 
 	{
 		Entity *e = ents->create(1);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0, 1);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0, 1);
 	}
 
 	{
@@ -29,7 +29,7 @@ void setScreenAbout()
 
 	{
 		Entity *e = ents->create(4);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.5, 0.2);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.5, 0.2);
 	}
 
 	{

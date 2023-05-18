@@ -5,19 +5,19 @@ void setScreenAbout();
 
 namespace
 {
-	bool buttonStart(uint32)
+	bool buttonStart(Entity *)
 	{
 		setScreenGenerating();
 		return true;
 	}
 
-	bool buttonAbout(uint32)
+	bool buttonAbout(Entity *)
 	{
 		setScreenAbout();
 		return true;
 	}
 
-	bool buttonQuit(uint32)
+	bool buttonQuit(Entity *)
 	{
 		engineStop();
 		return true;
@@ -31,7 +31,7 @@ void setScreenMainmenu()
 
 	{
 		Entity *e = ents->create(1);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.45, 0.05);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.45, 0.05);
 	}
 
 	{
@@ -45,7 +45,7 @@ void setScreenMainmenu()
 
 	{
 		Entity *e = ents->create(3);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.8, 0.666);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.8, 0.666);
 	}
 
 	{

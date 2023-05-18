@@ -1,21 +1,18 @@
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.65
 wall.obj
 
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.5
 tower-light.obj
 
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.7
 tower-medium.obj?black
 tower-medium.obj?darkRock
@@ -24,7 +21,6 @@ tower-medium.obj?lightRock
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.7
 tower-heavy.obj?black
 tower-heavy.obj?ceiling
@@ -34,7 +30,6 @@ tower-heavy.obj?lightRock
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.65
 augment-pedestal.obj?stone
 augment-pedestal.obj?metal
@@ -42,28 +37,24 @@ augment-pedestal.obj?spikes
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = augment-fire.cpm
 augment-plane.obj;fire
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = augment-magic.cpm
 augment-plane.obj;magic
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = augment-water.cpm
 augment-plane.obj;water
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = augment-poison.cpm
 augment-plane.obj;poison
@@ -71,7 +62,6 @@ augment-plane.obj;poison
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.35
 material = bonus-statue.cpm
 bonus-damage.obj
@@ -79,7 +69,6 @@ bonus-damage.obj
 []
 scheme = model
 uvs = false
-tangents = false
 trianglesOnly = true
 scale = 0.35
 material = bonus-statue.cpm
@@ -88,7 +77,6 @@ bonus-firingRange.obj
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.35
 material = bonus-statue.cpm
 bonus-firingRate.obj
@@ -96,7 +84,6 @@ bonus-firingRate.obj
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.35
 material = bonus-statue.cpm
 bonus-intenseDot.obj
@@ -104,7 +91,6 @@ bonus-intenseDot.obj
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.35
 material = bonus-statue.cpm
 bonus-manaDiscount.obj
@@ -112,7 +98,6 @@ bonus-manaDiscount.obj
 []
 scheme = model
 uvs = false
-tangents = false
 trianglesOnly = true
 scale = 0.35
 material = bonus-statue.cpm
@@ -121,7 +106,6 @@ bonus-splashRadius.obj
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.35
 material = bonus-pedestal.cpm
 bonus-pedestal.obj
@@ -129,7 +113,6 @@ bonus-pedestal.obj
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.85
 mana-capacitor.obj?metal
 mana-capacitor.obj?stone
@@ -137,7 +120,6 @@ mana-capacitor.obj?water
 
 []
 scheme = model
-tangents = true
 material = mana-relay.cpm
 scale = 0.7
 mana-relay.obj
@@ -148,42 +130,36 @@ mana-relay_normal.png
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = targeting-back.cpm
 targeting-plane.obj;back
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = targeting-closest.cpm
 targeting-plane.obj;closest
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = targeting-farthest.cpm
 targeting-plane.obj;farthest
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = targeting-front.cpm
 targeting-plane.obj;front
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = targeting-strongest.cpm
 targeting-plane.obj;strongest
 
 []
 scheme = model
-tangents = false
 scale = 0.65
 material = targeting-weakest.cpm
 targeting-plane.obj;weakest
@@ -204,7 +180,6 @@ targeting-weakest.png
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.8
 targeting-pedestal.obj?black
 targeting-pedestal.obj?lightRock
@@ -212,7 +187,6 @@ targeting-pedestal.obj?lightRock
 []
 scheme = model
 uvs = false
-tangents = false
 scale = 0.8
 trap-spikes.obj?metal
 trap-spikes.obj?wood
@@ -220,35 +194,30 @@ trap-spikes.obj?wood
 []
 scheme = model
 uvs = false
-tangents = false
 mana-collector.obj?stem
 mana-collector.obj?crown
 
 []
 scheme = model
 uvs = false
-tangents = false
 material = mana-collector-water.cpm
 mana-collector.obj?berries;water
 
 []
 scheme = model
 uvs = false
-tangents = false
 material = mana-collector-sun.cpm
 mana-collector.obj?berries;sun
 
 []
 scheme = model
 uvs = false
-tangents = false
 material = mana-collector-wind.cpm
 mana-collector.obj?berries;wind
 
 []
 scheme = model
 uvs = false
-tangents = false
 material = mana-collector-snow.cpm
 mana-collector.obj?berries;snow
 

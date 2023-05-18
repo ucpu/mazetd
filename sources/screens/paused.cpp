@@ -5,13 +5,13 @@ void setScreenGame();
 
 namespace
 {
-	bool buttonResume(uint32)
+	bool buttonResume(Entity *)
 	{
 		setScreenGame();
 		return true;
 	}
 
-	bool buttonStop(uint32)
+	bool buttonStop(Entity *)
 	{
 		eventGameReset().dispatch();
 		setScreenMainmenu();
@@ -26,7 +26,7 @@ void setScreenPaused()
 
 	{
 		Entity *e = ents->create(1);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.45, 0.05);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.45, 0.05);
 	}
 
 	{
@@ -39,7 +39,7 @@ void setScreenPaused()
 
 	{
 		Entity *e = ents->create(3);
-		e->value<GuiScrollbarsComponent>().alignment = Vec2(0.8, 0.666);
+		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.8, 0.666);
 	}
 
 	{

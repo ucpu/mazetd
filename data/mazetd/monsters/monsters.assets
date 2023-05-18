@@ -1,7 +1,6 @@
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.07
@@ -18,7 +17,6 @@ Apatosaurus.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.15
@@ -39,7 +37,6 @@ Bat.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.2
@@ -60,7 +57,6 @@ Dragon.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.2
@@ -79,7 +75,6 @@ Frog.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.13
@@ -98,7 +93,6 @@ Parasaurolophus.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.2
@@ -115,7 +109,6 @@ Rat.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.2
@@ -131,7 +124,6 @@ Skeleton.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.25
@@ -148,7 +140,6 @@ Slime.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.25
@@ -170,7 +161,6 @@ Snake.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.17
@@ -187,7 +177,6 @@ Spider.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.07
@@ -205,7 +194,6 @@ Stegosaurus.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.04
@@ -225,7 +213,6 @@ Trex.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.06
@@ -243,7 +230,6 @@ Triceratops.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.13
@@ -261,7 +247,6 @@ Velociraptor.glb;skeleton
 []
 scheme = model
 uvs = false
-tangents = false
 bones = true
 trianglesOnly = true
 scale = 0.2

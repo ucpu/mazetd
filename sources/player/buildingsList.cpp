@@ -7,9 +7,9 @@
 
 namespace
 {
-	bool buildingSelectionClick(uint32 i)
+	bool buildingSelectionClick(Entity *e)
 	{
-		playerBuildingSelection = engineGuiEntities()->get(i);
+		playerBuildingSelection = e;
 		engineGuiManager()->focus(0); // defocus to allow using keyboard shortcuts
 		return true;
 	}

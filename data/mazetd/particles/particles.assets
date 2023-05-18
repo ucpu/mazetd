@@ -1,7 +1,6 @@
 []
 scheme = model
 normals = false
-tangents = false
 scale = 0.15
 material = fire.cpm
 sprite.obj;fire
@@ -9,7 +8,6 @@ sprite.obj;fire
 []
 scheme = model
 normals = false
-tangents = false
 scale = 0.15
 material = magic.cpm
 sprite.obj;magic
@@ -17,7 +15,6 @@ sprite.obj;magic
 []
 scheme = model
 normals = false
-tangents = false
 scale = 0.07
 material = mana.cpm
 sprite.obj;mana
@@ -25,7 +22,6 @@ sprite.obj;mana
 []
 scheme = model
 normals = false
-tangents = false
 scale = 0.15
 material = poison.cpm
 sprite.obj;poison
@@ -33,7 +29,6 @@ sprite.obj;poison
 []
 scheme = model
 normals = false
-tangents = false
 scale = 0.15
 material = physical.cpm
 sprite.obj;physical
@@ -41,7 +36,6 @@ sprite.obj;physical
 []
 scheme = model
 normals = false
-tangents = false
 scale = 0.15
 material = water.cpm
 sprite.obj;water
