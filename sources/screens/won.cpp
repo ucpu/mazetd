@@ -5,70 +5,23 @@ void setScreenGame();
 
 namespace
 {
-	bool buttonStop(Entity *)
+	void buttonStop()
 	{
 		eventGameReset().dispatch();
 		setScreenMainmenu();
-		return true;
-	}
-
-	bool buttonContinue(Entity *)
-	{
-		setScreenGame();
-		return true;
 	}
 }
 
 void setScreenWon()
 {
 	cleanGui();
-	EntityManager *ents = engineGuiEntities();
-
+	Holder<GuiBuilder> g = newGuiBuilder(engineGuiEntities());
+	auto _1 = g->alignment(Vec2(0.8, 0.666));
+	auto _2 = g->column();
 	{
-		Entity *e = ents->create(1);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0, 1);
+		auto _ = g->panel().text("Victory");
+		g->label().text(Stringizer() + "Waves: " + SpawningGroup::waveIndex);
 	}
-
-	{
-		Entity *e = ents->create(2);
-		e->value<GuiParentComponent>().parent = 1;
-		e->value<GuiButtonComponent>();
-		e->value<GuiTextComponent>().value = "Stop";
-		e->value<GuiEventComponent>().event.bind<&buttonStop>();
-	}
-
-	{
-		Entity *e = ents->create(11);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(1, 1);
-	}
-
-	{
-		Entity *e = ents->create(12);
-		e->value<GuiParentComponent>().parent = 11;
-		e->value<GuiButtonComponent>();
-		e->value<GuiTextComponent>().value = "Continue";
-		e->value<GuiEventComponent>().event.bind<&buttonContinue>();
-	}
-
-	{
-		Entity *e = ents->create(3);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.45, 0.05);
-		e->value<GuiLayoutLineComponent>().vertical = true;
-	}
-
-	{
-		Entity *e = ents->create(4);
-		e->value<GuiParentComponent>().parent = 3;
-		e->value<GuiParentComponent>().order = 0;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = "Victory";
-	}
-
-	{
-		Entity *e = ents->create(5);
-		e->value<GuiParentComponent>().parent = 3;
-		e->value<GuiParentComponent>().order = 1;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Waves: " + SpawningGroup::waveIndex;
-	}
+	g->button().text("Continue").bind<&setScreenGame>();
+	g->button().text("Abort").bind<&buttonStop>();
 }

@@ -13,29 +13,20 @@ namespace
 	EventListener<void()> engineUpdateListener;
 	EventListener<void()> guiCleanListener;
 
-	bool buttonMenu(Entity *)
-	{
-		setScreenPaused();
-		return true;
-	}
-
 	void updateTopBar()
 	{
 		EntityManager *ents = engineGuiEntities();
 
 		{ // path tiles
-			Entity *e = ents->get(312);
-			e->value<GuiTextComponent>().value = Stringizer() + globalWaypoints->minFullDistance;
+			ents->get(312)->value<GuiTextComponent>().value = Stringizer() + globalWaypoints->minFullDistance;
 		}
 
 		{ // health
-			Entity *e = ents->get(314);
-			e->value<GuiTextComponent>().value = Stringizer() + playerHealth;
+			ents->get(314)->value<GuiTextComponent>().value = Stringizer() + playerHealth;
 		}
 
 		{ // dollars
-			Entity *e = ents->get(316);
-			e->value<GuiTextComponent>().value = Stringizer() + playerMoney;
+			ents->get(316)->value<GuiTextComponent>().value = Stringizer() + playerMoney;
 		}
 
 		{ // mana
@@ -44,9 +35,8 @@ namespace
 			entitiesVisitor([&](const ManaStorageComponent &mc) {
 				manaCap += mc.capacity;
 				manaAvail += mc.mana;
-				}, gameEntities(), false);
-			Entity *e = ents->get(318);
-			e->value<GuiTextComponent>().value = Stringizer() + (100 * manaAvail / manaCap) + " %";
+			}, gameEntities(), false);
+			ents->get(318)->value<GuiTextComponent>().value = Stringizer() + (100 * manaAvail / manaCap) + " %";
 		}
 
 		{ // monsters
@@ -58,15 +48,8 @@ namespace
 				lfTot += mc.maxLife;
 				lfRem += mc.life;
 			}, gameEntities(), false);
-			Entity *e = ents->get(320);
-			e->value<GuiTextComponent>().value = Stringizer() + cnt + " @ " + (100 * lfRem / lfTot) + " %";
+			ents->get(320)->value<GuiTextComponent>().value = Stringizer() + cnt + " @ " + (100 * lfRem / lfTot) + " %";
 		}
-	}
-
-	void engineUpdate()
-	{
-		updateTopBar();
-		engineGuiEntities()->get(521)->value<GuiTextComponent>().value = gamePaused ? "Paused" : "";
 	}
 
 	void guiClean()
@@ -84,7 +67,7 @@ namespace
 				ents.push_back(e->name());
 				e->destroy();
 			}
-			}, engineGuiEntities(), true);
+		}, engineGuiEntities(), true);
 		for (uint32 n : ents)
 			removeGuiEntitiesWithParent(n);
 	}
@@ -199,220 +182,68 @@ void updateSpawningMonsterPropertiesScreen()
 void setScreenGame()
 {
 	cleanGui();
-	EntityManager *ents = engineGuiEntities();
 	guiCleanListener.attach(eventGuiClean());
 	guiCleanListener.bind<&guiClean>();
 	engineUpdateListener.attach(controlThread().update);
-	engineUpdateListener.bind<&engineUpdate>();
+	engineUpdateListener.bind<&updateTopBar>();
 	gameReady = true;
+	Holder<GuiBuilder> g = newGuiBuilder(engineGuiEntities());
 
-	// top bar
-
-	{
-		Entity *e = ents->create(300);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.5, 0);
+	{ // top bar
+		auto _1 = g->alignment(Vec2(0.5, 0));
+		auto _2 = g->row();
+		g->button().image(HashString("mazetd/gui/menu.png")).bind<&setScreenPaused>();
+		{
+			auto _1 = g->panel();
+			auto _2 = g->row();
+			g->label().image(HashString("mazetd/gui/path.png"));
+			g->setNextName(312).label();
+		}
+		{
+			auto _1 = g->panel();
+			auto _2 = g->row();
+			g->label().image(HashString("mazetd/gui/health.png"));
+			g->setNextName(314).label();
+		}
+		{
+			auto _1 = g->panel();
+			auto _2 = g->row();
+			g->label().image(HashString("mazetd/gui/dollar.png"));
+			g->setNextName(316).label();
+		}
+		{
+			auto _1 = g->panel();
+			auto _2 = g->row();
+			g->label().image(HashString("mazetd/gui/mana.png"));
+			g->setNextName(318).label();
+		}
+		{
+			auto _1 = g->panel();
+			auto _2 = g->row();
+			g->label().image(HashString("mazetd/gui/monster.png"));
+			g->setNextName(320).label();
+		}
+		updateTopBar();
 	}
 
-	{
-		Entity *e = ents->create(301);
-		e->value<GuiParentComponent>().parent = 300;
-		e->value<GuiLayoutLineComponent>();
+	{ // buildings menu
+		auto _1 = g->alignment(Vec2(1, 0.5));
+		auto _2 = g->setNextName(401).column();
+		generateBuildingsList();
 	}
 
-	{
-		Entity *e = ents->create(310);
-		e->value<GuiParentComponent>().parent = 301;
-		e->value<GuiParentComponent>().order = 1;
-		e->value<GuiButtonComponent>();
-		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/menu.png");
-		e->value<GuiEventComponent>().event.bind<&buttonMenu>();
+	{ // monster properties
+		auto _1 = g->alignment(Vec2(0, 0));
+		auto _2 = g->spoiler(false).text("Spawning").skin(2); // compact skin
+		auto _3 = g->setNextName(501).column();
+		updateSpawningMonsterPropertiesScreen();
 	}
 
-	{
-		Entity *e = ents->create(302);
-		e->value<GuiParentComponent>().parent = 301;
-		e->value<GuiParentComponent>().order = 2;
-		e->value<GuiPanelComponent>();
-		e->value<GuiLayoutLineComponent>();
-	}
+	{ // controls
+		auto _1 = g->alignment(Vec2(0, 1));
+		auto _2 = g->spoiler(false).text("Controls").skin(2); // compact skin
+		auto _3 = g->column();
 
-	{
-		Entity *e = ents->create(311);
-		e->value<GuiParentComponent>().parent = 302;
-		e->value<GuiParentComponent>().order = 1;
-		e->value<GuiLabelComponent>();
-		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/path.png");
-	}
-
-	{
-		Entity *e = ents->create(312);
-		e->value<GuiParentComponent>().parent = 302;
-		e->value<GuiParentComponent>().order = 2;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = "path";
-	}
-
-	{
-		Entity *e = ents->create(303);
-		e->value<GuiParentComponent>().parent = 301;
-		e->value<GuiParentComponent>().order = 3;
-		e->value<GuiPanelComponent>();
-		e->value<GuiLayoutLineComponent>();
-	}
-
-	{
-		Entity *e = ents->create(313);
-		e->value<GuiParentComponent>().parent = 303;
-		e->value<GuiParentComponent>().order = 1;
-		e->value<GuiLabelComponent>();
-		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/health.png");
-	}
-
-	{
-		Entity *e = ents->create(314);
-		e->value<GuiParentComponent>().parent = 303;
-		e->value<GuiParentComponent>().order = 2;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = "health";
-	}
-
-	{
-		Entity *e = ents->create(304);
-		e->value<GuiParentComponent>().parent = 301;
-		e->value<GuiParentComponent>().order = 4;
-		e->value<GuiPanelComponent>();
-		e->value<GuiLayoutLineComponent>();
-	}
-
-	{
-		Entity *e = ents->create(315);
-		e->value<GuiParentComponent>().parent = 304;
-		e->value<GuiParentComponent>().order = 1;
-		e->value<GuiLabelComponent>();
-		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/dollar.png");
-	}
-
-	{
-		Entity *e = ents->create(316);
-		e->value<GuiParentComponent>().parent = 304;
-		e->value<GuiParentComponent>().order = 2;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = "dollars";
-	}
-
-	{
-		Entity *e = ents->create(305);
-		e->value<GuiParentComponent>().parent = 301;
-		e->value<GuiParentComponent>().order = 5;
-		e->value<GuiPanelComponent>();
-		e->value<GuiLayoutLineComponent>();
-	}
-
-	{
-		Entity *e = ents->create(317);
-		e->value<GuiParentComponent>().parent = 305;
-		e->value<GuiParentComponent>().order = 1;
-		e->value<GuiLabelComponent>();
-		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/mana.png");
-	}
-
-	{
-		Entity *e = ents->create(318);
-		e->value<GuiParentComponent>().parent = 305;
-		e->value<GuiParentComponent>().order = 2;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = "mana";
-	}
-
-	{
-		Entity *e = ents->create(306);
-		e->value<GuiParentComponent>().parent = 301;
-		e->value<GuiParentComponent>().order = 6;
-		e->value<GuiPanelComponent>();
-		e->value<GuiLayoutLineComponent>();
-	}
-
-	{
-		Entity *e = ents->create(319);
-		e->value<GuiParentComponent>().parent = 306;
-		e->value<GuiParentComponent>().order = 1;
-		e->value<GuiLabelComponent>();
-		e->value<GuiImageComponent>().textureName = HashString("mazetd/gui/monster.png");
-	}
-
-	{
-		Entity *e = ents->create(320);
-		e->value<GuiParentComponent>().parent = 306;
-		e->value<GuiParentComponent>().order = 2;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = "monsters";
-	}
-
-	// buildings menu
-
-	{
-		Entity *e = ents->create(400);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(1, 0.5);
-	}
-
-	{
-		Entity *e = ents->create(401);
-		e->value<GuiParentComponent>().parent = 400;
-		e->value<GuiLayoutLineComponent>().vertical = true;
-	}
-
-	generateBuildingsList();
-
-	// monster properties
-
-	{
-		Entity *e = ents->create(500);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0, 0);
-	}
-
-	{
-		Entity *e = ents->create(501);
-		e->value<GuiParentComponent>().parent = 500;
-		e->value<GuiSpoilerComponent>().collapsed = false;
-		e->value<GuiLayoutLineComponent>().vertical = true;
-		e->value<GuiTextComponent>().value = "Spawning";
-		e->value<GuiWidgetStateComponent>().skinIndex = 2; // compact skin
-	}
-
-	updateSpawningMonsterPropertiesScreen();
-
-	// bottom status bar
-
-	{
-		Entity *e = ents->create(520);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.5, 0.99);
-	}
-
-	{
-		Entity *e = ents->create(521);
-		e->value<GuiParentComponent>().parent = 520;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = "Paused";
-	}
-
-	// controls
-
-	{
-		Entity *e = ents->create(800);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0, 1);
-	}
-
-	{
-		Entity *e = ents->create(801);
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 800;
-		e->value<GuiSpoilerComponent>().collapsed = false;
-		e->value<GuiLayoutLineComponent>().vertical = true;
-		e->value<GuiTextComponent>().value = "Controls";
-		e->value<GuiWidgetStateComponent>().skinIndex = 2; // compact skin
-	}
-
-	{
 		static constexpr const char *lines[] = {
 			"LMB - place selected building",
 			"MMB - destroy building",
@@ -426,14 +257,7 @@ void setScreenGame()
 			"Home - reset game speed",
 		};
 
-		uint32 idx = 0;
-		for (const auto &it : lines)
-		{
-			Entity *e = engineGuiEntities()->createUnique();
-			e->value<GuiParentComponent>().parent = 801;
-			e->value<GuiParentComponent>().order = idx++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = it;
-		}
+		for (const String &it : lines)
+			g->label().text(it);
 	}
 }

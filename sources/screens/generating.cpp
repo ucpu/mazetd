@@ -12,7 +12,6 @@ namespace
 	{
 		if (!globalGrid)
 			return;
-
 		setScreenGame();
 	}
 
@@ -25,21 +24,15 @@ namespace
 void setScreenGenerating()
 {
 	cleanGui();
-	EntityManager *ents = engineGuiEntities();
 	guiCleanListener.attach(eventGuiClean());
 	guiCleanListener.bind<&guiClean>();
 	engineUpdateListener.attach(controlThread().update);
 	engineUpdateListener.bind<&engineUpdate>();
 
+	Holder<GuiBuilder> g = newGuiBuilder(engineGuiEntities());
 	{
-		Entity *e = ents->create(1);
-		e->value<GuiLayoutAlignmentComponent>().alignment = Vec2(0.45, 0.05);
-	}
-
-	{
-		Entity *e = ents->create(2);
-		e->value<GuiParentComponent>().parent = 1;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = "Generating";
+		auto a = g->alignment(Vec2(0.5));
+		auto b = g->panel();
+		g->label().text("Generating...");
 	}
 }

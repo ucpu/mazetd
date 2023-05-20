@@ -1,6 +1,6 @@
 #include <cage-core/events.h>
 #include <cage-core/entities.h>
-#include <cage-engine/guiComponents.h>
+#include <cage-engine/guiBuilder.h>
 #include <cage-simple/engine.h>
 
 using namespace cage;
