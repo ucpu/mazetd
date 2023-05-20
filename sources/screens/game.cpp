@@ -57,80 +57,53 @@ namespace
 		engineUpdateListener.detach();
 		gameReady = false;
 	}
-
-	void removeGuiEntitiesWithParent(uint32 parent)
-	{
-		std::vector<uint32> ents;
-		entitiesVisitor([&](Entity *e, const GuiParentComponent &p) {
-			if (p.parent == parent)
-			{
-				ents.push_back(e->name());
-				e->destroy();
-			}
-		}, engineGuiEntities(), true);
-		for (uint32 n : ents)
-			removeGuiEntitiesWithParent(n);
-	}
 }
 
 void updateSpawningMonsterPropertiesScreen()
 {
-	removeGuiEntitiesWithParent(501);
+	detail::guiDestroyEntityRecursively(engineGuiEntities()->get(502));
+	Holder<GuiBuilder> g = newGuiBuilder(engineGuiEntities()->get(501));
+	auto _1 = g->setNextName(502).empty();
+	auto _2 = g->column();
 
 	const SpawningGroup &mo = spawningGroup;
 	if (!mo.name)
 		return;
 
-	EntityManager *ents = engineGuiEntities();
-	sint32 index = 0;
+	// name
+	g->label().text(Stringizer() + SpawningGroup::waveIndex + ": " + mo.name);
 
-	{ // name
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 501;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + SpawningGroup::waveIndex + ": " + mo.name;
-	}
-
+	// monster class
 	if (mo.monsterClass != MonsterClassFlags::None)
-	{ // monster class
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 501;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Class:";
+	{
+		Stringizer txt;
+		txt + "Class:";
 		struct Pair
 		{
 			MonsterClassFlags flag = MonsterClassFlags::None;
 			StringPointer name;
 		};
-		constexpr const Pair pairs[] = {
+		static constexpr const Pair pairs[] = {
 			Pair{ MonsterClassFlags::Flier, "Flier" },
 			Pair{ MonsterClassFlags::Boss, "Boss" },
 		};
 		for (const auto &it : pairs)
 			if (any(mo.monsterClass & it.flag))
-				txt.value += Stringizer() + " " + String(it.name);
+				txt + " " + String(it.name);
+		g->label().text(txt);
 	}
 
+	// resistances
 	if (mo.resistances != DamageTypeFlags::None)
-	{ // resistances
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 501;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		GuiTextComponent &txt = e->value<GuiTextComponent>();
-		txt.value = "Resistances:";
+	{
+		Stringizer txt;
+		txt + "Resistances:";
 		struct Pair
 		{
 			DamageTypeFlags flag = DamageTypeFlags::None;
 			StringPointer name;
 		};
-		constexpr const Pair pairs[] = {
+		static constexpr const Pair pairs[] = {
 			Pair{ DamageTypeFlags::Physical, "Physical" },
 			Pair{ DamageTypeFlags::Fire, "Fire" },
 			Pair{ DamageTypeFlags::Water, "Water" },
@@ -139,44 +112,21 @@ void updateSpawningMonsterPropertiesScreen()
 		};
 		for (const auto &it : pairs)
 			if (any(mo.resistances & it.flag))
-				txt.value += Stringizer() + " " + String(it.name);
+				txt + " " + String(it.name);
+		g->label().text(txt);
 	}
 
-	{ // count
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 501;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Count: " + (mo.spawnCount * mo.spawnSimultaneously);
-	}
+	// count
+	g->label().text(Stringizer() + "Count: " + (mo.spawnCount * mo.spawnSimultaneously));
 
-	{ // life
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 501;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Life: " + mo.maxLife;
-	}
+	// life
+	g->label().text(Stringizer() + "Life: " + mo.maxLife);
 
-	{ // speed
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 501;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Speed: " + mo.speed;
-	}
+	// speed
+	g->label().text(Stringizer() + "Speed: " + mo.speed);
 
-	{ // money
-		Entity *e = ents->createUnique();
-		GuiParentComponent &pp = e->value<GuiParentComponent>();
-		pp.parent = 501;
-		pp.order = index++;
-		e->value<GuiLabelComponent>();
-		e->value<GuiTextComponent>().value = Stringizer() + "Reward: " + mo.money;
-	}
+	// money
+	g->label().text(Stringizer() + "Reward: " + mo.money);
 }
 
 void setScreenGame()
@@ -192,7 +142,7 @@ void setScreenGame()
 	{ // top bar
 		auto _1 = g->alignment(Vec2(0.5, 0));
 		auto _2 = g->row();
-		g->button().image(HashString("mazetd/gui/menu.png")).bind<&setScreenPaused>();
+		g->button().image(HashString("mazetd/gui/menu.png")).bind<&setScreenPaused>().size(Vec2(50, 0));
 		{
 			auto _1 = g->panel();
 			auto _2 = g->row();
@@ -235,7 +185,8 @@ void setScreenGame()
 	{ // monster properties
 		auto _1 = g->alignment(Vec2(0, 0));
 		auto _2 = g->spoiler(false).text("Spawning").skin(2); // compact skin
-		auto _3 = g->setNextName(501).column();
+		auto _3 = g->setNextName(501).empty();
+		g->setNextName(502).empty();
 		updateSpawningMonsterPropertiesScreen();
 	}
 

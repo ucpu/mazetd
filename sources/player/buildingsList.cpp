@@ -1,5 +1,5 @@
 #include <cage-core/hashString.h>
-#include <cage-engine/guiComponents.h>
+#include <cage-engine/guiBuilder.h>
 #include <cage-engine/guiManager.h>
 #include <cage-simple/engine.h>
 
@@ -20,86 +20,30 @@ namespace
 		if (!sb)
 			return;
 
-		EntityManager *ents = engineGuiEntities();
-
-		{
-			Entity *e = config.tooltip;
-			e->value<GuiPanelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + sb->value<NameComponent>().name;
-			e->value<GuiLayoutLineComponent>().vertical = true;
-		}
-
-		sint32 index = 0;
-
-		{ // description
-			CAGE_ASSERT(sb->has<DescriptionComponent>());
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = config.tooltip->name();
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = String(sb->value<DescriptionComponent>().description);
-		}
+		Holder<GuiBuilder> g = newGuiBuilder(config.tooltip);
+		auto _1 = g->panel().text(Stringizer() + sb->value<NameComponent>().name);
+		auto _2 = g->column();
+		g->label().text(Stringizer() + sb->value<DescriptionComponent>().description);
 
 		// damage
 		if (sb->has<DamageComponent>())
 		{
-			{ // damage
-				Entity *e = ents->createUnique();
-				GuiParentComponent &pp = e->value<GuiParentComponent>();
-				pp.parent = config.tooltip->name();
-				pp.order = index++;
-				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = Stringizer() + "Base damage: " + sb->value<DamageComponent>().damage;
-			}
-			{ // dps
-				Entity *e = ents->createUnique();
-				GuiParentComponent &pp = e->value<GuiParentComponent>();
-				pp.parent = config.tooltip->name();
-				pp.order = index++;
-				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = Stringizer() + "Base damage per second: " + (30.f * sb->value<DamageComponent>().damage / sb->value<DamageComponent>().firingPeriod);
-			}
-			{ // manaCost
-				Entity *e = ents->createUnique();
-				GuiParentComponent &pp = e->value<GuiParentComponent>();
-				pp.parent = config.tooltip->name();
-				pp.order = index++;
-				e->value<GuiLabelComponent>();
-				e->value<GuiTextComponent>().value = Stringizer() + "Mana cost: " + sb->value<DamageComponent>().manaCost;
-			}
+			g->label().text(Stringizer() + "Base damage: " + sb->value<DamageComponent>().damage);
+			g->label().text(Stringizer() + "Base damage per second: " + (30.f * sb->value<DamageComponent>().damage / sb->value<DamageComponent>().firingPeriod));
+			g->label().text(Stringizer() + "Mana cost: " + sb->value<DamageComponent>().manaCost);
 		}
 
 		// mana collector
 		if (sb->has<ManaCollectorComponent>())
-		{
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = config.tooltip->name();
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + "Harvested mana multiplier: " + sb->value<ManaCollectorComponent>().collectAmount;
-		}
+			g->label().text(Stringizer() + "Harvested mana multiplier: " + sb->value<ManaCollectorComponent>().collectAmount);
 
 		// mana storage
 		if (sb->has<ManaStorageComponent>())
-		{
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = config.tooltip->name();
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + "Mana capacity: " + sb->value<ManaStorageComponent>().capacity;
-		}
+			g->label().text(Stringizer() + "Mana capacity: " + sb->value<ManaStorageComponent>().capacity);
 
 		{ // cost
 			CAGE_ASSERT(sb->has<CostComponent>());
-			Entity *e = ents->createUnique();
-			GuiParentComponent &pp = e->value<GuiParentComponent>();
-			pp.parent = config.tooltip->name();
-			pp.order = index++;
-			e->value<GuiLabelComponent>();
-			e->value<GuiTextComponent>().value = Stringizer() + "Cost: " + sb->value<CostComponent>().cost;
+			g->label().text(Stringizer() + "Cost: " + sb->value<CostComponent>().cost);
 		}
 	}
 
