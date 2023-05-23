@@ -123,31 +123,29 @@ namespace
 		return false;
 	}
 
-	InputListener<InputClassEnum::MousePress, InputMouse, bool> mousePressListener;
-	InputListener<InputClassEnum::MouseRelease, InputMouse, bool> mouseReleaseListener;
-	InputListener<InputClassEnum::MouseMove, InputMouse, bool> mouseMoveListener;
-	InputListener<InputClassEnum::MouseWheel, InputMouseWheel, bool> mouseWheelListener;
-	InputListener<InputClassEnum::FocusLose, InputWindow, bool> focusloseListener;
-	InputListener<InputClassEnum::KeyRelease, InputKey, bool> keyReleaseListener;
+	EventListener<bool(const GenericInput &)> mousePressListener;
+	EventListener<bool(const GenericInput &)> mouseReleaseListener;
+	EventListener<bool(const GenericInput &)> mouseMoveListener;
+	EventListener<bool(const GenericInput &)> mouseWheelListener;
+	EventListener<bool(const GenericInput &)> focusloseListener;
+	EventListener<bool(const GenericInput &)> keyReleaseListener;
 
-	void engineInit()
-	{
+	const auto engineInitListener = controlThread().initialize.listen([]() {
 		mousePressListener.attach(engineWindow()->events, 100);
-		mousePressListener.bind<&mousePress>();
+		mousePressListener.bind(inputListener<InputClassEnum::MousePress, InputMouse>(&mousePress));
 		mouseReleaseListener.attach(engineWindow()->events, 101);
-		mouseReleaseListener.bind<&mouseRelease>();
+		mouseReleaseListener.bind(inputListener<InputClassEnum::MouseRelease, InputMouse>(&mouseRelease));
 		mouseMoveListener.attach(engineWindow()->events, 102);
-		mouseMoveListener.bind<&mouseMove>();
+		mouseMoveListener.bind(inputListener<InputClassEnum::MouseMove, InputMouse>(&mouseMove));
 		mouseWheelListener.attach(engineWindow()->events, 103);
-		mouseWheelListener.bind<&mouseWheel>();
+		mouseWheelListener.bind(inputListener<InputClassEnum::MouseWheel, InputMouseWheel>(&mouseWheel));
 		focusloseListener.attach(engineWindow()->events, 104);
-		focusloseListener.bind<&focusLose>();
+		focusloseListener.bind(inputListener<InputClassEnum::FocusLose, InputWindow>(&focusLose));
 		keyReleaseListener.attach(engineWindow()->events, 105);
-		keyReleaseListener.bind<&keyRelease>();
-	}
+		keyReleaseListener.bind(inputListener<InputClassEnum::KeyRelease, InputKey>(&keyRelease));
+	});
 
-	void engineUpdate()
-	{
+	const auto engineUpdateListener = controlThread().update.listen([]() {
 		Entity *e = engineEntities()->get(1);
 
 		if (needReset)
@@ -204,10 +202,9 @@ namespace
 		}
 		else
 			c.camera.perspectiveFov = Degs(60);
-	}
+	});
 
-	void gameReset()
-	{
+	const auto gameResetListener = eventGameReset().listen([]() {
 		Entity *e = engineEntities()->create(1);
 		CameraComponent &c = e->value<CameraComponent>();
 		c.near = 0.3;
@@ -218,22 +215,5 @@ namespace
 		//ScreenSpaceEffectsComponent &ef = e->value<ScreenSpaceEffectsComponent>();
 		//ef.effects &= ~ScreenSpaceEffectsFlags::EyeAdaptation;
 		//ef.eyeAdaptation.nightDesaturate = 0;
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineInitListener;
-		EventListener<void()> engineUpdateListener;
-		EventListener<void()> gameResetListener;
-
-		Callbacks()
-		{
-			engineInitListener.attach(controlThread().initialize);
-			engineInitListener.bind<&engineInit>();
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
-			gameResetListener.attach(eventGameReset());
-			gameResetListener.bind<&gameReset>();
-		}
-	} callbacksInstance;
+	});
 }

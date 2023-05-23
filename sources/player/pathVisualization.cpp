@@ -13,13 +13,11 @@ namespace
 	struct PathMarkComponent
 	{};
 
-	void engineInit()
-	{
+	const auto engineInitListener = controlThread().initialize.listen([]() {
 		engineEntities()->defineComponent(PathMarkComponent());
-	}
+	});
 
-	void engineUpdate()
-	{
+	const auto engineUpdateListener = controlThread().update.listen([]() {
 		engineEntities()->component<PathMarkComponent>()->destroy();
 		if (!globalWaypoints)
 			return;
@@ -48,19 +46,5 @@ namespace
 			}
 			prev = *it;
 		}
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineInitListener;
-		EventListener<void()> engineUpdateListener;
-
-		Callbacks()
-		{
-			engineInitListener.attach(controlThread().initialize);
-			engineInitListener.bind<&engineInit>();
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
-		}
-	} callbacksInstance;
+	});
 }

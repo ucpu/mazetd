@@ -39,15 +39,13 @@ namespace
 		}, gameEntities(), false);
 	}
 
-	void engineUpdate()
-	{
+	const auto engineUpdateListener = controlThread().update.listen([]() {
 		if (!globalGrid)
 			return;
 		updateMonsterAnimations();
-	}
+	});
 
-	void moveMonsters()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		ProfilingScope profiling("move monsters");
 
 		entitiesVisitor([&](Entity *e, PositionComponent &po, MovementComponent &mv, MonsterComponent &mo) {
@@ -86,7 +84,7 @@ namespace
 				mv.timeEnd = gameTime + (mv.timeEnd - gameTime) / 2;
 			mv.timeEnd = max(mv.timeEnd, gameTime + 1);
 		}, gameEntities(), true);
-	}
+	});
 
 	template<DamageTypeEnum A, DamageTypeEnum B>
 	void dotsEliminateOposing(MonsterComponent &mo)
@@ -145,8 +143,7 @@ namespace
 		return p + Vec3(0, e->value<PivotComponent>().elevation, 0);
 	}
 
-	void damageMonsters()
-	{
+	const auto gameUpdateListener2 = eventGameUpdate().listen([]() {
 		ProfilingScope profiling("damage monsters");
 
 		entitiesVisitor([&](Entity *e, MonsterComponent &mo) {
@@ -165,22 +162,5 @@ namespace
 				e->destroy();
 			}
 		}, gameEntities(), true);
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineUpdateListener;
-		EventListener<void()> damageUpdateListener;
-		EventListener<void()> moveUpdateListener;
-
-		Callbacks()
-		{
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
-			moveUpdateListener.attach(eventGameUpdate());
-			moveUpdateListener.bind<&moveMonsters>();
-			damageUpdateListener.attach(eventGameUpdate(), 51); // right after attacks
-			damageUpdateListener.bind<&damageMonsters>();
-		}
-	} callbacksInstance;
+	}, 51); // right after attacks
 }

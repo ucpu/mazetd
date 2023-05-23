@@ -4,8 +4,7 @@
 
 namespace
 {
-	void gameReset()
-	{
+	const auto gameResetListener = eventGameReset().listen([]() {
 		Entity *e = engineEntities()->createAnonymous();
 		TransformComponent &t = e->value<TransformComponent>();
 		t.orientation = Quat(Degs(-60), randomAngle(), Degs());
@@ -16,25 +15,10 @@ namespace
 		ShadowmapComponent &s = e->value<ShadowmapComponent>();
 		s.resolution = 4096;
 		s.worldSize = Vec3(75);
-	}
+	});
 
-	void gameUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		if ((gameTime % 15) == 0)
 			playerMoney += 1;
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> gameResetListener;
-		EventListener<void()> gameUpdateListener;
-
-		Callbacks()
-		{
-			gameResetListener.attach(eventGameReset());
-			gameResetListener.bind<&gameReset>();
-			gameUpdateListener.attach(eventGameUpdate());
-			gameUpdateListener.bind<&gameUpdate>();
-		}
-	} callbacksInstance;
+	});
 }

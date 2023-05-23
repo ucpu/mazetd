@@ -9,14 +9,6 @@
 
 using namespace cage;
 
-namespace
-{
-	void windowClose(InputWindow)
-	{
-		engineStop();
-	}
-}
-
 int main(int argc, const char *args[])
 {
 	Holder<Logger> log = newLogger();
@@ -28,10 +20,7 @@ int main(int argc, const char *args[])
 		engineInitialize(EngineCreateConfig());
 		controlThread().updatePeriod(1000000 / 30);
 
-		InputListener<InputClassEnum::WindowClose, InputWindow> closeListener;
-		closeListener.attach(engineWindow()->events);
-		closeListener.bind<&windowClose>();
-
+		const auto closeListener = engineWindow()->events.listen(inputListener<InputClassEnum::WindowClose, InputWindow>([](auto) { engineStop(); }));
 		engineWindow()->title("MazeTD");
 		engineAssets()->add(HashString("mazetd/mazetd.pack"));
 

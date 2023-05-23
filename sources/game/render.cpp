@@ -8,13 +8,11 @@
 
 namespace
 {
-	void gameReset()
-	{
+	const auto gameResetListener = eventGameReset().listen([]() {
 		engineEntities()->destroy();
-	}
+	}, -90);
 
-	void gameUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		entitiesVisitor([](Entity *e, MovementComponent &mv, EngineComponent &ec) {
 			TransformComponent &t = ec.entity->value<TransformComponent>();
 			const Real f = mv.timeEnd > mv.timeStart ? saturate(Real(gameTime - mv.timeStart) / (mv.timeEnd - mv.timeStart)) : 0;
@@ -23,7 +21,7 @@ namespace
 			t.position = interpolate(a, b, f);
 			t.orientation = interpolate(t.orientation, Quat(b - a, Vec3(0, 1, 0)), 0.15);
 		}, gameEntities(), false);
-	}
+	});
 
 	void engineComponentAdded(Entity *e)
 	{
@@ -41,24 +39,16 @@ namespace
 
 	struct Callbacks
 	{
-		EventListener<void()> gameResetListener;
-		EventListener<void()> gameUpdateListener;
-		EventListener<void(Entity *)> engineComponentAddedListener;
-		EventListener<void(Entity *)> engineComponentRemovedListener;
+		EventListener<bool(Entity *)> engineComponentAddedListener;
+		EventListener<bool(Entity *)> engineComponentRemovedListener;
 
 		Callbacks()
 		{
-			gameResetListener.attach(eventGameReset(), -90);
-			gameResetListener.bind<&gameReset>();
-			gameUpdateListener.attach(eventGameUpdate());
-			gameUpdateListener.bind<&gameUpdate>();
-			{
-				EntityComponent *ec = gameEntities()->component<EngineComponent>();
-				engineComponentAddedListener.attach(ec->group()->entityAdded);
-				engineComponentAddedListener.bind<&engineComponentAdded>();
-				engineComponentRemovedListener.attach(ec->group()->entityRemoved);
-				engineComponentRemovedListener.bind<&engineComponentRemoved>();
-			}
+			EntityComponent *ec = gameEntities()->component<EngineComponent>();
+			engineComponentAddedListener.attach(ec->group()->entityAdded);
+			engineComponentAddedListener.bind(&engineComponentAdded);
+			engineComponentRemovedListener.attach(ec->group()->entityRemoved);
+			engineComponentRemovedListener.bind(&engineComponentRemoved);
 		}
 	} callbacksInstance;
 }

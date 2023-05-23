@@ -69,8 +69,7 @@ namespace
 			consumers.erase(consumers.begin() + ci);
 	}
 
-	void gameUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		ProfilingScope profiling("mana transfers");
 
 		distributors.clear();
@@ -88,7 +87,7 @@ namespace
 			n.pos2 = Vec2(p[0], p[2]);
 			n.stor = &stor;
 			distributors.push_back(n);
-		}, gameEntities(), false);
+			}, gameEntities(), false);
 
 		entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaReceiverComponent &, ManaStorageComponent &stor) {
 			Node n;
@@ -100,7 +99,7 @@ namespace
 			n.pos2 = Vec2(p[0], p[2]);
 			n.stor = &stor;
 			consumers.push_back(n);
-		}, gameEntities(), false);
+			}, gameEntities(), false);
 
 		while (!distributors.empty() && !consumers.empty())
 		{
@@ -121,16 +120,5 @@ namespace
 			CAGE_ASSERT(stor.mana <= stor.capacity);
 		}, gameEntities(), false);
 #endif // CAGE_ASSERT_ENABLED
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> gameUpdateListener;
-
-		Callbacks()
-		{
-			gameUpdateListener.attach(eventGameUpdate(), 35); // after spatial update
-			gameUpdateListener.bind<&gameUpdate>();
-		}
-	} callbacksInstance;
+	}, 35); // after spatial update
 }

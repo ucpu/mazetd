@@ -52,15 +52,13 @@ namespace
 		return man;
 	}
 
-	void engineInit()
-	{
+	const auto engineInitListener = controlThread().initialize.listen([]() {
 		registerEntityComponents(engineGuiEntities());
 		engineGuiEntities()->defineComponent(GuiModelComponent());
 		eventGameReset().dispatch();
-	}
+	}, 200);
 
-	void gameReset()
-	{
+	const auto gameResetListener = eventGameReset().listen([]() {
 		gameTime = 0;
 		gameSpeed = 1;
 		gameReady = false;
@@ -72,10 +70,9 @@ namespace
 		playerHealth = 100;
 		playerMoney = 1000;
 		playerBuildingSelection = nullptr;
-	}
+	}, -100);
 
-	bool gameUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		gameTime++;
 		if (playerHealth <= 0)
 		{
@@ -83,24 +80,7 @@ namespace
 			return true;
 		}
 		return false;
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineInitListener;
-		EventListener<void()> gameResetListener;
-		EventListener<bool()> gameUpdateListener;
-
-		Callbacks()
-		{
-			engineInitListener.attach(controlThread().initialize, 200);
-			engineInitListener.bind<&engineInit>();
-			gameResetListener.attach(eventGameReset(), -100);
-			gameResetListener.bind<&gameReset>();
-			gameUpdateListener.attach(eventGameUpdate(), -500);
-			gameUpdateListener.bind<&gameUpdate>();
-		}
-	} callbacksInstance;
+	}, -500);
 }
 
 EntityManager *gameEntities()

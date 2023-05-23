@@ -225,21 +225,9 @@ namespace
 		CAGE_ASSERT(monsters.size() == 1);
 	}
 
-	void gameUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		ProfilingScope profiling("attacks");
 		AttacksSolver solver;
 		solver.run();
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> gameUpdateListener;
-
-		Callbacks()
-		{
-			gameUpdateListener.attach(eventGameUpdate(), 50);
-			gameUpdateListener.bind<&gameUpdate>();
-		}
-	} callbacksInstance;
+	}, 50);
 }

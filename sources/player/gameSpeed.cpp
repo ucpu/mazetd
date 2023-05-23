@@ -41,46 +41,26 @@ namespace
 		eventGameUpdate().dispatch();
 	}
 
-	InputListener<InputClassEnum::KeyPress, InputKey, bool> keyPressListener;
+	EventListener<bool(const GenericInput &)> keyPressListener;
 	Holder<Schedule> gameUpdateSchedule;
 
-	void engineInit()
-	{
+	const auto engineInitListener = controlThread().initialize.listen([]() {
 		keyPressListener.attach(engineWindow()->events, 110);
-		keyPressListener.bind<&keyPress>();
+		keyPressListener.bind(inputListener<InputClassEnum::KeyPress, InputKey>(&keyPress));
 
 		ScheduleCreateConfig cfg;
 		cfg.name = "game update";
 		cfg.type = ScheduleTypeEnum::SteadyPeriodic;
 		cfg.action.bind<&gameScheduleAction>();
 		gameUpdateSchedule = controlThread().scheduler()->newSchedule(cfg);
-	}
+	});
 
-	void engineFinish()
-	{
+	const auto engineFinishListener = controlThread().finalize.listen([]() {
 		gameUpdateSchedule.clear();
-	}
+	});
 
-	void engineUpdate()
-	{
+	const auto engineUpdateListener = controlThread().update.listen([]() {
 		CAGE_ASSERT(gameSpeed > 0);
 		gameUpdateSchedule->period(numeric_cast<uint64>(1000000 / double(gameSpeed.value) / 30));
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineInitListener;
-		EventListener<void()> engineFinishListener;
-		EventListener<void()> engineUpdateListener;
-
-		Callbacks()
-		{
-			engineInitListener.attach(controlThread().initialize);
-			engineInitListener.bind<&engineInit>();
-			engineFinishListener.attach(controlThread().finalize);
-			engineFinishListener.bind<&engineFinish>();
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
-		}
-	} callbacksInstance;
+	});
 }

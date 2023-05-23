@@ -13,9 +13,6 @@ void updateAttacksMods();
 
 namespace
 {
-	InputListener<InputClassEnum::MousePress, InputMouse, bool> mousePressListener;
-	InputListener<InputClassEnum::MouseMove, InputMouse, bool> mouseMoveListener;
-
 	bool placingBuildingBlocksMonsters()
 	{
 		Holder<Grid> grid = systemMemory().createHolder<Grid>();
@@ -187,22 +184,13 @@ namespace
 		return false;
 	}
 
-	void engineInit()
-	{
+	EventListener<bool(const GenericInput &)> mousePressListener;
+	EventListener<bool(const GenericInput &)> mouseMoveListener;
+
+	const auto engineInitListener = controlThread().initialize.listen([]() {
 		mousePressListener.attach(engineWindow()->events);
-		mousePressListener.bind<&mouseEvent>();
+		mousePressListener.bind(inputListener<InputClassEnum::MousePress, InputMouse>(&mouseEvent));
 		mouseMoveListener.attach(engineWindow()->events);
-		mouseMoveListener.bind<&mouseEvent>();
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineInitListener;
-
-		Callbacks()
-		{
-			engineInitListener.attach(controlThread().initialize);
-			engineInitListener.bind<&engineInit>();
-		}
-	} callbacksInstance;
+		mouseMoveListener.bind(inputListener<InputClassEnum::MouseMove, InputMouse>(&mouseEvent));
+	});
 }

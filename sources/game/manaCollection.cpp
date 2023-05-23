@@ -127,29 +127,13 @@ namespace
 		}
 	}
 
-	void gameReset()
-	{
+	const auto gameResetListener = eventGameReset().listen([]() {
 		manaGrid.clear();
-	}
+	});
 
-	void gameUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		placeNewMana();
 		collectMana();
 		placeMarks();
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> gameResetListener;
-		EventListener<void()> gameUpdateListener;
-
-		Callbacks()
-		{
-			gameResetListener.attach(eventGameReset());
-			gameResetListener.bind<&gameReset>();
-			gameUpdateListener.attach(eventGameUpdate());
-			gameUpdateListener.bind<&gameUpdate>();
-		}
-	} callbacksInstance;
+	});
 }

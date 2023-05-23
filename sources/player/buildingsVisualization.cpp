@@ -102,8 +102,7 @@ namespace
 			markPos<0>(towersMarkers[tm++], m);
 	}
 
-	void engineUpdate()
-	{
+	const auto engineUpdateListener = controlThread().update.listen([]() {
 		playerCursorPosition = Vec3::Nan();
 		playerCursorTile = m;
 		const Vec2i res = engineWindow()->resolution();
@@ -133,16 +132,5 @@ namespace
 		}
 		updateCursorMarker();
 		updateTowerMods();
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineUpdateListener;
-
-		Callbacks()
-		{
-			engineUpdateListener.attach(controlThread().update, -100);
-			engineUpdateListener.bind<&engineUpdate>();
-		}
-	} callbacksInstance;
+	}, -100);
 }

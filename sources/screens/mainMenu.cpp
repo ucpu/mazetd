@@ -25,15 +25,5 @@ void setScreenMainmenu()
 
 namespace
 {
-	class Callbacks
-	{
-		EventListener<void()> engineInitListener;
-
-	public:
-		Callbacks()
-		{
-			engineInitListener.attach(controlThread().initialize, 999);
-			engineInitListener.bind<&setScreenMainmenu>();
-		}
-	} callbacksInstance;
+	const auto engineInitListener = controlThread().initialize.listen(&setScreenMainmenu, 999);
 }

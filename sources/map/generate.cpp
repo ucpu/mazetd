@@ -172,36 +172,20 @@ namespace
 
 	Holder<AsyncTask> mapGenTask;
 
-	void engineFinish()
-	{
+	const auto engineFinishListener = controlThread().finalize.listen([]() {
 		if (mapGenTask)
 		{
 			mapGenTask->wait();
 			mapGenTask.clear();
 		}
-	}
+	});
 
-	void gameReset()
-	{
+	const auto gameResetListener = eventGameReset().listen([]() {
 		globalGrid.clear();
 		globalWaypoints.clear();
 		globalCollider.clear();
 		mapGenTask = tasksRunAsync("map gen task", Delegate<void(uint32)>().bind<&mapGenTaskEntry>());
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineFinishListener;
-		EventListener<void()> gameResetListener;
-
-		Callbacks()
-		{
-			engineFinishListener.attach(controlThread().finalize);
-			engineFinishListener.bind<&engineFinish>();
-			gameResetListener.attach(eventGameReset(), -80);
-			gameResetListener.bind<&gameReset>();
-		}
-	} callbacksInstance;
+	}, -80);
 }
 
 Holder<Grid> globalGrid;

@@ -10,8 +10,7 @@ extern bool ortho;
 
 namespace
 {
-	void engineUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		Entity *cam = engineEntities()->get(1);
 		const TransformComponent &ct = cam->value<TransformComponent>();
 
@@ -43,7 +42,7 @@ namespace
 				t.position += t.orientation * Vec3(0, 0, 2);
 			mc.entity->value<TextureAnimationComponent>().offset = Real(ms.mana) / ms.capacity;
 		}, gameEntities(), false);
-	}
+	});
 
 	void healthbarComponentAdded(Entity *e)
 	{
@@ -79,29 +78,26 @@ namespace
 
 	struct Callbacks
 	{
-		EventListener<void()> engineUpdateListener;
-		EventListener<void(Entity *)> healthbarComponentAddedListener;
-		EventListener<void(Entity *)> healthbarComponentRemovedListener;
-		EventListener<void(Entity *)> manabarComponentAddedListener;
-		EventListener<void(Entity *)> manabarComponentRemovedListener;
+		EventListener<bool(Entity *)> healthbarComponentAddedListener;
+		EventListener<bool(Entity *)> healthbarComponentRemovedListener;
+		EventListener<bool(Entity *)> manabarComponentAddedListener;
+		EventListener<bool(Entity *)> manabarComponentRemovedListener;
 
 		Callbacks()
 		{
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
 			{
 				EntityComponent *ec = gameEntities()->component<HealthbarComponent>();
 				healthbarComponentAddedListener.attach(ec->group()->entityAdded);
-				healthbarComponentAddedListener.bind<&healthbarComponentAdded>();
+				healthbarComponentAddedListener.bind(&healthbarComponentAdded);
 				healthbarComponentRemovedListener.attach(ec->group()->entityRemoved);
-				healthbarComponentRemovedListener.bind<&healthbarComponentRemoved>();
+				healthbarComponentRemovedListener.bind(&healthbarComponentRemoved);
 			}
 			{
 				EntityComponent *ec = gameEntities()->component<ManabarComponent>();
 				manabarComponentAddedListener.attach(ec->group()->entityAdded);
-				manabarComponentAddedListener.bind<&manabarComponentAdded>();
+				manabarComponentAddedListener.bind(&manabarComponentAdded);
 				manabarComponentRemovedListener.attach(ec->group()->entityRemoved);
-				manabarComponentRemovedListener.bind<&manabarComponentRemoved>();
+				manabarComponentRemovedListener.bind(&manabarComponentRemoved);
 			}
 		}
 	} callbacksInstance;

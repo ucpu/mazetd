@@ -12,13 +12,11 @@ namespace
 		Vec3 mov;
 	};
 
-	void engineInit()
-	{
+	const auto engineInitListener = controlThread().initialize.listen([]() {
 		engineEntities()->defineComponent(GhostComponent());
-	}
+	});
 
-	void engineUpdate()
-	{
+	const auto engineUpdateListener = controlThread().update.listen([]() {
 		entitiesVisitor([&](Entity *e, TransformComponent &tr, const GhostComponent &gh) {
 			tr.orientation = gh.rot * tr.orientation;
 			tr.position += gh.mov;
@@ -26,21 +24,7 @@ namespace
 			if (tr.scale < 0.1)
 				e->destroy();
 		}, engineEntities(), true);
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineInitListener;
-		EventListener<void()> engineUpdateListener;
-
-		Callbacks()
-		{
-			engineInitListener.attach(controlThread().initialize);
-			engineInitListener.bind<&engineInit>();
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
-		}
-	} callbacksInstance;
+	});
 }
 
 void createMonsterGhost(Entity *ge)

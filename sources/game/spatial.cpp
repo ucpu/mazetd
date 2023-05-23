@@ -12,14 +12,12 @@ namespace
 	Holder<SpatialQuery> monstersQuery = newSpatialQuery(monstersData.share());
 	Holder<SpatialQuery> structsQuery = newSpatialQuery(structsData.share());
 
-	void gameReset()
-	{
+	const auto gameResetListener = eventGameReset().listen([]() {
 		monstersData->clear();
 		structsData->clear();
-	}
+	});
 
-	void gameUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		monstersData->clear();
 		CAGE_ASSERT(globalGrid);
 
@@ -28,21 +26,7 @@ namespace
 		}, gameEntities(), false);
 
 		monstersData->rebuild();
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> gameResetListener;
-		EventListener<void()> gameUpdateListener;
-
-		Callbacks()
-		{
-			gameResetListener.attach(eventGameReset());
-			gameResetListener.bind<&gameReset>();
-			gameUpdateListener.attach(eventGameUpdate(), 30);
-			gameUpdateListener.bind<&gameUpdate>();
-		}
-	} callbacksInstance;
+	}, 30);
 }
 
 SpatialQuery *spatialMonsters()

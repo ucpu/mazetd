@@ -13,13 +13,11 @@ namespace
 		uint64 timeToDie = 0;
 	};
 
-	void engineInit()
-	{
+	const auto engineInitListener = controlThread().initialize.listen([]() {
 		engineEntities()->defineComponent(RenderEffectComponent());
-	}
+	});
 
-	void engineUpdate()
-	{
+	const auto engineUpdateListener = controlThread().update.listen([]() {
 		const uint64 time = engineControlTime();
 		Entity *cam = engineEntities()->get(1);
 		const TransformComponent &ct = cam->value<TransformComponent>();
@@ -29,21 +27,7 @@ namespace
 			if (time > re.timeToDie)
 				e->destroy();
 		}, engineEntities(), true);
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> engineInitListener;
-		EventListener<void()> engineUpdateListener;
-
-		Callbacks()
-		{
-			engineInitListener.attach(controlThread().initialize);
-			engineInitListener.bind<&engineInit>();
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
-		}
-	} callbacksInstance;
+	});
 
 	uint32 renderName(const EffectConfig &config)
 	{

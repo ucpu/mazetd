@@ -18,31 +18,6 @@ ConcurrentQueue<ChunkUpload> chunksUploadQueue;
 
 namespace
 {
-	void graphicsDispatch();
-	void engineUpdate();
-	void engineFinish();
-	void engineUnloading();
-
-	struct Callbacks
-	{
-		EventListener<void()> graphicsDispatchListener;
-		EventListener<void()> engineUpdateListener;
-		EventListener<void()> engineFinishListener;
-		EventListener<void()> engineUnloadingListener;
-
-		Callbacks()
-		{
-			graphicsDispatchListener.attach(graphicsDispatchThread().dispatch);
-			graphicsDispatchListener.bind<&graphicsDispatch>();
-			engineUpdateListener.attach(controlThread().update);
-			engineUpdateListener.bind<&engineUpdate>();
-			engineFinishListener.attach(controlThread().finalize);
-			engineFinishListener.bind<&engineFinish>();
-			engineUnloadingListener.attach(controlThread().unload);
-			engineUnloadingListener.bind<&engineUnloading>();
-		}
-	} callbacksInstance;
-
 	struct ChunkRender : private Noncopyable
 	{
 		uint32 model = 0;
@@ -63,8 +38,7 @@ namespace
 
 	ConcurrentQueue<ChunkRender> chunksRenderQueue;
 
-	void graphicsDispatch()
-	{
+	const auto graphicsDispatchListener = graphicsDispatchThread().dispatch.listen([]() {
 		ProfilingScope profiling("dispatch chunks");
 
 		for (uint32 iter = 0; iter < 5; iter++)
@@ -116,7 +90,7 @@ namespace
 
 			chunksRenderQueue.push(std::move(re));
 		}
-	}
+	});
 
 	std::vector<ChunkRender> renderingChunks;
 
@@ -127,8 +101,7 @@ namespace
 		renderingChunks.clear();
 	}
 
-	void engineUpdate()
-	{
+	const auto engineUpdateListener = controlThread().update.listen([]() {
 		ProfilingScope profiling("update chunks");
 
 		for (uint32 iter = 0; iter < 5; iter++)
@@ -150,17 +123,15 @@ namespace
 
 			renderingChunks.push_back(std::move(re));
 		}
-	}
+	});
 
-	void engineFinish()
-	{
+	const auto engineFinishListener = controlThread().finalize.listen([]() {
 		removeAllAssets();
-	}
+	});
 
-	void engineUnloading()
-	{
+	const auto engineUnloadListener = controlThread().unload.listen([]() {
 		ChunkRender re;
 		if (chunksRenderQueue.tryPop(re))
 			re.remove();
-	}
+	});
 }

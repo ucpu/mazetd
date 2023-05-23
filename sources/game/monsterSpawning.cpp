@@ -186,30 +186,14 @@ namespace
 		}
 	}
 
-	void gameReset()
-	{
+	const auto gameResetListener = eventGameReset().listen([]() {
 		generateMonsterProperties();
 		spawningGroup.init();
-	}
+	});
 
-	void gameUpdate()
-	{
+	const auto gameUpdateListener = eventGameUpdate().listen([]() {
 		spawningGroup.process();
-	}
-
-	struct Callbacks
-	{
-		EventListener<void()> gameResetListener;
-		EventListener<void()> gameUpdateListener;
-
-		Callbacks()
-		{
-			gameResetListener.attach(eventGameReset());
-			gameResetListener.bind<&gameReset>();
-			gameUpdateListener.attach(eventGameUpdate());
-			gameUpdateListener.bind<&gameUpdate>();
-		}
-	} callbacksInstance;
+	});
 }
 
 void SpawningGroup::spawnOne()

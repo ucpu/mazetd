@@ -5,8 +5,8 @@ void setScreenGame();
 
 namespace
 {
-	EventListener<void()> engineUpdateListener;
-	EventListener<void()> guiCleanListener;
+	EventListener<bool()> engineUpdateListener;
+	EventListener<bool()> guiCleanListener;
 
 	void engineUpdate()
 	{
@@ -25,9 +25,9 @@ void setScreenGenerating()
 {
 	cleanGui();
 	guiCleanListener.attach(eventGuiClean());
-	guiCleanListener.bind<&guiClean>();
+	guiCleanListener.bind(&guiClean);
 	engineUpdateListener.attach(controlThread().update);
-	engineUpdateListener.bind<&engineUpdate>();
+	engineUpdateListener.bind(&engineUpdate);
 
 	Holder<GuiBuilder> g = newGuiBuilder(engineGuiEntities());
 	{

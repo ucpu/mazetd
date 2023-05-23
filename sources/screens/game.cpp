@@ -10,8 +10,8 @@ void generateBuildingsList();
 
 namespace
 {
-	EventListener<void()> engineUpdateListener;
-	EventListener<void()> guiCleanListener;
+	EventListener<bool()> engineUpdateListener;
+	EventListener<bool()> guiCleanListener;
 
 	void updateTopBar()
 	{
@@ -133,9 +133,9 @@ void setScreenGame()
 {
 	cleanGui();
 	guiCleanListener.attach(eventGuiClean());
-	guiCleanListener.bind<&guiClean>();
+	guiCleanListener.bind(&guiClean);
 	engineUpdateListener.attach(controlThread().update);
-	engineUpdateListener.bind<&updateTopBar>();
+	engineUpdateListener.bind(&updateTopBar);
 	gameReady = true;
 	Holder<GuiBuilder> g = newGuiBuilder(engineGuiEntities());
 
