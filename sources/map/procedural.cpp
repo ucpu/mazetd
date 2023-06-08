@@ -1,6 +1,6 @@
+#include <cage-core/color.h>
 #include <cage-core/noiseFunction.h>
 #include <cage-core/random.h>
-#include <cage-core/color.h>
 
 #include "generate.h"
 
@@ -10,7 +10,8 @@ namespace
 	{
 		const Vec2 elevationOffset = randomChance2() * 1000;
 
-		Holder<NoiseFunction> elevationNoise = []() {
+		Holder<NoiseFunction> elevationNoise = []()
+		{
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Simplex;
 			cfg.fractalType = NoiseFractalTypeEnum::Ridged;
@@ -22,7 +23,8 @@ namespace
 			return newNoiseFunction(cfg);
 		}();
 
-		Holder<NoiseFunction> waterNoise = []() {
+		Holder<NoiseFunction> waterNoise = []()
+		{
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Simplex;
 			cfg.frequency = 0.03;
@@ -30,7 +32,8 @@ namespace
 			return newNoiseFunction(cfg);
 		}();
 
-		Holder<NoiseFunction> grassNoise = []() {
+		Holder<NoiseFunction> grassNoise = []()
+		{
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Perlin;
 			cfg.fractalType = NoiseFractalTypeEnum::PingPong;
@@ -39,7 +42,8 @@ namespace
 			return newNoiseFunction(cfg);
 		}();
 
-		Holder<NoiseFunction> dirtNoise = []() {
+		Holder<NoiseFunction> dirtNoise = []()
+		{
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Perlin;
 			cfg.frequency = 0.2;
@@ -47,7 +51,8 @@ namespace
 			return newNoiseFunction(cfg);
 		}();
 
-		Holder<NoiseFunction> roughnessNoise = []() {
+		Holder<NoiseFunction> roughnessNoise = []()
+		{
 			NoiseFunctionCreateConfig cfg;
 			cfg.type = NoiseTypeEnum::Perlin;
 			cfg.frequency = 0.5;
@@ -124,10 +129,7 @@ namespace
 			}
 		}
 
-		Real sdf(const Vec3 &pos) override
-		{
-			return elevation(Vec2(pos[0], pos[2])) - pos[1];
-		}
+		Real sdf(const Vec3 &pos) override { return elevation(Vec2(pos[0], pos[2])) - pos[1]; }
 	};
 }
 

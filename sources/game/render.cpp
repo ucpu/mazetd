@@ -8,20 +8,23 @@
 
 namespace
 {
-	const auto gameResetListener = eventGameReset().listen([]() {
-		engineEntities()->destroy();
-	}, -90);
+	const auto gameResetListener = eventGameReset().listen([]() { engineEntities()->destroy(); }, -90);
 
-	const auto gameUpdateListener = eventGameUpdate().listen([]() {
-		entitiesVisitor([](Entity *e, MovementComponent &mv, EngineComponent &ec) {
-			TransformComponent &t = ec.entity->value<TransformComponent>();
-			const Real f = mv.timeEnd > mv.timeStart ? saturate(Real(gameTime - mv.timeStart) / (mv.timeEnd - mv.timeStart)) : 0;
-			const Vec3 a = globalGrid->center(mv.tileStart);
-			const Vec3 b = globalGrid->center(mv.tileEnd);
-			t.position = interpolate(a, b, f);
-			t.orientation = interpolate(t.orientation, Quat(b - a, Vec3(0, 1, 0)), 0.15);
-		}, gameEntities(), false);
-	});
+	const auto gameUpdateListener = eventGameUpdate().listen(
+		[]()
+		{
+			entitiesVisitor(
+				[](Entity *e, MovementComponent &mv, EngineComponent &ec)
+				{
+					TransformComponent &t = ec.entity->value<TransformComponent>();
+					const Real f = mv.timeEnd > mv.timeStart ? saturate(Real(gameTime - mv.timeStart) / (mv.timeEnd - mv.timeStart)) : 0;
+					const Vec3 a = globalGrid->center(mv.tileStart);
+					const Vec3 b = globalGrid->center(mv.tileEnd);
+					t.position = interpolate(a, b, f);
+					t.orientation = interpolate(t.orientation, Quat(b - a, Vec3(0, 1, 0)), 0.15);
+				},
+				gameEntities(), false);
+		});
 
 	void engineComponentAdded(Entity *e)
 	{

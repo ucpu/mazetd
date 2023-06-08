@@ -1,10 +1,10 @@
-#include <cage-core/entitiesVisitor.h>
 #include <cage-core/camera.h>
-#include <cage-core/geometry.h>
 #include <cage-core/collider.h>
+#include <cage-core/entitiesVisitor.h>
+#include <cage-core/geometry.h>
 #include <cage-core/hashString.h>
-#include <cage-engine/window.h>
 #include <cage-engine/scene.h>
+#include <cage-engine/window.h>
 #include <cage-simple/engine.h>
 
 #include "../game.h"
@@ -57,10 +57,13 @@ namespace
 		Entity *currEnt = nullptr;
 		if (playerCursorTile != m)
 		{
-			entitiesVisitor([&](Entity *e, const PositionComponent &po) {
-				if (po.tile == playerCursorTile)
-					currEnt = e;
-			}, gameEntities(), false);
+			entitiesVisitor(
+				[&](Entity *e, const PositionComponent &po)
+				{
+					if (po.tile == playerCursorTile)
+						currEnt = e;
+				},
+				gameEntities(), false);
 		}
 
 		uint32 tm = 0;
@@ -78,10 +81,13 @@ namespace
 			}
 
 			// towers
-			entitiesVisitor([&](const PositionComponent &po, const AttackComponent &atc) {
-				if (affected(currEnt, atc))
-					markPos<HashString("mazetd/misc/modMark.obj")>(towersMarkers[tm++], po.tile);
-			}, gameEntities(), false);
+			entitiesVisitor(
+				[&](const PositionComponent &po, const AttackComponent &atc)
+				{
+					if (affected(currEnt, atc))
+						markPos<HashString("mazetd/misc/modMark.obj")>(towersMarkers[tm++], po.tile);
+				},
+				gameEntities(), false);
 
 			// attack range
 			if (currEnt->has<DamageComponent>())
@@ -102,35 +108,39 @@ namespace
 			markPos<0>(towersMarkers[tm++], m);
 	}
 
-	const auto engineUpdateListener = controlThread().update.listen([]() {
-		playerCursorPosition = Vec3::Nan();
-		playerCursorTile = m;
-		const Vec2i res = engineWindow()->resolution();
-		if (gameReady && !playerPanning && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
+	const auto engineUpdateListener = controlThread().update.listen(
+		[]()
 		{
-			CAGE_ASSERT(globalGrid);
-			const Vec2 cur = engineWindow()->mousePosition();
-			Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
-			const CameraComponent &a = c->value<CameraComponent>();
-			const Mat4 view = Mat4(inverse(c->value<TransformComponent>()));
-			const Mat4 proj = [&]() {
-				if (a.cameraType == CameraTypeEnum::Perspective)
-					return perspectiveProjection(a.camera.perspectiveFov, Real(res[0]) / Real(res[1]), a.near, a.far);
-				const Vec2 &os = a.camera.orthographicSize;
-				return orthographicProjection(-os[0], os[0], -os[1], os[1], a.near, a.far);
-			}();
-			const Mat4 inv = inverse(proj * view);
-			const Vec2 cp = (Vec2(cur) / Vec2(res) * 2 - 1) * Vec2(1, -1);
-			const Vec4 pn = inv * Vec4(cp, -1, 1);
-			const Vec4 pf = inv * Vec4(cp, 1, 1);
-			const Vec3 near = Vec3(pn) / pn[3];
-			const Vec3 far = Vec3(pf) / pf[3];
-			const Line line = makeSegment(near, far);
-			playerCursorPosition = intersection(line, +globalCollider, Transform());
-			if (playerCursorPosition.valid())
-				playerCursorTile = globalGrid->index(playerCursorPosition);
-		}
-		updateCursorMarker();
-		updateTowerMods();
-	}, -100);
+			playerCursorPosition = Vec3::Nan();
+			playerCursorTile = m;
+			const Vec2i res = engineWindow()->resolution();
+			if (gameReady && !playerPanning && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
+			{
+				CAGE_ASSERT(globalGrid);
+				const Vec2 cur = engineWindow()->mousePosition();
+				Entity *c = engineEntities()->component<CameraComponent>()->entities()[0];
+				const CameraComponent &a = c->value<CameraComponent>();
+				const Mat4 view = Mat4(inverse(c->value<TransformComponent>()));
+				const Mat4 proj = [&]()
+				{
+					if (a.cameraType == CameraTypeEnum::Perspective)
+						return perspectiveProjection(a.camera.perspectiveFov, Real(res[0]) / Real(res[1]), a.near, a.far);
+					const Vec2 &os = a.camera.orthographicSize;
+					return orthographicProjection(-os[0], os[0], -os[1], os[1], a.near, a.far);
+				}();
+				const Mat4 inv = inverse(proj * view);
+				const Vec2 cp = (Vec2(cur) / Vec2(res) * 2 - 1) * Vec2(1, -1);
+				const Vec4 pn = inv * Vec4(cp, -1, 1);
+				const Vec4 pf = inv * Vec4(cp, 1, 1);
+				const Vec3 near = Vec3(pn) / pn[3];
+				const Vec3 far = Vec3(pf) / pf[3];
+				const Line line = makeSegment(near, far);
+				playerCursorPosition = intersection(line, +globalCollider, Transform());
+				if (playerCursorPosition.valid())
+					playerCursorTile = globalGrid->index(playerCursorPosition);
+			}
+			updateCursorMarker();
+			updateTowerMods();
+		},
+		-100);
 }

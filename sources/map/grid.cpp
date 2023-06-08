@@ -105,7 +105,7 @@ uint32 Grid::index(Vec2i pos) const
 
 uint32 Grid::index(Vec2 pos) const
 {
-	return index(Vec2i(pos + 200.5) - 200); 
+	return index(Vec2i(pos + 200.5) - 200);
 }
 
 uint32 Grid::index(Vec3 pos) const

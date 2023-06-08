@@ -1,14 +1,14 @@
 #include <cage-core/entitiesVisitor.h>
-#include <cage-core/spatialStructure.h>
 #include <cage-core/geometry.h>
 #include <cage-core/profiling.h>
+#include <cage-core/spatialStructure.h>
 #include <cage-engine/scene.h>
 
 #include "../game.h"
 #include "../grid.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 namespace
 {
@@ -42,9 +42,7 @@ namespace
 				n.dist2 = distanceSquared(globalGrid->center(n.e->value<PositionComponent>(compPosition).tile) * Vec3(1, 0, 1), myPos);
 				neighbors.push_back(n);
 			}
-			std::sort(neighbors.begin(), neighbors.end(), [](const Neighbor &a, const Neighbor &b) {
-				return a.dist2 < b.dist2;
-			});
+			std::sort(neighbors.begin(), neighbors.end(), [](const Neighbor &a, const Neighbor &b) { return a.dist2 < b.dist2; });
 		}
 
 		const Neighbor *closestNeighbor(EntityComponent *comp)
@@ -78,18 +76,24 @@ namespace
 
 		void run()
 		{
-			entitiesVisitor([&](AttackComponent &a) {
-				const auto firingDelay = a.firingDelay;
-				a = {};
-				a.firingDelay = firingDelay;
-			}, gameEntities(), false);
+			entitiesVisitor(
+				[&](AttackComponent &a)
+				{
+					const auto firingDelay = a.firingDelay;
+					a = {};
+					a.firingDelay = firingDelay;
+				},
+				gameEntities(), false);
 
-			entitiesVisitor([&](Entity *me, const DamageComponent &dmg, AttackComponent &a) {
-				if (!dmg.acceptMods)
-					return;
-				findNeighbors(me);
-				findMods(a);
-			}, gameEntities(), false);
+			entitiesVisitor(
+				[&](Entity *me, const DamageComponent &dmg, AttackComponent &a)
+				{
+					if (!dmg.acceptMods)
+						return;
+					findNeighbors(me);
+					findMods(a);
+				},
+				gameEntities(), false);
 		}
 	};
 }

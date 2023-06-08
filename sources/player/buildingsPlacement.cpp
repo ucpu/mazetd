@@ -1,5 +1,5 @@
-#include <cage-core/hashString.h>
 #include <cage-core/entitiesVisitor.h>
+#include <cage-core/hashString.h>
 #include <cage-core/pointerRangeHolder.h>
 #include <cage-engine/scene.h>
 #include <cage-engine/window.h>
@@ -29,10 +29,13 @@ namespace
 			if (paths->distances[p->tile] == m)
 				return true; // disconnected spawner
 		bool blocked = false;
-		entitiesVisitor([&](const PositionComponent &p, const MonsterComponent &) {
-			if (paths->distances[p.tile] == m)
-				blocked = true; // disconnected monster
-		}, gameEntities(), false);
+		entitiesVisitor(
+			[&](const PositionComponent &p, const MonsterComponent &)
+			{
+				if (paths->distances[p.tile] == m)
+					blocked = true; // disconnected monster
+			},
+			gameEntities(), false);
 		return blocked;
 	}
 
@@ -141,13 +144,16 @@ namespace
 		{
 			flags &= ~TileFlags::Trap;
 
-			entitiesVisitor([](Entity *e, const PositionComponent &p, const TrapComponent &) {
-				if (p.tile == playerCursorTile)
+			entitiesVisitor(
+				[](Entity *e, const PositionComponent &p, const TrapComponent &)
 				{
-					playerMoney += refundValue(e);
-					e->destroy();
-				}
-			}, gameEntities(), true);
+					if (p.tile == playerCursorTile)
+					{
+						playerMoney += refundValue(e);
+						e->destroy();
+					}
+				},
+				gameEntities(), true);
 		}
 
 		if (any(flags & TileFlags::Building))
@@ -155,13 +161,16 @@ namespace
 			flags &= ~TileFlags::Building;
 			globalWaypoints->update();
 
-			entitiesVisitor([](Entity *e, const PositionComponent &p, const BuildingComponent &) {
-				if (p.tile == playerCursorTile)
+			entitiesVisitor(
+				[](Entity *e, const PositionComponent &p, const BuildingComponent &)
 				{
-					playerMoney += refundValue(e);
-					e->destroy();
-				}
-			}, gameEntities(), true);
+					if (p.tile == playerCursorTile)
+					{
+						playerMoney += refundValue(e);
+						e->destroy();
+					}
+				},
+				gameEntities(), true);
 		}
 
 		spatialUpdateStructures();
@@ -174,12 +183,12 @@ namespace
 			return false;
 		switch (in.buttons)
 		{
-		case MouseButtonsFlags::Left:
-			placeStructure();
-			return true;
-		case MouseButtonsFlags::Middle:
-			clearStructure();
-			return true;
+			case MouseButtonsFlags::Left:
+				placeStructure();
+				return true;
+			case MouseButtonsFlags::Middle:
+				clearStructure();
+				return true;
 		}
 		return false;
 	}
@@ -187,10 +196,12 @@ namespace
 	EventListener<bool(const GenericInput &)> mousePressListener;
 	EventListener<bool(const GenericInput &)> mouseMoveListener;
 
-	const auto engineInitListener = controlThread().initialize.listen([]() {
-		mousePressListener.attach(engineWindow()->events);
-		mousePressListener.bind(inputListener<InputClassEnum::MousePress, InputMouse>(&mouseEvent));
-		mouseMoveListener.attach(engineWindow()->events);
-		mouseMoveListener.bind(inputListener<InputClassEnum::MouseMove, InputMouse>(&mouseEvent));
-	});
+	const auto engineInitListener = controlThread().initialize.listen(
+		[]()
+		{
+			mousePressListener.attach(engineWindow()->events);
+			mousePressListener.bind(inputListener<InputClassEnum::MousePress, InputMouse>(&mouseEvent));
+			mouseMoveListener.attach(engineWindow()->events);
+			mouseMoveListener.bind(inputListener<InputClassEnum::MouseMove, InputMouse>(&mouseEvent));
+		});
 }

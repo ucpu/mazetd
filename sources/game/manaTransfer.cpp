@@ -14,7 +14,7 @@ namespace
 		ManaStorageComponent *stor = nullptr;
 		uint32 amount = 0;
 
-		bool operator < (const Node &other) const
+		bool operator<(const Node &other) const
 		{
 			if (stor->transferOrdering == other.stor->transferOrdering)
 				return amount > other.amount;
@@ -69,56 +69,63 @@ namespace
 			consumers.erase(consumers.begin() + ci);
 	}
 
-	const auto gameUpdateListener = eventGameUpdate().listen([]() {
-		ProfilingScope profiling("mana transfers");
-
-		distributors.clear();
-		distributors.reserve(100);
-		consumers.clear();
-		consumers.reserve(100);
-
-		entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &, ManaStorageComponent &stor) {
-			Node n;
-			n.amount = stor.mana;
-			if (n.amount == 0)
-				return;
-			const Vec3 p = pos.position();
-			n.pos3 = p + Vec3(0, e->value<PivotComponent>().elevation, 0);
-			n.pos2 = Vec2(p[0], p[2]);
-			n.stor = &stor;
-			distributors.push_back(n);
-			}, gameEntities(), false);
-
-		entitiesVisitor([&](Entity *e, const PositionComponent &pos, const ManaReceiverComponent &, ManaStorageComponent &stor) {
-			Node n;
-			n.amount = stor.capacity - stor.mana;
-			if (n.amount == 0)
-				return;
-			const Vec3 p = pos.position();
-			n.pos3 = p + Vec3(0, e->value<PivotComponent>().elevation, 0);
-			n.pos2 = Vec2(p[0], p[2]);
-			n.stor = &stor;
-			consumers.push_back(n);
-			}, gameEntities(), false);
-
-		while (!distributors.empty() && !consumers.empty())
+	const auto gameUpdateListener = eventGameUpdate().listen(
+		[]()
 		{
-			std::sort(distributors.begin(), distributors.end());
-			std::sort(consumers.begin(), consumers.end());
-			const auto a = findBest(distributors[0], consumers);
-			const auto b = findBest(consumers[0], distributors);
-			if (a.second == m || b.second == m)
-				break;
-			if (a.first < b.first)
-				transfer(0, a.second);
-			else
-				transfer(b.second, 0);
-		}
+			ProfilingScope profiling("mana transfers");
+
+			distributors.clear();
+			distributors.reserve(100);
+			consumers.clear();
+			consumers.reserve(100);
+
+			entitiesVisitor(
+				[&](Entity *e, const PositionComponent &pos, const ManaDistributorComponent &, ManaStorageComponent &stor)
+				{
+					Node n;
+					n.amount = stor.mana;
+					if (n.amount == 0)
+						return;
+					const Vec3 p = pos.position();
+					n.pos3 = p + Vec3(0, e->value<PivotComponent>().elevation, 0);
+					n.pos2 = Vec2(p[0], p[2]);
+					n.stor = &stor;
+					distributors.push_back(n);
+				},
+				gameEntities(), false);
+
+			entitiesVisitor(
+				[&](Entity *e, const PositionComponent &pos, const ManaReceiverComponent &, ManaStorageComponent &stor)
+				{
+					Node n;
+					n.amount = stor.capacity - stor.mana;
+					if (n.amount == 0)
+						return;
+					const Vec3 p = pos.position();
+					n.pos3 = p + Vec3(0, e->value<PivotComponent>().elevation, 0);
+					n.pos2 = Vec2(p[0], p[2]);
+					n.stor = &stor;
+					consumers.push_back(n);
+				},
+				gameEntities(), false);
+
+			while (!distributors.empty() && !consumers.empty())
+			{
+				std::sort(distributors.begin(), distributors.end());
+				std::sort(consumers.begin(), consumers.end());
+				const auto a = findBest(distributors[0], consumers);
+				const auto b = findBest(consumers[0], distributors);
+				if (a.second == m || b.second == m)
+					break;
+				if (a.first < b.first)
+					transfer(0, a.second);
+				else
+					transfer(b.second, 0);
+			}
 
 #ifdef CAGE_ASSERT_ENABLED
-		entitiesVisitor([&](Entity *e, ManaStorageComponent &stor) {
-			CAGE_ASSERT(stor.mana <= stor.capacity);
-		}, gameEntities(), false);
+			entitiesVisitor([&](Entity *e, ManaStorageComponent &stor) { CAGE_ASSERT(stor.mana <= stor.capacity); }, gameEntities(), false);
 #endif // CAGE_ASSERT_ENABLED
-	}, 35); // after spatial update
+		},
+		35); // after spatial update
 }

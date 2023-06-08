@@ -1,13 +1,13 @@
-#include <cage-core/tasks.h>
 #include <cage-core/enumerate.h>
 #include <cage-core/pointerRangeHolder.h>
 #include <cage-core/profiling.h>
+#include <cage-core/tasks.h>
 
 #include "generate.h"
 
-#include <vector>
-#include <queue>
 #include <algorithm>
+#include <queue>
+#include <vector>
 
 namespace
 {

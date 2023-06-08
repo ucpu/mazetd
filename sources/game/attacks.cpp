@@ -1,15 +1,15 @@
 #include <cage-core/entitiesVisitor.h>
-#include <cage-core/spatialStructure.h>
-#include <cage-core/geometry.h>
 #include <cage-core/enumerate.h>
+#include <cage-core/geometry.h>
 #include <cage-core/profiling.h>
+#include <cage-core/spatialStructure.h>
 #include <cage-engine/scene.h>
 
 #include "../game.h"
 #include "../grid.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 namespace
 {
@@ -45,12 +45,26 @@ namespace
 			}
 			switch (bonus)
 			{
-			case BonusTypeEnum::Damage: damage *= 2; manaCost *= 2; break;
-			case BonusTypeEnum::FiringRate: firingPeriod /= 2; break;
-			case BonusTypeEnum::FiringRange: firingRange += 4; break; // keep in sync with visualization
-			case BonusTypeEnum::SplashRadius: splashRadius += 2; manaCost *= 3; break;
-			case BonusTypeEnum::IntenseDot: overTime /= 5; break;
-			case BonusTypeEnum::ManaDiscount: manaCost /= 3; break;
+				case BonusTypeEnum::Damage:
+					damage *= 2;
+					manaCost *= 2;
+					break;
+				case BonusTypeEnum::FiringRate:
+					firingPeriod /= 2;
+					break;
+				case BonusTypeEnum::FiringRange:
+					firingRange += 4;
+					break; // keep in sync with visualization
+				case BonusTypeEnum::SplashRadius:
+					splashRadius += 2;
+					manaCost *= 3;
+					break;
+				case BonusTypeEnum::IntenseDot:
+					overTime /= 5;
+					break;
+				case BonusTypeEnum::ManaDiscount:
+					manaCost /= 3;
+					break;
 			}
 		}
 
@@ -117,35 +131,38 @@ namespace
 
 		void run()
 		{
-			entitiesVisitor([&](Entity *e, const PositionComponent &pos, const DamageComponent &dmg, AttackComponent &atc) {
-				if (atc.firingDelay > 0)
+			entitiesVisitor(
+				[&](Entity *e, const PositionComponent &pos, const DamageComponent &dmg, AttackComponent &atc)
 				{
-					atc.firingDelay--;
-					return;
-				}
+					if (atc.firingDelay > 0)
+					{
+						atc.firingDelay--;
+						return;
+					}
 
-				*(TowerData *)this = {};
-				*(DamageComponent *)this = dmg;
-				*(AttackComponent *)this = atc;
-				me = e;
-				mp = pos.position();
-				mpp = mp + Vec3(0, e->value<PivotComponent>().elevation, 0);
+					*(TowerData *)this = {};
+					*(DamageComponent *)this = dmg;
+					*(AttackComponent *)this = atc;
+					me = e;
+					mp = pos.position();
+					mpp = mp + Vec3(0, e->value<PivotComponent>().elevation, 0);
 
-				applyMods();
+					applyMods();
 
-				findMonstersForTower();
-				if (monsters.empty())
-					return;
-				if (!consumeMana())
-					return;
-				pickTargetMonster();
-				effects();
-				if (splashRadius > 0)
-					findMonstersForSplash();
-				damageMonsters();
+					findMonstersForTower();
+					if (monsters.empty())
+						return;
+					if (!consumeMana())
+						return;
+					pickTargetMonster();
+					effects();
+					if (splashRadius > 0)
+						findMonstersForSplash();
+					damageMonsters();
 
-				atc.firingDelay += firingPeriod;
-			}, gameEntities(), false);
+					atc.firingDelay += firingPeriod;
+				},
+				gameEntities(), false);
 		}
 	};
 
@@ -154,22 +171,29 @@ namespace
 	{
 		AttacksSolver *data = nullptr;
 
-		MonsterPicker(AttacksSolver *data) : data(data)
-		{
-			CAGE_ASSERT(data->targeting == Targeting);
-		}
+		MonsterPicker(AttacksSolver *data) : data(data) { CAGE_ASSERT(data->targeting == Targeting); }
 
 		Real value(Monster &mo)
 		{
 			switch (Targeting)
 			{
-			case TargetingEnum::Back: return -numeric_cast<sint32>(mo.mc->timeToArrive);
-			case TargetingEnum::Closest: return distanceSquared(mo.p * Vec3(1, 0, 1), data->mp * Vec3(1, 0, 1));
-			case TargetingEnum::Farthest: return -distanceSquared(mo.p * Vec3(1, 0, 1), data->mp * Vec3(1, 0, 1));
-			case TargetingEnum::Front: return mo.mc->timeToArrive;
-			case TargetingEnum::Strongest: return -mo.mc->life;
-			case TargetingEnum::Weakest: return mo.mc->life;
-			default: { CAGE_THROW_CRITICAL(NotImplemented, "invalid targeting"); } break;
+				case TargetingEnum::Back:
+					return -numeric_cast<sint32>(mo.mc->timeToArrive);
+				case TargetingEnum::Closest:
+					return distanceSquared(mo.p * Vec3(1, 0, 1), data->mp * Vec3(1, 0, 1));
+				case TargetingEnum::Farthest:
+					return -distanceSquared(mo.p * Vec3(1, 0, 1), data->mp * Vec3(1, 0, 1));
+				case TargetingEnum::Front:
+					return mo.mc->timeToArrive;
+				case TargetingEnum::Strongest:
+					return -mo.mc->life;
+				case TargetingEnum::Weakest:
+					return mo.mc->life;
+				default:
+				{
+					CAGE_THROW_CRITICAL(NotImplemented, "invalid targeting");
+				}
+				break;
 			}
 		}
 
@@ -196,10 +220,7 @@ namespace
 	{
 		AttacksSolver *data = nullptr;
 
-		MonsterPicker(AttacksSolver *data) : data(data)
-		{
-			CAGE_ASSERT(data->targeting == TargetingEnum::Random);
-		}
+		MonsterPicker(AttacksSolver *data) : data(data) { CAGE_ASSERT(data->targeting == TargetingEnum::Random); }
 
 		void run()
 		{
@@ -213,21 +234,56 @@ namespace
 		CAGE_ASSERT(monsters.size() > 0);
 		switch (targeting)
 		{
-		case TargetingEnum::Back: { MonsterPicker<TargetingEnum::Back>(this).run(); } break;
-		case TargetingEnum::Closest: { MonsterPicker<TargetingEnum::Closest>(this).run(); } break;
-		case TargetingEnum::Farthest: { MonsterPicker<TargetingEnum::Farthest>(this).run(); } break;
-		case TargetingEnum::Front: { MonsterPicker<TargetingEnum::Front>(this).run(); } break;
-		case TargetingEnum::Random: { MonsterPicker<TargetingEnum::Random>(this).run(); } break;
-		case TargetingEnum::Strongest: { MonsterPicker<TargetingEnum::Strongest>(this).run(); } break;
-		case TargetingEnum::Weakest: { MonsterPicker<TargetingEnum::Weakest>(this).run(); } break;
-		default: { CAGE_THROW_CRITICAL(NotImplemented, "invalid targeting"); } break;
+			case TargetingEnum::Back:
+			{
+				MonsterPicker<TargetingEnum::Back>(this).run();
+			}
+			break;
+			case TargetingEnum::Closest:
+			{
+				MonsterPicker<TargetingEnum::Closest>(this).run();
+			}
+			break;
+			case TargetingEnum::Farthest:
+			{
+				MonsterPicker<TargetingEnum::Farthest>(this).run();
+			}
+			break;
+			case TargetingEnum::Front:
+			{
+				MonsterPicker<TargetingEnum::Front>(this).run();
+			}
+			break;
+			case TargetingEnum::Random:
+			{
+				MonsterPicker<TargetingEnum::Random>(this).run();
+			}
+			break;
+			case TargetingEnum::Strongest:
+			{
+				MonsterPicker<TargetingEnum::Strongest>(this).run();
+			}
+			break;
+			case TargetingEnum::Weakest:
+			{
+				MonsterPicker<TargetingEnum::Weakest>(this).run();
+			}
+			break;
+			default:
+			{
+				CAGE_THROW_CRITICAL(NotImplemented, "invalid targeting");
+			}
+			break;
 		}
 		CAGE_ASSERT(monsters.size() == 1);
 	}
 
-	const auto gameUpdateListener = eventGameUpdate().listen([]() {
-		ProfilingScope profiling("attacks");
-		AttacksSolver solver;
-		solver.run();
-	}, 50);
+	const auto gameUpdateListener = eventGameUpdate().listen(
+		[]()
+		{
+			ProfilingScope profiling("attacks");
+			AttacksSolver solver;
+			solver.run();
+		},
+		50);
 }

@@ -1,5 +1,5 @@
-#include "screens.h"
 #include "../game.h"
+#include "screens.h"
 
 void setScreenGame();
 

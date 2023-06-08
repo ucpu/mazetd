@@ -12,19 +12,22 @@ namespace
 		Vec3 mov;
 	};
 
-	const auto engineInitListener = controlThread().initialize.listen([]() {
-		engineEntities()->defineComponent(GhostComponent());
-	});
+	const auto engineInitListener = controlThread().initialize.listen([]() { engineEntities()->defineComponent(GhostComponent()); });
 
-	const auto engineUpdateListener = controlThread().update.listen([]() {
-		entitiesVisitor([&](Entity *e, TransformComponent &tr, const GhostComponent &gh) {
-			tr.orientation = gh.rot * tr.orientation;
-			tr.position += gh.mov;
-			tr.scale *= 0.98;
-			if (tr.scale < 0.1)
-				e->destroy();
-		}, engineEntities(), true);
-	});
+	const auto engineUpdateListener = controlThread().update.listen(
+		[]()
+		{
+			entitiesVisitor(
+				[&](Entity *e, TransformComponent &tr, const GhostComponent &gh)
+				{
+					tr.orientation = gh.rot * tr.orientation;
+					tr.position += gh.mov;
+					tr.scale *= 0.98;
+					if (tr.scale < 0.1)
+						e->destroy();
+				},
+				engineEntities(), true);
+		});
 }
 
 void createMonsterGhost(Entity *ge)

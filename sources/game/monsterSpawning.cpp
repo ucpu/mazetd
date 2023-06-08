@@ -1,13 +1,13 @@
-#include <cage-core/hashString.h>
 #include <cage-core/enumerate.h>
+#include <cage-core/hashString.h>
 #include <cage-engine/scene.h>
 
 #include "../game.h"
 #include "../grid.h"
 
-#include <vector>
 #include <algorithm>
 #include <functional>
+#include <vector>
 
 void setScreenWon();
 void updateSpawningMonsterPropertiesScreen();
@@ -186,14 +186,14 @@ namespace
 		}
 	}
 
-	const auto gameResetListener = eventGameReset().listen([]() {
-		generateMonsterProperties();
-		spawningGroup.init();
-	});
+	const auto gameResetListener = eventGameReset().listen(
+		[]()
+		{
+			generateMonsterProperties();
+			spawningGroup.init();
+		});
 
-	const auto gameUpdateListener = eventGameUpdate().listen([]() {
-		spawningGroup.process();
-	});
+	const auto gameUpdateListener = eventGameUpdate().listen([]() { spawningGroup.process(); });
 }
 
 void SpawningGroup::spawnOne()

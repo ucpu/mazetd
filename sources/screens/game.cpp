@@ -1,9 +1,9 @@
-#include <cage-core/hashString.h>
 #include <cage-core/entitiesVisitor.h>
+#include <cage-core/hashString.h>
 
-#include "screens.h"
-#include "../grid.h"
 #include "../game.h"
+#include "../grid.h"
+#include "screens.h"
 
 void setScreenPaused();
 void generateBuildingsList();
@@ -32,10 +32,13 @@ namespace
 		{ // mana
 			sint64 manaCap = 1;
 			sint64 manaAvail = 0;
-			entitiesVisitor([&](const ManaStorageComponent &mc) {
-				manaCap += mc.capacity;
-				manaAvail += mc.mana;
-			}, gameEntities(), false);
+			entitiesVisitor(
+				[&](const ManaStorageComponent &mc)
+				{
+					manaCap += mc.capacity;
+					manaAvail += mc.mana;
+				},
+				gameEntities(), false);
 			ents->get(318)->value<GuiTextComponent>().value = Stringizer() + (100 * manaAvail / manaCap) + " %";
 		}
 
@@ -43,11 +46,14 @@ namespace
 			uint32 cnt = 0;
 			sint64 lfTot = 1;
 			sint64 lfRem = 0;
-			entitiesVisitor([&](const MonsterComponent &mc) {
-				cnt++;
-				lfTot += mc.maxLife;
-				lfRem += mc.life;
-			}, gameEntities(), false);
+			entitiesVisitor(
+				[&](const MonsterComponent &mc)
+				{
+					cnt++;
+					lfTot += mc.maxLife;
+					lfRem += mc.life;
+				},
+				gameEntities(), false);
 			ents->get(320)->value<GuiTextComponent>().value = Stringizer() + cnt + " @ " + (100 * lfRem / lfTot) + " %";
 		}
 	}

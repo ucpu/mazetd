@@ -13,33 +13,43 @@ namespace
 		uint64 timeToDie = 0;
 	};
 
-	const auto engineInitListener = controlThread().initialize.listen([]() {
-		engineEntities()->defineComponent(RenderEffectComponent());
-	});
+	const auto engineInitListener = controlThread().initialize.listen([]() { engineEntities()->defineComponent(RenderEffectComponent()); });
 
-	const auto engineUpdateListener = controlThread().update.listen([]() {
-		const uint64 time = engineControlTime();
-		Entity *cam = engineEntities()->get(1);
-		const TransformComponent &ct = cam->value<TransformComponent>();
-		entitiesVisitor([&](Entity *e, TransformComponent &tr, const RenderEffectComponent &re) {
-			tr.position += re.move;
-			tr.orientation = Quat(tr.position - ct.position, ct.orientation * Vec3(0, 1, 0));
-			if (time > re.timeToDie)
-				e->destroy();
-		}, engineEntities(), true);
-	});
+	const auto engineUpdateListener = controlThread().update.listen(
+		[]()
+		{
+			const uint64 time = engineControlTime();
+			Entity *cam = engineEntities()->get(1);
+			const TransformComponent &ct = cam->value<TransformComponent>();
+			entitiesVisitor(
+				[&](Entity *e, TransformComponent &tr, const RenderEffectComponent &re)
+				{
+					tr.position += re.move;
+					tr.orientation = Quat(tr.position - ct.position, ct.orientation * Vec3(0, 1, 0));
+					if (time > re.timeToDie)
+						e->destroy();
+				},
+				engineEntities(), true);
+		});
 
 	uint32 renderName(const EffectConfig &config)
 	{
 		switch (config.type)
 		{
-		case DamageTypeEnum::Physical: return HashString("mazetd/particles/sprite.obj;physical");
-		case DamageTypeEnum::Fire: return HashString("mazetd/particles/sprite.obj;fire");
-		case DamageTypeEnum::Water: return HashString("mazetd/particles/sprite.obj;water");
-		case DamageTypeEnum::Poison: return HashString("mazetd/particles/sprite.obj;poison");
-		case DamageTypeEnum::Magic: return HashString("mazetd/particles/sprite.obj;magic");
-		case DamageTypeEnum::Mana: return HashString("mazetd/particles/sprite.obj;mana");
-		default: return HashString("cage/model/fake.obj");
+			case DamageTypeEnum::Physical:
+				return HashString("mazetd/particles/sprite.obj;physical");
+			case DamageTypeEnum::Fire:
+				return HashString("mazetd/particles/sprite.obj;fire");
+			case DamageTypeEnum::Water:
+				return HashString("mazetd/particles/sprite.obj;water");
+			case DamageTypeEnum::Poison:
+				return HashString("mazetd/particles/sprite.obj;poison");
+			case DamageTypeEnum::Magic:
+				return HashString("mazetd/particles/sprite.obj;magic");
+			case DamageTypeEnum::Mana:
+				return HashString("mazetd/particles/sprite.obj;mana");
+			default:
+				return HashString("cage/model/fake.obj");
 		}
 	}
 }

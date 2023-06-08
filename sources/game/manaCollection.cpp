@@ -1,7 +1,7 @@
 #include <cage-core/entitiesVisitor.h>
-#include <cage-core/profiling.h>
 #include <cage-core/enumerate.h>
 #include <cage-core/hashString.h>
+#include <cage-core/profiling.h>
 #include <cage-engine/scene.h>
 #include <cage-simple/engine.h>
 
@@ -42,11 +42,16 @@ namespace
 	{
 		switch (type)
 		{
-		case ManaCollectorTypeEnum::Water: return TileFlags::Water;
-		case ManaCollectorTypeEnum::Sun: return TileFlags::Sun;
-		case ManaCollectorTypeEnum::Wind: return TileFlags::Wind;
-		case ManaCollectorTypeEnum::Snow: return TileFlags::Snow;
-		default: CAGE_THROW_CRITICAL(Exception, "invalid ManaCollectorTypeEnum");
+			case ManaCollectorTypeEnum::Water:
+				return TileFlags::Water;
+			case ManaCollectorTypeEnum::Sun:
+				return TileFlags::Sun;
+			case ManaCollectorTypeEnum::Wind:
+				return TileFlags::Wind;
+			case ManaCollectorTypeEnum::Snow:
+				return TileFlags::Snow;
+			default:
+				CAGE_THROW_CRITICAL(Exception, "invalid ManaCollectorTypeEnum");
 		}
 	}
 
@@ -54,48 +59,51 @@ namespace
 	{
 		ProfilingScope profiling("collect mana");
 
-		entitiesVisitor([](Entity *e, const PositionComponent &pos, const ManaCollectorComponent &col, ManaStorageComponent &stor) {
-			if (stor.mana + col.collectAmount > stor.capacity)
-				return;
-
-			const Vec2i mp2 = globalGrid->position(pos.tile);
-			const Vec3 mp3 = globalGrid->center(pos.tile);
-			const sint32 xa = mp2[0] - col.range.value - 0.5;
-			const sint32 xb = mp2[0] + col.range.value + 0.5;
-			const sint32 ya = mp2[1] - col.range.value - 0.5;
-			const sint32 yb = mp2[1] + col.range.value + 0.5;
-			for (sint32 y = ya; y <= yb; y++)
+		entitiesVisitor(
+			[](Entity *e, const PositionComponent &pos, const ManaCollectorComponent &col, ManaStorageComponent &stor)
 			{
-				for (sint32 x = xa; x <= xb; x++)
+				if (stor.mana + col.collectAmount > stor.capacity)
+					return;
+
+				const Vec2i mp2 = globalGrid->position(pos.tile);
+				const Vec3 mp3 = globalGrid->center(pos.tile);
+				const sint32 xa = mp2[0] - col.range.value - 0.5;
+				const sint32 xb = mp2[0] + col.range.value + 0.5;
+				const sint32 ya = mp2[1] - col.range.value - 0.5;
+				const sint32 yb = mp2[1] + col.range.value + 0.5;
+				for (sint32 y = ya; y <= yb; y++)
 				{
-					const uint32 t = globalGrid->index(Vec2i(x, y));
-					if (t == m)
-						continue;
-					TileFlags &f = globalGrid->flags[t];
-					if (none(f & TileFlags::Mana))
-						continue;
-					if (none(f & requiredFlags(col.type)))
-						continue;
-					const Vec3 p = globalGrid->center(t);
-					if (distanceSquared(mp3 * Vec3(1, 0, 1), p * Vec3(1, 0, 1)) > sqr(col.range))
-						continue;
-
-					f &= ~TileFlags::Mana;
-					stor.mana += col.collectAmount;
-
+					for (sint32 x = xa; x <= xb; x++)
 					{
-						EffectConfig cfg;
-						cfg.pos1 = p;
-						cfg.pos2 = mp3 + Vec3(0, e->value<PivotComponent>().elevation, 0);
-						cfg.type = DamageTypeEnum::Mana;
-						renderEffect(cfg);
-					}
+						const uint32 t = globalGrid->index(Vec2i(x, y));
+						if (t == m)
+							continue;
+						TileFlags &f = globalGrid->flags[t];
+						if (none(f & TileFlags::Mana))
+							continue;
+						if (none(f & requiredFlags(col.type)))
+							continue;
+						const Vec3 p = globalGrid->center(t);
+						if (distanceSquared(mp3 * Vec3(1, 0, 1), p * Vec3(1, 0, 1)) > sqr(col.range))
+							continue;
 
-					if (stor.mana + col.collectAmount > stor.capacity)
-						return;
+						f &= ~TileFlags::Mana;
+						stor.mana += col.collectAmount;
+
+						{
+							EffectConfig cfg;
+							cfg.pos1 = p;
+							cfg.pos2 = mp3 + Vec3(0, e->value<PivotComponent>().elevation, 0);
+							cfg.type = DamageTypeEnum::Mana;
+							renderEffect(cfg);
+						}
+
+						if (stor.mana + col.collectAmount > stor.capacity)
+							return;
+					}
 				}
-			}
-		}, gameEntities(), false);
+			},
+			gameEntities(), false);
 	}
 
 	std::vector<Entity *> manaGrid;
@@ -127,13 +135,13 @@ namespace
 		}
 	}
 
-	const auto gameResetListener = eventGameReset().listen([]() {
-		manaGrid.clear();
-	});
+	const auto gameResetListener = eventGameReset().listen([]() { manaGrid.clear(); });
 
-	const auto gameUpdateListener = eventGameUpdate().listen([]() {
-		placeNewMana();
-		collectMana();
-		placeMarks();
-	});
+	const auto gameUpdateListener = eventGameUpdate().listen(
+		[]()
+		{
+			placeNewMana();
+			collectMana();
+			placeMarks();
+		});
 }

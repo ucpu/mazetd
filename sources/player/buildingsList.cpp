@@ -197,7 +197,7 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr BonusData bonusData[] = {
-				{ "Damage", "Affected towers have doubled damage and mana cost.\nEnhancements cannot be combined.", BonusTypeEnum::Damage, HashString("mazetd/buildings/bonus-damage.object")},
+				{ "Damage", "Affected towers have doubled damage and mana cost.\nEnhancements cannot be combined.", BonusTypeEnum::Damage, HashString("mazetd/buildings/bonus-damage.object") },
 				{ "Rate", "Affected towers have doubled rate of fire.\nEnhancements cannot be combined.", BonusTypeEnum::FiringRate, HashString("mazetd/buildings/bonus-firingRate.object") },
 				{ "Range", "Affected towers have range of fire increased by 4 tiles.\nEnhancements cannot be combined.", BonusTypeEnum::FiringRange, HashString("mazetd/buildings/bonus-firingRange.object") },
 				{ "Splash", "Affected towers have splash radius increased by 2 tiles. Mana cost is tripled.\nEnhancements cannot be combined.", BonusTypeEnum::SplashRadius, HashString("mazetd/buildings/bonus-splashRadius.object") },
@@ -226,7 +226,7 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr TargetingData targetingData[] = {
-				{ "Front", "Affected towers prefer monsters with shortest remaining path.", TargetingEnum::Front, HashString("mazetd/buildings/targeting-front.object")},
+				{ "Front", "Affected towers prefer monsters with shortest remaining path.", TargetingEnum::Front, HashString("mazetd/buildings/targeting-front.object") },
 				{ "Back", "Affected towers prefer monsters with longest remaining path.", TargetingEnum::Back, HashString("mazetd/buildings/targeting-back.object") },
 				{ "Strongest", "Affected towers prefer monsters with most life.", TargetingEnum::Strongest, HashString("mazetd/buildings/targeting-strongest.object") },
 				{ "Weakest", "Affected towers prefer monsters with least life.", TargetingEnum::Weakest, HashString("mazetd/buildings/targeting-weakest.object") },
@@ -283,7 +283,7 @@ namespace
 				uint32 model = 0;
 			};
 			static constexpr ManaData manaData[] = {
-				{ "Waterwheel", "Collects mana from surrounding water tiles.", ManaCollectorTypeEnum::Water, 10, HashString("mazetd/buildings/mana-collector-water.object")},
+				{ "Waterwheel", "Collects mana from surrounding water tiles.", ManaCollectorTypeEnum::Water, 10, HashString("mazetd/buildings/mana-collector-water.object") },
 				{ "Sunbloom", "Collects mana from surrounding grass tiles.", ManaCollectorTypeEnum::Sun, 5, HashString("mazetd/buildings/mana-collector-sun.object") },
 				{ "Windmill", "Collects mana from surrounding dirt tiles.", ManaCollectorTypeEnum::Wind, 5, HashString("mazetd/buildings/mana-collector-wind.object") },
 				{ "Snowmelt", "Collects mana from surrounding snow tiles.", ManaCollectorTypeEnum::Snow, 10, HashString("mazetd/buildings/mana-collector-snow.object") },

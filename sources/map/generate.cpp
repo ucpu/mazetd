@@ -1,10 +1,10 @@
-#include <cage-core/tasks.h>
+#include <cage-core/collider.h>
 #include <cage-core/geometry.h>
+#include <cage-core/imageAlgorithms.h>
 #include <cage-core/marchingCubes.h>
 #include <cage-core/meshAlgorithms.h>
-#include <cage-core/imageAlgorithms.h>
-#include <cage-core/collider.h>
 #include <cage-core/profiling.h>
+#include <cage-core/tasks.h>
 #include <cage-simple/engine.h>
 
 #include "../game.h"
@@ -172,20 +172,25 @@ namespace
 
 	Holder<AsyncTask> mapGenTask;
 
-	const auto engineFinishListener = controlThread().finalize.listen([]() {
-		if (mapGenTask)
+	const auto engineFinishListener = controlThread().finalize.listen(
+		[]()
 		{
-			mapGenTask->wait();
-			mapGenTask.clear();
-		}
-	});
+			if (mapGenTask)
+			{
+				mapGenTask->wait();
+				mapGenTask.clear();
+			}
+		});
 
-	const auto gameResetListener = eventGameReset().listen([]() {
-		globalGrid.clear();
-		globalWaypoints.clear();
-		globalCollider.clear();
-		mapGenTask = tasksRunAsync("map gen task", Delegate<void(uint32)>().bind<&mapGenTaskEntry>());
-	}, -80);
+	const auto gameResetListener = eventGameReset().listen(
+		[]()
+		{
+			globalGrid.clear();
+			globalWaypoints.clear();
+			globalCollider.clear();
+			mapGenTask = tasksRunAsync("map gen task", Delegate<void(uint32)>().bind<&mapGenTaskEntry>());
+		},
+		-80);
 }
 
 Holder<Grid> globalGrid;

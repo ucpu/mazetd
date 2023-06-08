@@ -52,35 +52,44 @@ namespace
 		return man;
 	}
 
-	const auto engineInitListener = controlThread().initialize.listen([]() {
-		registerEntityComponents(engineGuiEntities());
-		engineGuiEntities()->defineComponent(GuiModelComponent());
-		eventGameReset().dispatch();
-	}, 200);
-
-	const auto gameResetListener = eventGameReset().listen([]() {
-		gameTime = 0;
-		gameSpeed = 1;
-		gameReady = false;
-		gamePaused = false;
-		gameEntities()->destroy();
-
-		playerCursorPosition = Vec3::Nan();
-		playerCursorTile = m;
-		playerHealth = 100;
-		playerMoney = 1000;
-		playerBuildingSelection = nullptr;
-	}, -100);
-
-	const auto gameUpdateListener = eventGameUpdate().listen([]() {
-		gameTime++;
-		if (playerHealth <= 0)
+	const auto engineInitListener = controlThread().initialize.listen(
+		[]()
 		{
-			setScreenLost();
-			return true;
-		}
-		return false;
-	}, -500);
+			registerEntityComponents(engineGuiEntities());
+			engineGuiEntities()->defineComponent(GuiModelComponent());
+			eventGameReset().dispatch();
+		},
+		200);
+
+	const auto gameResetListener = eventGameReset().listen(
+		[]()
+		{
+			gameTime = 0;
+			gameSpeed = 1;
+			gameReady = false;
+			gamePaused = false;
+			gameEntities()->destroy();
+
+			playerCursorPosition = Vec3::Nan();
+			playerCursorTile = m;
+			playerHealth = 100;
+			playerMoney = 1000;
+			playerBuildingSelection = nullptr;
+		},
+		-100);
+
+	const auto gameUpdateListener = eventGameUpdate().listen(
+		[]()
+		{
+			gameTime++;
+			if (playerHealth <= 0)
+			{
+				setScreenLost();
+				return true;
+			}
+			return false;
+		},
+		-500);
 }
 
 EntityManager *gameEntities()
