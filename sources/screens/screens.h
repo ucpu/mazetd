@@ -1,3 +1,6 @@
+#ifndef mazetd_header_screens
+#define mazetd_header_screens
+
 #include <cage-core/entities.h>
 #include <cage-core/events.h>
 #include <cage-engine/guiBuilder.h>
@@ -5,8 +8,13 @@
 
 using namespace cage;
 
-void cleanGui();
+namespace mazetd
+{
+	void cleanGui();
 
-EventDispatcher<bool()> &eventGuiClean();
+	EventDispatcher<bool()> &eventGuiClean();
 
-void setScreenMainmenu();
+	void setScreenMainmenu();
+}
+
+#endif

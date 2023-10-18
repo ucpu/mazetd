@@ -1,124 +1,127 @@
-#include <cage-simple/engine.h>
-
 #include "../game.h"
 #include "../grid.h"
 
-void setScreenLost();
+#include <cage-simple/engine.h>
 
-Vec3 PositionComponent::position() const
+namespace mazetd
 {
-	return globalGrid->center(tile);
-}
+	void setScreenLost();
 
-Vec3 MovementComponent::position() const
-{
-	const Vec3 ca = globalGrid->center(tileStart);
-	const Vec3 cb = globalGrid->center(tileEnd);
-	const Real fac = saturate(Real(gameTime - (sint64)timeStart) / Real(timeEnd - (sint64)timeStart));
-	return interpolate(ca, cb, fac);
-}
-
-namespace
-{
-	void registerEntityComponents(EntityManager *man)
+	Vec3 PositionComponent::position() const
 	{
-		man->defineComponent(NameComponent());
-		man->defineComponent(DescriptionComponent());
-		man->defineComponent(BuildingComponent());
-		man->defineComponent(TrapComponent());
-		man->defineComponent(PivotComponent());
-		man->defineComponent(CostComponent());
-		man->defineComponent(ManaStorageComponent());
-		man->defineComponent(ManaDistributorComponent());
-		man->defineComponent(ManaReceiverComponent());
-		man->defineComponent(ManaCollectorComponent());
-		man->defineComponent(DamageComponent());
-		man->defineComponent(ModElementComponent());
-		man->defineComponent(ModBonusComponent());
-		man->defineComponent(ModTargetingComponent());
+		return globalGrid->center(tile);
 	}
 
-	Holder<EntityManager> initializeManager()
+	Vec3 MovementComponent::position() const
 	{
-		Holder<EntityManager> man = newEntityManager();
-		registerEntityComponents(+man);
-		man->defineComponent(EngineComponent());
-		man->defineComponent(HealthbarComponent());
-		man->defineComponent(ManabarComponent());
-		man->defineComponent(PositionComponent());
-		man->defineComponent(MovementComponent());
-		man->defineComponent(MonsterComponent());
-		man->defineComponent(AttackComponent());
-		return man;
+		const Vec3 ca = globalGrid->center(tileStart);
+		const Vec3 cb = globalGrid->center(tileEnd);
+		const Real fac = saturate(Real(gameTime - (sint64)timeStart) / Real(timeEnd - (sint64)timeStart));
+		return interpolate(ca, cb, fac);
 	}
 
-	const auto engineInitListener = controlThread().initialize.listen(
-		[]()
+	namespace
+	{
+		void registerEntityComponents(EntityManager *man)
 		{
-			registerEntityComponents(engineGuiEntities());
-			engineGuiEntities()->defineComponent(GuiModelComponent());
-			eventGameReset().dispatch();
-		},
-		200);
+			man->defineComponent(NameComponent());
+			man->defineComponent(DescriptionComponent());
+			man->defineComponent(BuildingComponent());
+			man->defineComponent(TrapComponent());
+			man->defineComponent(PivotComponent());
+			man->defineComponent(CostComponent());
+			man->defineComponent(ManaStorageComponent());
+			man->defineComponent(ManaDistributorComponent());
+			man->defineComponent(ManaReceiverComponent());
+			man->defineComponent(ManaCollectorComponent());
+			man->defineComponent(DamageComponent());
+			man->defineComponent(ModElementComponent());
+			man->defineComponent(ModBonusComponent());
+			man->defineComponent(ModTargetingComponent());
+		}
 
-	const auto gameResetListener = eventGameReset().listen(
-		[]()
+		Holder<EntityManager> initializeManager()
 		{
-			gameTime = 0;
-			gameSpeed = 1;
-			gameReady = false;
-			gamePaused = false;
-			gameEntities()->destroy();
+			Holder<EntityManager> man = newEntityManager();
+			registerEntityComponents(+man);
+			man->defineComponent(EngineComponent());
+			man->defineComponent(HealthbarComponent());
+			man->defineComponent(ManabarComponent());
+			man->defineComponent(PositionComponent());
+			man->defineComponent(MovementComponent());
+			man->defineComponent(MonsterComponent());
+			man->defineComponent(AttackComponent());
+			return man;
+		}
 
-			playerCursorPosition = Vec3::Nan();
-			playerCursorTile = m;
-			playerHealth = 100;
-			playerMoney = 1000;
-			playerBuildingSelection = nullptr;
-		},
-		-100);
-
-	const auto gameUpdateListener = eventGameUpdate().listen(
-		[]()
-		{
-			gameTime++;
-			if (playerHealth <= 0)
+		const auto engineInitListener = controlThread().initialize.listen(
+			[]()
 			{
-				setScreenLost();
-				return true;
-			}
-			return false;
-		},
-		-500);
+				registerEntityComponents(engineGuiEntities());
+				engineGuiEntities()->defineComponent(GuiModelComponent());
+				eventGameReset().dispatch();
+			},
+			200);
+
+		const auto gameResetListener = eventGameReset().listen(
+			[]()
+			{
+				gameTime = 0;
+				gameSpeed = 1;
+				gameReady = false;
+				gamePaused = false;
+				gameEntities()->destroy();
+
+				playerCursorPosition = Vec3::Nan();
+				playerCursorTile = m;
+				playerHealth = 100;
+				playerMoney = 1000;
+				playerBuildingSelection = nullptr;
+			},
+			-100);
+
+		const auto gameUpdateListener = eventGameUpdate().listen(
+			[]()
+			{
+				gameTime++;
+				if (playerHealth <= 0)
+				{
+					setScreenLost();
+					return true;
+				}
+				return false;
+			},
+			-500);
+	}
+
+	EntityManager *gameEntities()
+	{
+		static Holder<EntityManager> man = initializeManager();
+		return +man;
+	}
+
+	EventDispatcher<bool()> &eventGameReset()
+	{
+		static EventDispatcher<bool()> e;
+		return e;
+	}
+
+	EventDispatcher<bool()> &eventGameUpdate()
+	{
+		static EventDispatcher<bool()> e;
+		return e;
+	}
+
+	uint32 gameTime = 0;
+	Real gameSpeed = 1;
+	bool gameReady = false;
+	bool gamePaused = false;
+
+	Vec3 playerCursorPosition;
+	uint32 playerCursorTile;
+	sint32 playerHealth;
+	sint32 playerMoney;
+	bool playerPanning = false;
+	Entity *playerBuildingSelection;
+	bool playerWon = false;
 }
-
-EntityManager *gameEntities()
-{
-	static Holder<EntityManager> man = initializeManager();
-	return +man;
-}
-
-EventDispatcher<bool()> &eventGameReset()
-{
-	static EventDispatcher<bool()> e;
-	return e;
-}
-
-EventDispatcher<bool()> &eventGameUpdate()
-{
-	static EventDispatcher<bool()> e;
-	return e;
-}
-
-uint32 gameTime = 0;
-Real gameSpeed = 1;
-bool gameReady = false;
-bool gamePaused = false;
-
-Vec3 playerCursorPosition;
-uint32 playerCursorTile;
-sint32 playerHealth;
-sint32 playerMoney;
-bool playerPanning = false;
-Entity *playerBuildingSelection;
-bool playerWon = false;
