@@ -50,9 +50,9 @@ namespace mazetd
 			Callbacks()
 			{
 				EntityComponent *ec = gameEntities()->component<EngineComponent>();
-				engineComponentAddedListener.attach(ec->group()->entityAdded);
+				engineComponentAddedListener.attach(ec->entityAdded);
 				engineComponentAddedListener.bind(&engineComponentAdded);
-				engineComponentRemovedListener.attach(ec->group()->entityRemoved);
+				engineComponentRemovedListener.attach(ec->entityRemoved);
 				engineComponentRemovedListener.bind(&engineComponentRemoved);
 			}
 		} callbacksInstance;

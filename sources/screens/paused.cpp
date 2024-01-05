@@ -23,7 +23,7 @@ namespace mazetd
 		{
 			auto _ = g->panel().text("Pause");
 		}
-		g->button().text("Continue").bind<&setScreenGame>();
-		g->button().text("Abort").bind<&buttonStop>();
+		g->button().text("Continue").event<&setScreenGame>();
+		g->button().text("Abort").event<&buttonStop>();
 	}
 }

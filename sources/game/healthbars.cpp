@@ -100,16 +100,16 @@ namespace mazetd
 			{
 				{
 					EntityComponent *ec = gameEntities()->component<HealthbarComponent>();
-					healthbarComponentAddedListener.attach(ec->group()->entityAdded);
+					healthbarComponentAddedListener.attach(ec->entityAdded);
 					healthbarComponentAddedListener.bind(&healthbarComponentAdded);
-					healthbarComponentRemovedListener.attach(ec->group()->entityRemoved);
+					healthbarComponentRemovedListener.attach(ec->entityRemoved);
 					healthbarComponentRemovedListener.bind(&healthbarComponentRemoved);
 				}
 				{
 					EntityComponent *ec = gameEntities()->component<ManabarComponent>();
-					manabarComponentAddedListener.attach(ec->group()->entityAdded);
+					manabarComponentAddedListener.attach(ec->entityAdded);
 					manabarComponentAddedListener.bind(&manabarComponentAdded);
-					manabarComponentRemovedListener.attach(ec->group()->entityRemoved);
+					manabarComponentRemovedListener.attach(ec->entityRemoved);
 					manabarComponentRemovedListener.bind(&manabarComponentRemoved);
 				}
 			}

@@ -26,7 +26,7 @@ namespace mazetd
 		}
 		{
 			auto _ = g->rightRow();
-			g->button().text("Close").bind<&setScreenMainmenu>();
+			g->button().text("Close").event<&setScreenMainmenu>();
 		}
 	}
 }

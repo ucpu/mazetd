@@ -6,10 +6,10 @@
 #include <cage-engine/guiBuilder.h>
 #include <cage-simple/engine.h>
 
-using namespace cage;
-
 namespace mazetd
 {
+	using namespace cage;
+
 	void cleanGui();
 
 	EventDispatcher<bool()> &eventGuiClean();
