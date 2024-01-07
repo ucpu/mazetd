@@ -10,8 +10,6 @@ Apatosaurus.glb?Cylinder-1_Material
 
 []
 scheme = skeleton
-scale = 0.07
-axes = -x+y-z
 Apatosaurus.glb;skeleton
 
 []
@@ -30,8 +28,6 @@ Bat.glb?Cylinder.001-1_Eyes
 
 []
 scheme = skeleton
-scale = 0.15
-axes = -x+y-z
 Bat.glb;skeleton
 
 []
@@ -50,8 +46,6 @@ Dragon.glb?Cylinder.001-1_Eyes
 
 []
 scheme = skeleton
-scale = 0.2
-axes = -x+y-z
 Dragon.glb;skeleton
 
 []
@@ -68,8 +62,6 @@ Frog.glb?Cylinder-3_Black
 
 []
 scheme = skeleton
-scale = 0.2
-axes = -x+y-z
 Frog.glb;skeleton
 
 []
@@ -86,8 +78,6 @@ Parasaurolophus.glb?Cylinder-3_Red
 
 []
 scheme = skeleton
-scale = 0.13
-axes = -x+y-z
 Parasaurolophus.glb;skeleton
 
 []
@@ -102,8 +92,6 @@ Rat.glb?Cylinder-1_Grey
 
 []
 scheme = skeleton
-scale = 0.2
-axes = -x+y-z
 Rat.glb;skeleton
 
 []
@@ -117,8 +105,6 @@ Skeleton.glb
 
 []
 scheme = skeleton
-scale = 0.2
-axes = -x+y-z
 Skeleton.glb;skeleton
 
 []
@@ -133,8 +119,6 @@ Slime.glb?Cube-1_Eyes
 
 []
 scheme = skeleton
-scale = 0.25
-axes = +z+y-x
 Slime.glb;skeleton
 
 []
@@ -154,8 +138,6 @@ Snake.glb?Cylinder-6_Purple
 
 []
 scheme = skeleton
-scale = 0.25
-axes = -x+y-z
 Snake.glb;skeleton
 
 []
@@ -170,8 +152,6 @@ Spider.glb?Cube-1_Material.001
 
 []
 scheme = skeleton
-scale = 0.17
-axes = -x+y-z
 Spider.glb;skeleton
 
 []
@@ -187,8 +167,6 @@ Stegosaurus.glb?Cylinder-2_Brown
 
 []
 scheme = skeleton
-scale = 0.07
-axes = -x+y-z
 Stegosaurus.glb;skeleton
 
 []
@@ -206,8 +184,6 @@ Trex.glb?Cylinder-4_LightYellow
 
 []
 scheme = skeleton
-scale = 0.04
-axes = -x+y-z
 Trex.glb;skeleton
 
 []
@@ -223,8 +199,6 @@ Triceratops.glb?Cylinder-2_Brown
 
 []
 scheme = skeleton
-scale = 0.06
-axes = -x+y-z
 Triceratops.glb;skeleton
 
 []
@@ -240,8 +214,6 @@ Velociraptor.glb?Cylinder-2_LightBrown
 
 []
 scheme = skeleton
-scale = 0.13
-axes = -x+y-z
 Velociraptor.glb;skeleton
 
 []
@@ -258,8 +230,6 @@ Wasp.glb?Cylinder.001-3_Orange
 
 []
 scheme = skeleton
-scale = 0.2
-axes = +z+y-x
 Wasp.glb;skeleton
 
 []
