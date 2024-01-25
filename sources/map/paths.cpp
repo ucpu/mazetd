@@ -116,8 +116,8 @@ namespace mazetd
 		ProfilingScope profiling("update waypoints");
 
 		CAGE_LOG_DEBUG(SeverityEnum::Info, "paths", "recomputing paths");
-		tasksRunBlocking("paths directions", Delegate<void(uint32)>().bind<Waypoints *, &directionsThreadEntry>(this), numeric_cast<uint32>(waypoints.size()), tasksCurrentPriority());
-		tasksRunBlocking("paths waypoints", Delegate<void(uint32)>().bind<Waypoints *, &waypointThreadEntry>(this), numeric_cast<uint32>(waypoints.size()), tasksCurrentPriority());
+		tasksRunBlocking("paths directions", Delegate<void(uint32)>().bind<Waypoints *, &directionsThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
+		tasksRunBlocking("paths waypoints", Delegate<void(uint32)>().bind<Waypoints *, &waypointThreadEntry>(this), numeric_cast<uint32>(waypoints.size()));
 
 		{ // average full path
 			uint32 sum = 0;

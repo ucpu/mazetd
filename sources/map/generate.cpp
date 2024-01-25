@@ -148,7 +148,7 @@ namespace mazetd
 					meshes = meshChunking(+msh, cfg);
 				}
 				CAGE_LOG(SeverityEnum::Info, "mapgen", Stringizer() + "mesh chunks: " + meshes.size());
-				tasksRunBlocking<const Holder<Mesh>>("make chunk", Delegate<void(const Holder<Mesh> &)>().bind<Maker, &Maker::makeChunk>(this), *meshes, tasksCurrentPriority());
+				tasksRunBlocking<const Holder<Mesh>>("make chunk", Delegate<void(const Holder<Mesh> &)>().bind<Maker, &Maker::makeChunk>(this), *meshes);
 			}
 		};
 
