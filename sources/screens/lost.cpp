@@ -22,6 +22,6 @@ namespace mazetd
 			auto _ = g->panel().text("Game Over");
 			g->label().text(Stringizer() + "Waves: " + SpawningGroup::waveIndex);
 		}
-		g->button().text("Close").event<&buttonStop>();
+		g->button().text("Close").event(buttonStop);
 	}
 }

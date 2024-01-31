@@ -9,9 +9,9 @@ namespace mazetd
 {
 	namespace
 	{
-		bool buildingSelectionClick(Entity *e)
+		bool buildingSelectionClick(input::GuiValue in)
 		{
-			playerBuildingSelection = e;
+			playerBuildingSelection = in.entity;
 			engineGuiManager()->focus(0); // defocus to allow using keyboard shortcuts
 			return true;
 		}
@@ -76,9 +76,9 @@ namespace mazetd
 				Entity *e = ents->create(++index);
 				e->value<GuiButtonComponent>();
 				e->value<GuiTextComponent>().value = String(name);
-				e->value<GuiEventComponent>().event.bind<&buildingSelectionClick>();
+				e->value<GuiEventComponent>().event = inputFilter(buildingSelectionClick);
 				e->value<NameComponent>().name = name;
-				e->value<GuiTooltipComponent>().tooltip.bind<&buildingTooltip>();
+				e->value<GuiTooltipComponent>().tooltip.bind<buildingTooltip>();
 				return e;
 			}
 

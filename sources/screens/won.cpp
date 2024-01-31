@@ -24,7 +24,7 @@ namespace mazetd
 			auto _ = g->panel().text("Victory");
 			g->label().text(Stringizer() + "Waves: " + SpawningGroup::waveIndex);
 		}
-		g->button().text("Continue").event<&setScreenGame>();
-		g->button().text("Abort").event<&buttonStop>();
+		g->button().text("Continue").event(setScreenGame);
+		g->button().text("Abort").event(buttonStop);
 	}
 }

@@ -179,7 +179,7 @@ namespace mazetd
 			updateAttacksMods();
 		}
 
-		bool mouseEvent(InputMouse in)
+		bool mouseEvent(auto in)
 		{
 			if (!gameReady || playerCursorTile == m || in.mods != ModifiersFlags::None)
 				return false;
@@ -195,16 +195,7 @@ namespace mazetd
 			return false;
 		}
 
-		EventListener<bool(const GenericInput &)> mousePressListener;
-		EventListener<bool(const GenericInput &)> mouseMoveListener;
-
-		const auto engineInitListener = controlThread().initialize.listen(
-			[]()
-			{
-				mousePressListener.attach(engineWindow()->events);
-				mousePressListener.bind(inputListener<InputClassEnum::MousePress, InputMouse>(&mouseEvent));
-				mouseMoveListener.attach(engineWindow()->events);
-				mouseMoveListener.bind(inputListener<InputClassEnum::MouseMove, InputMouse>(&mouseEvent));
-			});
+		EventListener<bool(const GenericInput &)> mousePressListener = engineEvents().listen(inputFilter(mouseEvent<input::MousePress>), 200);
+		EventListener<bool(const GenericInput &)> mouseMoveListener = engineEvents().listen(inputFilter(mouseEvent<input::MouseMove>), 201);
 	}
 }

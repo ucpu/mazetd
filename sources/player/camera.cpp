@@ -44,7 +44,7 @@ namespace mazetd
 			return pos - cntr;
 		}
 
-		bool mousePress(InputMouse in)
+		bool mousePress(input::MousePress in)
 		{
 			if (in.buttons != MouseButtonsFlags::Right)
 				return false;
@@ -63,14 +63,14 @@ namespace mazetd
 			playerPanning = false;
 		}
 
-		bool mouseRelease(InputMouse in)
+		bool mouseRelease(input::MouseRelease in)
 		{
 			if (in.buttons == MouseButtonsFlags::Right)
 				stop();
 			return false;
 		}
 
-		bool mouseMove(InputMouse)
+		bool mouseMove(input::MouseMove)
 		{
 			if (!playerPanning)
 				return false;
@@ -87,7 +87,7 @@ namespace mazetd
 			return false;
 		}
 
-		bool mouseWheel(InputMouseWheel in)
+		bool mouseWheel(input::MouseWheel in)
 		{
 			switch (in.mods)
 			{
@@ -108,13 +108,13 @@ namespace mazetd
 			return false;
 		}
 
-		bool focusLose(InputWindow)
+		bool focusLose(input::WindowFocusLose)
 		{
 			stop();
 			return false;
 		}
 
-		bool keyRelease(InputKey in)
+		bool keyRelease(input::KeyPress in)
 		{
 			if (in.key == 'C')
 			{
@@ -125,29 +125,12 @@ namespace mazetd
 			return false;
 		}
 
-		EventListener<bool(const GenericInput &)> mousePressListener;
-		EventListener<bool(const GenericInput &)> mouseReleaseListener;
-		EventListener<bool(const GenericInput &)> mouseMoveListener;
-		EventListener<bool(const GenericInput &)> mouseWheelListener;
-		EventListener<bool(const GenericInput &)> focusloseListener;
-		EventListener<bool(const GenericInput &)> keyReleaseListener;
-
-		const auto engineInitListener = controlThread().initialize.listen(
-			[]()
-			{
-				mousePressListener.attach(engineWindow()->events, 100);
-				mousePressListener.bind(inputListener<InputClassEnum::MousePress, InputMouse>(&mousePress));
-				mouseReleaseListener.attach(engineWindow()->events, 101);
-				mouseReleaseListener.bind(inputListener<InputClassEnum::MouseRelease, InputMouse>(&mouseRelease));
-				mouseMoveListener.attach(engineWindow()->events, 102);
-				mouseMoveListener.bind(inputListener<InputClassEnum::MouseMove, InputMouse>(&mouseMove));
-				mouseWheelListener.attach(engineWindow()->events, 103);
-				mouseWheelListener.bind(inputListener<InputClassEnum::MouseWheel, InputMouseWheel>(&mouseWheel));
-				focusloseListener.attach(engineWindow()->events, 104);
-				focusloseListener.bind(inputListener<InputClassEnum::FocusLose, InputWindow>(&focusLose));
-				keyReleaseListener.attach(engineWindow()->events, 105);
-				keyReleaseListener.bind(inputListener<InputClassEnum::KeyRelease, InputKey>(&keyRelease));
-			});
+		EventListener<bool(const GenericInput &)> mousePressListener = engineEvents().listen(inputFilter(mousePress), 100);
+		EventListener<bool(const GenericInput &)> mouseReleaseListener = engineEvents().listen(inputFilter(mouseRelease), 101);
+		EventListener<bool(const GenericInput &)> mouseMoveListener = engineEvents().listen(inputFilter(mouseMove), 102);
+		EventListener<bool(const GenericInput &)> mouseWheelListener = engineEvents().listen(inputFilter(mouseWheel), 103);
+		EventListener<bool(const GenericInput &)> focusloseListener = engineEvents().listen(inputFilter(focusLose), 104);
+		EventListener<bool(const GenericInput &)> keyReleaseListener = engineEvents().listen(inputFilter(keyRelease), 105);
 
 		const auto engineUpdateListener = controlThread().update.listen(
 			[]()

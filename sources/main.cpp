@@ -20,7 +20,7 @@ int main(int argc, const char *args[])
 		engineInitialize(EngineCreateConfig());
 		controlThread().updatePeriod(1000000 / 30);
 
-		const auto closeListener = engineWindow()->events.listen(inputListener<InputClassEnum::WindowClose, InputWindow>([](auto) { engineStop(); }));
+		const auto closeListener = engineWindow()->events.listen(inputFilter([](input::WindowClose) { engineStop(); }));
 		engineWindow()->title("MazeTD");
 		engineAssets()->add(HashString("mazetd/mazetd.pack"));
 

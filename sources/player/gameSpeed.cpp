@@ -10,7 +10,7 @@ namespace mazetd
 {
 	namespace
 	{
-		bool keyPress(InputKey in)
+		bool keyPress(input::KeyPress in)
 		{
 			if (!gameReady)
 				return false;
@@ -35,6 +35,8 @@ namespace mazetd
 			return false;
 		}
 
+		EventListener<bool(const GenericInput &)> keyPressListener = engineEvents().listen(inputFilter(keyPress), 110);
+
 		void gameScheduleAction()
 		{
 			if (!gameReady || gamePaused)
@@ -43,15 +45,11 @@ namespace mazetd
 			eventGameUpdate().dispatch();
 		}
 
-		EventListener<bool(const GenericInput &)> keyPressListener;
 		Holder<Schedule> gameUpdateSchedule;
 
 		const auto engineInitListener = controlThread().initialize.listen(
 			[]()
 			{
-				keyPressListener.attach(engineWindow()->events, 110);
-				keyPressListener.bind(inputListener<InputClassEnum::KeyPress, InputKey>(&keyPress));
-
 				ScheduleCreateConfig cfg;
 				cfg.name = "game update";
 				cfg.type = ScheduleTypeEnum::SteadyPeriodic;

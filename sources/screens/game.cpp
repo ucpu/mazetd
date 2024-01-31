@@ -150,7 +150,7 @@ namespace mazetd
 		{ // top bar
 			auto _1 = g->alignment(Vec2(0.5, 0));
 			auto _2 = g->row();
-			g->button().image(HashString("mazetd/gui/menu.png")).event<&setScreenPaused>().size(Vec2(50, 0));
+			g->button().image(HashString("mazetd/gui/menu.png")).event(setScreenPaused).size(Vec2(50, 0));
 			{
 				auto _1 = g->panel();
 				auto _2 = g->row();

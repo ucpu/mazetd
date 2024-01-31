@@ -19,14 +19,14 @@ namespace mazetd
 			auto _1 = g->alignment(Vec2(0.8, 0.666));
 			auto _2 = g->panel();
 			auto _3 = g->column();
-			g->button().text("Start").event<&setScreenGenerating>();
-			g->button().text("About").event<&setScreenAbout>();
-			g->button().text("Quit").event<&engineStop>();
+			g->button().text("Start").event(setScreenGenerating);
+			g->button().text("About").event(setScreenAbout);
+			g->button().text("Quit").event(engineStop);
 		}
 	}
 
 	namespace
 	{
-		const auto engineInitListener = controlThread().initialize.listen(&setScreenMainmenu, 999);
+		const auto engineInitListener = controlThread().initialize.listen(setScreenMainmenu, 999);
 	}
 }
