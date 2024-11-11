@@ -1,9 +1,9 @@
 #ifndef mazetd_header_grid
 #define mazetd_header_grid
 
-#include "common.h"
-
 #include <cage-core/enumBits.h>
+
+#include "common.h"
 
 namespace cage
 {

@@ -121,7 +121,6 @@ namespace mazetd
 	uint32 playerCursorTile;
 	sint32 playerHealth;
 	sint32 playerMoney;
-	bool playerPanning = false;
 	Entity *playerBuildingSelection;
 	bool playerWon = false;
 }

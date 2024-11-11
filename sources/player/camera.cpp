@@ -3,7 +3,6 @@
 
 #include <cage-core/config.h>
 #include <cage-engine/scene.h>
-#include <cage-engine/sceneScreenSpaceEffects.h>
 #include <cage-engine/window.h>
 #include <cage-simple/engine.h>
 
@@ -14,7 +13,6 @@ namespace mazetd
 	namespace
 	{
 		const ConfigBool confInvertCameraMove("mazetd/camera/invert", false);
-		Vec2 lastMousePos;
 		Vec2 camCenter;
 		Real camDist;
 		Rads camYaw;
@@ -36,55 +34,36 @@ namespace mazetd
 			camTrans.position = Vec3(camCenter[0], elev, camCenter[1]) + camTrans.orientation * Vec3(0, 0, camDist);
 		}
 
-		Vec2 centerMouse()
-		{
-			const Vec2 cntr = Vec2(engineWindow()->resolution()) / 2;
-			const Vec2 pos = engineWindow()->mousePosition();
-			engineWindow()->mousePosition(cntr);
-			return pos - cntr;
-		}
-
 		bool mousePress(input::MousePress in)
 		{
-			if (in.buttons != MouseButtonsFlags::Right)
-				return false;
-			engineWindow()->mouseVisible(false);
-			lastMousePos = in.position;
-			centerMouse();
-			playerPanning = true;
-			return true;
+			if (any(in.buttons & MouseButtonsFlags::Right))
+			{
+				engineWindow()->mouseRelativeMovement(true);
+				return true;
+			}
+			return false;
 		}
 
 		void stop()
 		{
-			if (playerPanning && engineWindow()->isFocused())
-				engineWindow()->mousePosition(lastMousePos);
-			engineWindow()->mouseVisible(true);
-			playerPanning = false;
+			engineWindow()->mouseRelativeMovement(false);
 		}
 
 		bool mouseRelease(input::MouseRelease in)
 		{
-			if (in.buttons == MouseButtonsFlags::Right)
+			if (any(in.buttons & MouseButtonsFlags::Right))
 				stop();
 			return false;
 		}
 
-		bool mouseMove(input::MouseMove)
+		bool mouseRelativeMove(input::MouseRelativeMove in)
 		{
-			if (!playerPanning)
-				return false;
-			if (engineWindow()->isFocused())
-			{
-				const Vec2 mv2 = centerMouse();
-				const Vec3 mv3 = Quat(Degs(), camYaw, Degs()) * Vec3(mv2[0], 0, mv2[1]);
-				const Real speed = pow(camDist, 0.85) / engineWindow()->contentScaling() * 0.005;
-				camCenter += Vec2(mv3[0], mv3[2]) * speed * (confInvertCameraMove ? -1 : 1);
-				updateCamera();
-				return true;
-			}
-			stop();
-			return false;
+			const Vec2 mv2 = in.position;
+			const Vec3 mv3 = Quat(Degs(), camYaw, Degs()) * Vec3(mv2[0], 0, mv2[1]);
+			const Real speed = pow(camDist, 0.85) / engineWindow()->contentScaling() * 0.005;
+			camCenter += Vec2(mv3[0], mv3[2]) * speed * (confInvertCameraMove ? -1 : 1);
+			updateCamera();
+			return true;
 		}
 
 		bool mouseWheel(input::MouseWheel in)
@@ -127,9 +106,9 @@ namespace mazetd
 
 		EventListener<bool(const GenericInput &)> mousePressListener = engineEvents().listen(inputFilter(mousePress), 100);
 		EventListener<bool(const GenericInput &)> mouseReleaseListener = engineEvents().listen(inputFilter(mouseRelease), 101);
-		EventListener<bool(const GenericInput &)> mouseMoveListener = engineEvents().listen(inputFilter(mouseMove), 102);
+		EventListener<bool(const GenericInput &)> mouseRelativeMoveListener = engineEvents().listen(inputFilter(mouseRelativeMove), 102);
 		EventListener<bool(const GenericInput &)> mouseWheelListener = engineEvents().listen(inputFilter(mouseWheel), 103);
-		EventListener<bool(const GenericInput &)> focusloseListener = engineEvents().listen(inputFilter(focusLose), 104);
+		EventListener<bool(const GenericInput &)> focusLoseListener = engineEvents().listen(inputFilter(focusLose), 104);
 		EventListener<bool(const GenericInput &)> keyReleaseListener = engineEvents().listen(inputFilter(keyRelease), 105);
 
 		const auto engineUpdateListener = controlThread().update.listen(
@@ -187,10 +166,10 @@ namespace mazetd
 				{
 					const Vec2i res = engineWindow()->resolution();
 					const Real ratio = Real(res[0]) / Real(res[1]);
-					c.camera.orthographicSize = Vec2(camDist * ratio, camDist) * 0.5;
+					c.orthographicSize = Vec2(camDist * ratio, camDist) * 0.5;
 				}
 				else
-					c.camera.perspectiveFov = Degs(60);
+					c.perspectiveFov = Degs(60);
 			});
 
 		const auto gameResetListener = eventGameReset().listen(
@@ -203,9 +182,6 @@ namespace mazetd
 				c.ambientColor = Vec3(1);
 				c.ambientIntensity = 0.2;
 				needReset = true;
-				//ScreenSpaceEffectsComponent &ef = e->value<ScreenSpaceEffectsComponent>();
-				//ef.effects &= ~ScreenSpaceEffectsFlags::EyeAdaptation;
-				//ef.eyeAdaptation.nightDesaturate = 0;
 			});
 	}
 }

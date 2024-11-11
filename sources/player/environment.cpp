@@ -1,7 +1,7 @@
-#include "../game.h"
-
 #include <cage-engine/scene.h>
 #include <cage-simple/engine.h>
+
+#include "../game.h"
 
 namespace mazetd
 {
@@ -19,7 +19,7 @@ namespace mazetd
 				l.intensity = 1.5;
 				ShadowmapComponent &s = e->value<ShadowmapComponent>();
 				s.resolution = 4096;
-				s.worldSize = Vec3(75);
+				s.directionalWorldSize = 75;
 			});
 
 		const auto gameUpdateListener = eventGameUpdate().listen(

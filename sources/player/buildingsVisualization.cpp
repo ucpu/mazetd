@@ -116,7 +116,7 @@ namespace mazetd
 				playerCursorPosition = Vec3::Nan();
 				playerCursorTile = m;
 				const Vec2i res = engineWindow()->resolution();
-				if (gameReady && !playerPanning && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
+				if (gameReady && !engineWindow()->mouseRelativeMovement() && engineWindow()->isFocused() && res[0] > 0 && res[1] > 0)
 				{
 					CAGE_ASSERT(globalGrid);
 					const Vec2 cur = engineWindow()->mousePosition();
@@ -126,8 +126,8 @@ namespace mazetd
 					const Mat4 proj = [&]()
 					{
 						if (a.cameraType == CameraTypeEnum::Perspective)
-							return perspectiveProjection(a.camera.perspectiveFov, Real(res[0]) / Real(res[1]), a.near, a.far);
-						const Vec2 &os = a.camera.orthographicSize;
+							return perspectiveProjection(a.perspectiveFov, Real(res[0]) / Real(res[1]), a.near, a.far);
+						const Vec2 &os = a.orthographicSize;
 						return orthographicProjection(-os[0], os[0], -os[1], os[1], a.near, a.far);
 					}();
 					const Mat4 inv = inverse(proj * view);

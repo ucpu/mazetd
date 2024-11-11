@@ -32,7 +32,7 @@ namespace mazetd
 			void findNeighbors(Entity *me)
 			{
 				neighbors.clear();
-				const uint32 myName = me->name();
+				const uint32 myName = me->id();
 				const Vec3 myPos = globalGrid->center(me->value<PositionComponent>(compPosition).tile) * Vec3(1, 0, 1);
 				buildingsQuery->intersection(Sphere(myPos, 5));
 				for (uint32 nn : buildingsQuery->result())

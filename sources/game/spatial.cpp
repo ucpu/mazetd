@@ -27,7 +27,7 @@ namespace mazetd
 				monstersData->clear();
 				CAGE_ASSERT(globalGrid);
 
-				entitiesVisitor([&](Entity *e, const MovementComponent &mv, const MonsterComponent &) { monstersData->update(e->name(), mv.position() * Vec3(1, 0, 1)); }, gameEntities(), false);
+				entitiesVisitor([&](Entity *e, const MovementComponent &mv, const MonsterComponent &) { monstersData->update(e->id(), mv.position() * Vec3(1, 0, 1)); }, gameEntities(), false);
 
 				monstersData->rebuild();
 			},
@@ -51,9 +51,9 @@ namespace mazetd
 		structsData->clear();
 		CAGE_ASSERT(globalGrid);
 
-		entitiesVisitor([&](Entity *e, const PositionComponent &pos, const BuildingComponent &) { structsData->update(e->name(), globalGrid->center(pos.tile) * Vec3(1, 0, 1)); }, gameEntities(), false);
+		entitiesVisitor([&](Entity *e, const PositionComponent &pos, const BuildingComponent &) { structsData->update(e->id(), globalGrid->center(pos.tile) * Vec3(1, 0, 1)); }, gameEntities(), false);
 
-		entitiesVisitor([&](Entity *e, const PositionComponent &pos, const TrapComponent &) { structsData->update(e->name(), globalGrid->center(pos.tile) * Vec3(1, 0, 1)); }, gameEntities(), false);
+		entitiesVisitor([&](Entity *e, const PositionComponent &pos, const TrapComponent &) { structsData->update(e->id(), globalGrid->center(pos.tile) * Vec3(1, 0, 1)); }, gameEntities(), false);
 
 		structsData->rebuild();
 	}

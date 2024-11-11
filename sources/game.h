@@ -1,10 +1,10 @@
 #ifndef mazetd_header_game
 #define mazetd_header_game
 
-#include "common.h"
-
 #include <cage-core/entities.h>
 #include <cage-core/enumBits.h>
+
+#include "common.h"
 
 namespace cage
 {
@@ -277,7 +277,6 @@ namespace mazetd
 	extern uint32 playerCursorTile;
 	extern sint32 playerHealth;
 	extern sint32 playerMoney;
-	extern bool playerPanning;
 	extern Entity *playerBuildingSelection;
 
 	extern SpawningGroup spawningGroup;

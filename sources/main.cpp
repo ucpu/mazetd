@@ -1,4 +1,4 @@
-#include <cage-core/assetManager.h>
+#include <cage-core/assetsManager.h>
 #include <cage-core/hashString.h>
 #include <cage-core/logger.h>
 #include <cage-engine/highPerformanceGpuHint.h>
@@ -11,28 +11,24 @@ using namespace cage;
 
 int main(int argc, const char *args[])
 {
-	Holder<Logger> log = newLogger();
-	log->format.bind<logFormatConsole>();
-	log->output.bind<logOutputStdOut>();
-
 	try
 	{
+		initializeConsoleLogger();
 		engineInitialize(EngineCreateConfig());
 		controlThread().updatePeriod(1000000 / 30);
 
 		const auto closeListener = engineWindow()->events.listen(inputFilter([](input::WindowClose) { engineStop(); }));
 		engineWindow()->title("MazeTD");
-		engineAssets()->add(HashString("mazetd/mazetd.pack"));
+		engineAssets()->load(HashString("mazetd/mazetd.pack"));
 
 		{
 			Holder<FullscreenSwitcher> fullscreen = newFullscreenSwitcher({});
 			Holder<StatisticsGui> engineStatistics = newStatisticsGui();
 			engineStatistics->statisticsScope = StatisticsGuiScopeEnum::None;
-
 			engineRun();
 		}
 
-		engineAssets()->remove(HashString("mazetd/mazetd.pack"));
+		engineAssets()->unload(HashString("mazetd/mazetd.pack"));
 		engineFinalize();
 		return 0;
 	}

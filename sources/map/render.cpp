@@ -1,8 +1,6 @@
 #include <vector>
 
-#include "generate.h"
-
-#include <cage-core/assetManager.h>
+#include <cage-core/assetsManager.h>
 #include <cage-core/entities.h>
 #include <cage-core/meshImport.h>
 #include <cage-core/profiling.h>
@@ -13,6 +11,8 @@
 #include <cage-engine/scene.h>
 #include <cage-engine/texture.h>
 #include <cage-simple/engine.h>
+
+#include "generate.h"
 
 namespace mazetd
 {
@@ -29,11 +29,11 @@ namespace mazetd
 			void remove()
 			{
 				if (model)
-					engineAssets()->remove(model);
+					engineAssets()->unload(model);
 				if (albedo)
-					engineAssets()->remove(albedo);
+					engineAssets()->unload(albedo);
 				if (material)
-					engineAssets()->remove(material);
+					engineAssets()->unload(material);
 				model = albedo = material = 0;
 			}
 		};
@@ -65,8 +65,8 @@ namespace mazetd
 						tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
 						tex->wraps(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 						tex->generateMipmaps();
-						re.albedo = engineAssets()->generateUniqueName();
-						engineAssets()->fabricate<AssetSchemeIndexTexture, Texture>(re.albedo, std::move(tex), "chunkAlbedo");
+						re.albedo = engineAssets()->generateUniqueId();
+						engineAssets()->loadValue<AssetSchemeIndexTexture, Texture>(re.albedo, std::move(tex), "chunkAlbedo");
 					}
 
 					{
@@ -76,8 +76,8 @@ namespace mazetd
 						tex->filters(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, 100);
 						tex->wraps(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 						tex->generateMipmaps();
-						re.material = engineAssets()->generateUniqueName();
-						engineAssets()->fabricate<AssetSchemeIndexTexture, Texture>(re.material, std::move(tex), "chunkMaterial");
+						re.material = engineAssets()->generateUniqueId();
+						engineAssets()->loadValue<AssetSchemeIndexTexture, Texture>(re.material, std::move(tex), "chunkMaterial");
 					}
 
 					{
@@ -88,8 +88,8 @@ namespace mazetd
 						model->textureNames[0] = re.albedo;
 						model->textureNames[1] = re.material;
 						model->layer = -100;
-						re.model = engineAssets()->generateUniqueName();
-						engineAssets()->fabricate<AssetSchemeIndexModel, Model>(re.model, std::move(model), "chunkModel");
+						re.model = engineAssets()->generateUniqueId();
+						engineAssets()->loadValue<AssetSchemeIndexModel, Model>(re.model, std::move(model), "chunkModel");
 					}
 
 					chunksRenderQueue.push(std::move(re));
