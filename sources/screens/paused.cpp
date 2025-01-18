@@ -22,8 +22,8 @@ namespace mazetd
 		auto _2 = g->column();
 		{
 			auto _ = g->panel().text("Pause");
+			g->button().text("Continue").event(setScreenGame);
+			g->button().text("Abort").event(buttonStop);
 		}
-		g->button().text("Continue").event(setScreenGame);
-		g->button().text("Abort").event(buttonStop);
 	}
 }

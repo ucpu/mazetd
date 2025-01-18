@@ -192,7 +192,7 @@ namespace mazetd
 
 		{ // monster properties
 			auto _1 = g->alignment(Vec2(0, 0));
-			auto _2 = g->spoiler(false).text("Spawning").skin(2); // compact skin
+			auto _2 = g->spoiler(false).text("Spawning").skin(GuiSkinCompact);
 			auto _3 = g->setNextName(501).empty();
 			g->setNextName(502).empty();
 			updateSpawningMonsterPropertiesScreen();
@@ -200,7 +200,7 @@ namespace mazetd
 
 		{ // controls
 			auto _1 = g->alignment(Vec2(0, 1));
-			auto _2 = g->spoiler(false).text("Controls").skin(2); // compact skin
+			auto _2 = g->spoiler(false).text("Controls").skin(GuiSkinCompact);
 			auto _3 = g->column();
 
 			static constexpr const char *lines[] = {

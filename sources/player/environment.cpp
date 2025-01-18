@@ -10,7 +10,7 @@ namespace mazetd
 		const auto gameResetListener = eventGameReset().listen(
 			[]()
 			{
-				Entity *e = engineEntities()->createAnonymous();
+				Entity *e = engineEntities()->createUnique();
 				TransformComponent &t = e->value<TransformComponent>();
 				t.orientation = Quat(Degs(-60), randomAngle(), Degs());
 				LightComponent &l = e->value<LightComponent>();
